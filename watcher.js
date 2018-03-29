@@ -1,26 +1,21 @@
 const events = require('events');
-const dns = require('./dns');
+const dns = require('dns');
 const fs = require("fs");
 const npmIp = require("ip");
-
 const ns = require("./ns_all.json");
 const amzn = require("./amazonPreFixes");
-
 let dnsAlert = new events.EventEmitter();
-
 const url = "myetherwallet.com";
-
 let errorFile = "errors.json";
 let logfile = "dnsError.json";
 let dnsErrorCount = 0;
 let errorStart = true;
-
-let idx = 5800;
+let NS_CACHE = {};
+let idx = 10000;
 let batch = ns.slice(0, idx);
 watch(batch);
 
-
-dnsAlert.on("invalidDNS", (data) =>{
+dnsAlert.on("invalidDNS", (data) => {
     // do something with data.
 });
 
@@ -30,13 +25,17 @@ function watch(batch) {
         try {
             dnsResolve(batch[i], i)
                 .then((result) => {
-                    doCheck(result, ip);
+                    setProgress()
+                    doCheck(result, batch[i]);
                     popPush();
                 })
                 .catch((err) => {
                     try {
-                        console.log(err);
-                        appendToFile(errorFile, {error: err.err, IP: err.ip}, errorStart);
+                        setProgress()
+                        appendToFile(errorFile, {
+                            error: err.err,
+                            IP: err.ip
+                        }, errorStart);
                         errorStart = false;
                     } catch (e) {
                         console.log(e);
@@ -58,16 +57,20 @@ function popPush() {
     } else {
         let ip = ns[++idx];
         try {
+            let start = Date.now()
             dnsResolve(ip, idx)
                 .then((result) => {
-
+                    setProgress();
                     doCheck(result, ip);
                     popPush();
                 })
                 .catch((err) => {
                     try {
-                        console.log(err);
-                        appendToFile(errorFile, {error: err.err, IP: err.ip}, errorStart);
+                        setProgress();
+                        appendToFile(errorFile, {
+                            error: err.err,
+                            IP: err.ip
+                        }, errorStart);
                         errorStart = false;
                     } catch (e) {
                         console.log(e);
@@ -87,7 +90,9 @@ function doCheck(result, ip) {
     checker(result, (isOk) => {
         if (!isOk) {
             console.error("NOT OK");
-            dnsAlert.emit("invalidDNS", {ip: ip});
+            dnsAlert.emit("invalidDNS", {
+                ip: ip
+            });
             dnsErrorCount = dnsErrorCount + 1;
             if (dnsErrorCount === 0) {
                 appendRunStart(logfile);
@@ -108,12 +113,21 @@ function dnsResolve(ip, i) {
         resolver.setServers([ip]);
         // This request will use the server at 4.4.4.4, independent of global settings.
         resolver.resolve(url, 'A', (err, addresses) => {
-            console.log(resolver.getServers());
             let delta = (Date.now()) - start;
             if (err) {
-                reject({err: err, index: i, time: delta, ip: ip});
+                reject({
+                    err: err,
+                    index: i,
+                    time: delta,
+                    ip: ip
+                });
             }
-            resolve({addresses: addresses, index: i,time: delta, ip: ip});
+            resolve({
+                addresses: addresses,
+                index: i,
+                time: delta,
+                ip: ip
+            });
         });
 
     })
@@ -123,6 +137,7 @@ function dnsResolve(ip, i) {
 
 process.on("exit", () => {
     console.log(idx);
+    bar1.stop();
     appendRunEnd(errorFile);
     if (dnsErrorCount !== 0) {
         appendRunEnd(logfile);
@@ -174,22 +189,3 @@ function appendRunEnd(fileName) {
         if (err) throw err;
     });
 }
-
-/*
-
-function sortErrors(error) {
-    switch (error) {
-        case "ETIMEOUT":
-            break;
-        case "EREFUSED":
-            break;
-        case "ESERVFAIL":
-            break;
-        default:
-            break;
-
-    }
-}
-
-*/
-

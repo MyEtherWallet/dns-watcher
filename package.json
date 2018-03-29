@@ -2,9 +2,10 @@
   "name": "dnsWatcher",
   "version": "0.0.1",
   "scripts": {
-    "start":"node watcher.js"
+    "start": "node watcher.js"
   },
   "dependencies": {
+    "cli-progress": "^1.8.0",
     "ip": "^1.1.5"
   }
 }
