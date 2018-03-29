@@ -25,13 +25,11 @@ function watch(batch) {
         try {
             dnsResolve(batch[i], i)
                 .then((result) => {
-                    setProgress()
                     doCheck(result, batch[i]);
                     popPush();
                 })
                 .catch((err) => {
                     try {
-                        setProgress()
                         appendToFile(errorFile, {
                             error: err.err,
                             IP: err.ip
@@ -60,13 +58,11 @@ function popPush() {
             let start = Date.now()
             dnsResolve(ip, idx)
                 .then((result) => {
-                    setProgress();
                     doCheck(result, ip);
                     popPush();
                 })
                 .catch((err) => {
                     try {
-                        setProgress();
                         appendToFile(errorFile, {
                             error: err.err,
                             IP: err.ip
