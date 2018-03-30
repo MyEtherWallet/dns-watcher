@@ -7,6 +7,7 @@ const https = require("https");
 const clone = require("clone");
 const Runner = require("./runner");
 const nameservers = require("./ns_all.json");
+const request = require("request-promise-native");
 
 const runner = new Runner(nameservers);
 const app = express();
@@ -55,14 +56,31 @@ app.get("/dns-report", (req, res) =>{
 });
 
 emitter.on("end", (results) => {
-    console.info("Run Complete. Restarting Run.");
+    console.info("Run Complete.");
     fs.writeFileSync(path.join(__dirname, "validityList.json"), JSON.stringify(results), (error) =>{
         if(error){
+            console.info("Name server results save Failed");
+            console.error(error);
             resultBkup = clone(results);
         } else {
+            // console.info("Name server results saved");
             resultBkup = null;
         }
     });
-    runner.run()
+    request("https://public-dns.info/nameservers.txt")
+        .then((nameServerList) =>{
+            let split = nameServerList.split("\n");
+            console.info("Updating NameServer list. Restarting Run.");
+            runner.setNameservers(split);
+            // console.info("Restarting Run.");
+            runner.run()
+        })
+        .catch(err =>{
+            console.info("Updating NameServer list failed");
+            console.error(err);
+            console.info("Proceeding with existing nameserver list");
+            console.info("Restarting Run.");
+            runner.run()
+        });
 });
 

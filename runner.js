@@ -10,6 +10,7 @@ const URL = "myetherwallet.com";
 
 class Runner {
     constructor(_nameservers) {
+        this.enableNameServerSet = true;
         this.nameservers = _nameservers || nameservers;
         this.counter = 0;
         this.NS_CACHE = {};
@@ -51,8 +52,13 @@ class Runner {
     }
 
     setNameservers(_nameservers) {
-        this.nameservers = _nameservers;
+        if(this.enableNameServerSet){
+            this.nameservers = _nameservers;
+        }
+
     }
+
+
 
 
     getARecords(_nameServer, _url, cb) {
@@ -83,19 +89,30 @@ class Runner {
 
     runner() {
         let self = this;
-        this.nameservers.forEach(function (_ns) {
-            self.getARecords(_ns, URL, (err, addresses) => {
-                self.setProgress();
-                if (!err) {
-                    if (!self.isValidRecord(addresses)) {
-                        self.addBad(_ns);
-                        console.error("invalid record found", _ns, addresses)
-                    } else {
-                        self.addGood(_ns);
+        try {
+            this.nameservers.forEach(function (_ns) {
+                self.getARecords(_ns, URL, (err, addresses) => {
+                    self.setProgress();
+                    if (!err) {
+                        if (!self.isValidRecord(addresses)) {
+                            self.addBad(_ns);
+                            console.error("invalid record found", _ns, addresses)
+                        } else {
+                            self.addGood(_ns);
+                        }
                     }
-                }
+                })
             })
-        })
+        } catch (e) {
+            console.error(e);
+            // if something goes wrong replace nameserver list with the internal list.
+            // because we are relying on a third party for the list and if it is malformed or something we still want to be able to have a list to use
+            // and we will stop the nameserver list from updating and replacing the known working list with the malformed list again.
+            // Then restart the run.
+            this.setNameservers(nameservers);
+            this.enableNameServerSet = false;
+            this.run();
+        }
     }
 
 }
