@@ -12,3 +12,9 @@ yarn-error.log*
 *.ntvs*
 *.njsproj
 *.sln
+/package-lock.json
+/.env
+/scraps/
+/scraps/inBrowserFileCheck.js
+/MewChecker/dist/
+/MewChecker/node_modules/
