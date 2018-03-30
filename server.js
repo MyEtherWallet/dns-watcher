@@ -44,7 +44,7 @@ app.get("/dns-report", (req, res) =>{
     try {
         fs.access(filepath, fs.constants.R_OK | fs.constants.W_OK, (err) => {
             if(err) {
-                res.send("{\"timestamp\":" + new Date().toUTCString() + ",\"good\":[\"building initial list\"], \"bad\":[\"building initial list\"]}");
+                res.send("{\"timestamp\": \"" + new Date().toUTCString() + "\",\"good\":[\"building initial list\"], \"bad\":[\"building initial list\"]}");
             } else {
                 res.sendFile(filepath);
             }
