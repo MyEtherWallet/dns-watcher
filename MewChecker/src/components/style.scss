@@ -69,10 +69,10 @@ body {
       }
 
       .checking {
-        background-color: #e7ff02;
-        animation-name: checking;
-        animation-duration: 1s;
-        animation-iteration-count: infinite;
+        background-color: #ffea04;
+        //animation-name: checking;
+        //animation-duration: 1s;
+        //animation-iteration-count: infinite;
 
       }
     }
@@ -154,7 +154,7 @@ body {
   }
 }
 
-@keyframes checking {
+/*@keyframes checking {
   0% {
     background-color: #88b500;
   }
@@ -164,7 +164,7 @@ body {
   100% {
     background-color: #fff805;
   }
-}
+}*/
 
 
 

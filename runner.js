@@ -4,6 +4,7 @@ const nameservers = require("./ns_all.json");
 const locationDb = require("./raw_lists/db1-ip-country");
 const amzn = require("./amazon_r53.json");
 const _cliProgress = require('cli-progress');
+const countries = require("i18n-iso-countries");
 const bar1 = new _cliProgress.Bar({}, _cliProgress.Presets.shades_classic);
 bar1.start(nameservers.length, 0);
 const URL = "myetherwallet.com";
@@ -96,11 +97,14 @@ class Runner {
                 self.getARecords(_ns[0], URL, (err, addresses) => {
                     self.setProgress();
                     if (!err) {
+                        let countryName;
                         if (!self.isValidRecord(addresses)) {
-                            self.addBad({ns: _ns[0], timestamp: new Date().toUTCString(), country: _ns[1]});
+                            countryName = countries.getName(_ns[1], "en");
+                            self.addBad({ns: _ns[0], timestamp: new Date().toUTCString(), country: countryName});
                             console.error("invalid record found", _ns, addresses)
                         } else {
-                            self.addGood({ns: _ns[0], timestamp: new Date().toUTCString(), country: _ns[1]});
+                            countryName = countries.getName(_ns[1], "en");
+                            self.addGood({ns: _ns[0], timestamp: new Date().toUTCString(), country: countryName});
                         }
                     }
                 })

@@ -33,7 +33,7 @@ server.listen(port, () => {
             let locations = [];
             let split = result.split("\n");
             console.info("Updating NameServer list. Restarting Run.");
-            for (let i=1; i<split.length; i++) {
+            for (let i = 1; i < split.length; i++) {
                 try {
                     let row = split[i].replace("\r", "").split(",");
                     locations.push([row[0], row[2]]);
@@ -59,17 +59,18 @@ server.listen(port, () => {
 app.use("/js", express.static(path.join(__dirname, "MewChecker/dist/js")));
 app.use("/css", express.static(path.join(__dirname, "MewChecker/dist/css")));
 app.use("/img", express.static(path.join(__dirname, "MewChecker/dist/img")));
+app.use("/static", express.static(path.join(__dirname, "MewChecker/dist/static")));
 
 app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "MewChecker/dist/index.html"));
 });
 
 
-app.get("/dns-report", (req, res) =>{
+app.get("/dns-report", (req, res) => {
     let filepath = path.join(__dirname, "validityList.json");
     try {
         fs.access(filepath, fs.constants.R_OK | fs.constants.W_OK, (err) => {
-            if(err) {
+            if (err) {
                 res.send("{\"timestamp\": \"" + new Date().toUTCString() + "\",\"good\":[\"building initial list\"], \"bad\":[\"building initial list\"]}");
             } else {
                 res.sendFile(filepath);
@@ -80,45 +81,54 @@ app.get("/dns-report", (req, res) =>{
     }
 });
 
-
-emitter.on("updateLocationMapping", () => {
-    request("https://www.ip2location.com/samples/db1-ip-country.txt")
-        .then((locationMapping) =>{
-            let split = locationMapping.split("\n");
-            console.info("Updating NameServer list. Restarting Run.");
-
-            runner.setNameservers(split);
-            // console.info("Restarting Run.");
-            runner.run()
-        })
-        .catch(err =>{
-            console.info("Updating NameServer list failed");
-            console.error(err);
-            console.info("Proceeding with existing nameserver list");
-            console.info("Restarting Run.");
-            runner.run()
+app.get("/new-results", (req, res) => {
+    let filepath = path.join(__dirname, "validityList.json");
+    try {
+        fs.access(filepath, fs.constants.R_OK | fs.constants.W_OK, (err) => {
+            if (err) {
+                res.send("{\"timestamp\": \"" + new Date().toUTCString() + "\",\"good\":[\"building initial list\"], \"bad\":[\"building initial list\"]}");
+            } else {
+                fs.readFile(filepath, "utf-8", (err, result) => {
+                    try {
+                        if(err) throw err;
+                        let jsonResult = JSON.parse(result);
+                        let displayedList = req.query.timestamp;
+                        let currentList = Date.parse(jsonResult.timestamp);
+                        if (+currentList > +displayedList) {
+                            res.send({result: true});
+                        } else {
+                            res.send({result: false});
+                        }
+                    } catch (e) {
+                        console.error(e);
+                    }
+                })
+            }
         });
+    } catch (e) {
+        console.error(e);
+    }
 });
 
+
 emitter.on("end", (results) => {
+    //todo uncomment after dev
     console.info("Run Complete.");
-    fs.writeFileSync(path.join(__dirname, "validityList.json"), JSON.stringify(results), (error) =>{
-        if(error){
+    fs.writeFileSync(path.join(__dirname, "validityList.json"), JSON.stringify(results), (error) => {
+        if (error) {
             console.info("Name server results save Failed");
             console.error(error);
             resultBkup = clone(results);
         } else {
-            // console.info("Name server results saved");
             resultBkup = null;
         }
     });
     request("https://public-dns.info/nameservers.csv")
         .then(result => {
-            // console.log(result);
             let locations = [];
             let split = result.split("\n");
             console.info("Updating NameServer list. Restarting Run.");
-            for (let i=1; i<split.length; i++) {
+            for (let i = 1; i < split.length; i++) {
                 try {
                     let row = split[i].replace("\r", "").split(",");
                     locations.push([row[0], row[2]]);
@@ -131,7 +141,11 @@ emitter.on("end", (results) => {
             // console.log(locations);
         })
         .then(next => {
-            runner.run();
+            //todo remove dev item
+            setTimeout(() => {
+                runner.run();
+            }, 10000)
+            // runner.run(); //todo uncomment after dev
         })
         .catch(err => {
             console.info("Updating NameServer list failed");
@@ -140,43 +154,4 @@ emitter.on("end", (results) => {
             console.info("Restarting Run.");
             runner.run()
         })
-/*    request("https://public-dns.info/nameservers.txt")
-        .then((nameServerList) =>{
-            let split = nameServerList.split("\n");
-            console.info("Updating NameServer list. Restarting Run.");
-            runner.setNameservers(split);
-            // console.info("Restarting Run.");
-            runner.run()
-        })
-        .catch(err =>{
-            console.info("Updating NameServer list failed");
-            console.error(err);
-            console.info("Proceeding with existing nameserver list");
-            console.info("Restarting Run.");
-            runner.run()
-        });*/
 });
-
-function initialDNSList(){
-    request("https://public-dns.info/nameservers.csv")
-        .then(result => {
-            // console.log(result);
-            let locations = [];
-            let split = result.split("\n");
-            console.info("Updating NameServer list. Restarting Run.");
-            for (let i=1; i<split.length; i++) {
-                try {
-                    let row = split[i].replace("\r", "").split(",");
-                    locations.push([row[0], row[2]]);
-
-                } catch (e) {
-
-                }
-            }
-            runner.setNameservers(locations);
-            // console.log(locations);
-        })
-        .then(next => {
-
-        })
-}
