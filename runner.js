@@ -1,6 +1,7 @@
 const dns = require('dns');
 const npmIp = require("ip");
 const nameservers = require("./ns_all.json");
+const locationDb = require("./raw_lists/db1-ip-country");
 const amzn = require("./amazon_r53.json");
 const _cliProgress = require('cli-progress');
 const bar1 = new _cliProgress.Bar({}, _cliProgress.Presets.shades_classic);
@@ -9,9 +10,10 @@ const URL = "myetherwallet.com";
 
 
 class Runner {
-    constructor(_nameservers) {
+    constructor(_nameservers, _locationDb) {
         this.enableNameServerSet = true;
         this.nameservers = _nameservers || nameservers;
+        this.locationDb = _locationDb || locationDb;
         this.counter = 0;
         this.NS_CACHE = {};
         this.results = {timestamp: "", good: [], bad: []};
@@ -91,14 +93,14 @@ class Runner {
         let self = this;
         try {
             this.nameservers.forEach(function (_ns) {
-                self.getARecords(_ns, URL, (err, addresses) => {
+                self.getARecords(_ns[0], URL, (err, addresses) => {
                     self.setProgress();
                     if (!err) {
                         if (!self.isValidRecord(addresses)) {
-                            self.addBad(_ns);
+                            self.addBad({ns: _ns[0], timestamp: new Date().toUTCString(), country: _ns[1]});
                             console.error("invalid record found", _ns, addresses)
                         } else {
-                            self.addGood(_ns);
+                            self.addGood({ns: _ns[0], timestamp: new Date().toUTCString(), country: _ns[1]});
                         }
                     }
                 })

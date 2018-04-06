@@ -1,0 +1,172 @@
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i');
+
+body {
+  background-color: #239ec7;
+}
+
+.dns-watcher {
+  box-sizing: border-box;
+  height: 100%;
+  width: 100%;
+  font-family: 'Open Sans', sans-serif;
+
+  .hidden {
+    display: none !important;
+  }
+
+  .wrapper {
+    max-width: 1100px;
+    margin: 50px auto 0 auto;
+
+    header {
+      //display: flex;
+
+      .title {
+        color: #FFF;
+        font-weight: 300;
+        font-size: 60px;
+      }
+      h5 {
+        color: #FFF;
+        font-weight: 600;
+        font-size: 23px;
+        margin-top: 2px;
+      }
+      img {
+        height: 50px;
+        //margin-left: 20px;
+        //align-self: flex-end;
+      }
+    }
+    //header
+
+    .status {
+      margin-top: 20px;
+      display: flex;
+
+      .validation {
+        text-align: center;
+        color: #FFF;
+        font-weight: 300;
+        font-size: 100px;
+        border: 10px solid white;
+        display: inline-block;
+        margin: 0 auto;
+        padding: 20px 50px;
+        border-radius: 100px;
+      }
+
+      .valid {
+        background-color: #00b56b;
+      }
+
+      .invalid {
+        background-color: #ff005c;
+        animation-name: example;
+        animation-duration: 1s;
+        animation-iteration-count: infinite;
+
+      }
+
+      .checking {
+        background-color: #e7ff02;
+        animation-name: checking;
+        animation-duration: 1s;
+        animation-iteration-count: infinite;
+
+      }
+    }
+    //.status
+
+    .status-buttons {
+      margin-top: 40px;
+
+      button {
+        padding: 10px 40px;
+        background-color: transparent;
+        border: 2px solid white;
+        font-weight: 700;
+        font-family: 'Open Sans', sans-serif;
+        font-size: 15px;
+        margin-right: 5px;
+
+        cursor: pointer;
+        color: white;
+        text-transform: uppercase;
+        transition: all 0.3s ease;
+      }
+      button:hover {
+        background-color: black;
+      }
+    }
+
+    .table-data {
+      margin-top: 10px;
+      table {
+
+        width: 100%;
+        border: 2px solid white;
+      }
+
+      table tbody tr td{
+
+        color: white;
+        border-left: 6px solid white;
+        border-right: 6px solid white;
+        padding: 7px;
+        font-size: 17px;
+        font-weight: 700;
+
+        &:nth-child(1) {
+          text-align: center;
+        }
+      }
+
+/*      table tbody th td {
+        color: white;
+        border-left: 6px solid white;
+        border-right: 6px solid white;
+        padding: 7px;
+        font-size: 17px;
+        font-weight: 800;
+
+        &:nth-child(1) {
+          text-align: center;
+        }
+      }*/
+    }
+
+  }
+  //.wrapper
+}
+
+//.dns-watcher
+
+@keyframes example {
+  0% {
+    background-color: #ff005c;
+  }
+  50% {
+    background-color: black;
+  }
+  100% {
+    background-color: #ff005c;
+  }
+}
+
+@keyframes checking {
+  0% {
+    background-color: #88b500;
+  }
+  50% {
+    background-color: black;
+  }
+  100% {
+    background-color: #fff805;
+  }
+}
+
+
+
+
+

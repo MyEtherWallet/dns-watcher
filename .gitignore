@@ -18,3 +18,4 @@ yarn-error.log*
 /scraps/inBrowserFileCheck.js
 /MewChecker/dist/
 /MewChecker/node_modules/
+/validityList.json

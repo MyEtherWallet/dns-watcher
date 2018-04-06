@@ -1,41 +1,42 @@
 <template>
-    <div class="container">
-        <div v-if="displayList" class="timestamp">
-            Updated at: {{timestamp}}
-        </div>
-        <div class="boxit">
-            <h3 class="incorrect">Incorrect</h3>
-            <div v-if="displayList">
-                <dns-display v-for="(ip, index) in bad"
-                             :key="index"
-                             v-bind:ip="ip"
-                             class="negative"></dns-display>
-            </div>
+    <div v-if="displayList" class="table-data">
+        <table>
+            <tbody>
+            <tr>
+                <td></td>
+                <td>IP</td>
+                <td>Location</td>
+                <td>Last Checked</td>
+            </tr>
+            <dns-display-bad v-for="(ip, index) in bad"
+                         :key="index"
+                         v-bind:ip="ip"
+                         v-bind:status="sortopt == 1 || sortopt == 0"></dns-display-bad>
+            <dns-display-good v-for="(ip, index) in good"
+                         :key="index"
+                         v-bind:ip="ip"
+                         v-bind:status="sortopt == 2 || sortopt == 0"></dns-display-good>
 
-        </div>
+            </tbody>
 
-        <br>
-        <div class="boxit error-border">
-            <h3>Correct</h3>
-            <div v-if="displayList">
-                <dns-display v-for="(ip, index) in good"
-                             :key="index"
-                             v-bind:ip="ip"></dns-display>
-            </div>
-        </div>
+        </table>
     </div>
 </template>
 
 <script>
-    import dnsDisplay from "./dns-display.vue";
+    import dnsDisplayGood from "./dns-display-good.vue";
+    import dnsDisplayBad from "./dns-display-bad.vue";
 
     const request = require("request-promise-native");
 
     export default {
         name: "dns-results",
+        props: ["sortopt"],
         data: function () {
             return {
                 displayList: false,
+                statusGood: 'good',
+                statusBad: 'bad',
                 good: [],
                 bad: [],
                 timestamp: ""
@@ -67,38 +68,12 @@
             this.getDnsResults();
         },
         components: {
-            "dns-display": dnsDisplay
+            "dns-display-good": dnsDisplayGood,
+            "dns-display-bad": dnsDisplayBad
         }
     }
 </script>
 
-<style scoped>
-    .container {
-        position: absolute;
-        right: 50%;
-    }
-
-    .timestamp{
-        text-align: center;
-    }
-    .incorrect {
-        color: red;
-    }
-
-
-    .negative {
-        text-align: center;
-        color: black;
-        background: red;
-        width: 150%
-    }
-
-    .boxit {
-        text-align: center;
-        position: relative;
-        /*right: -470%;*/
-        /*left: 25%;*/
-        width: 70%;
-
-    }
+<style lang="scss">
+    @import 'style.scss';
 </style>
