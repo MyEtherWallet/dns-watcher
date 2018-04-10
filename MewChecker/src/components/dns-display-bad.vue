@@ -1,5 +1,5 @@
 <template>
-    <tr v-show="status">
+    <tr v-show="shoulddisplay">
         <td><i class="fa fa-times"></i></td>
         <td>{{ip.ns}}</td>
         <td>{{ip.country}}</td>
@@ -10,7 +10,13 @@
 <script>
     export default {
         name: "dns-display-bad",
-        props: ["status", "ip"]
+        props: ["detailedsort", "sort", "ip"],
+      computed: {
+        shoulddisplay: function(){
+            // if(this.sort)
+          return false;
+          }
+      }
     }
 </script>
 

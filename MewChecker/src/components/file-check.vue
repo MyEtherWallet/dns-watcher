@@ -1,16 +1,34 @@
 <template>
-  <div class="checker">
+  <div>
     <div v-if="checkComplete">
-      <div v-if="fileCheckResult">
-        <h1 class="validation valid"><i class="fa fa-check" aria-hidden="true"></i> Valid</h1>
-      </div>
-      <div v-else>
-        <h1 class="validation invalid"><i class="fa fa-times" aria-hidden="true"></i> Error</h1>
-      </div>
+        <div v-if="fileCheckResult" class="status-indication valid">
+          <div class="site-title">
+            <h1>DNS Watcher</h1>
+            <h3>status.myetherwallet.com</h3>
+          </div>
+          <div class="status-icon">
+            <p class=""><i class="fa fa-check" aria-hidden="true"></i> Valid</p>
+          </div>
+        </div><!-- .status-indication -->
+        <div v-else class="status-indication error">
+          <div class="site-title">
+            <h1>DNS Watcher</h1>
+            <h3>status.myetherwallet.com</h3>
+          </div>
+          <div class="status-icon">
+            <p class=""><i class="fa fa-exclamation" aria-hidden="true"></i> Error</p>
+          </div>
+        </div><!-- .status-indication -->
     </div>
-    <div v-else>
-      <h1 class="validation checking"><i class="fa fa-spinner fa-pulse" aria-hidden="true"></i> Checking</h1>
-    </div>
+      <div v-else class="status-indication checking">
+        <div class="site-title">
+          <h1>DNS Watcher</h1>
+          <h3>status.myetherwallet.com</h3>
+        </div>
+        <div class="status-icon">
+          <p class=""><i class="fa fa-refresh" aria-hidden="true"></i> Checking</p>
+        </div>
+      </div><!-- .status-indication -->
   </div>
 </template>
 
@@ -59,9 +77,9 @@
     created() {
       this.fileCheck();
       this.poolingFileCheck = setInterval(() => {
-        this.fileCheckResult = false;
+        this.checkComplete = false;
         this.fileCheck();
-      }, 60000)
+      }, 300000) // checks file status every 5 minutes
     }
   }
 </script>
