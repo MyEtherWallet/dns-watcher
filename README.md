@@ -13,7 +13,7 @@ $ npm install
 
 
 ##### Update the .env file \[or leave it as is to use the defaults\]
-Open .env with your favorite text editor and replace defaults with the values for your environment 
+- open .env with your favorite text editor and replace defaults with the values for your environment 
 
 
 ##### Start the server
