@@ -11,18 +11,10 @@ Tool to check dns nameservers for proper address resolution.
 $ npm install
 - this installs the dependencies for both the server and the embedded vue website
 
-##### Add a .env file
-$ touch .env
 
-##### Include the status the server will be running in
-(use your preferred text editor)
-nano .env
+##### Update the .env file \[or leave it as is to use the defaults\]
+Open .env with your favorite text editor and replace defaults with the values for your environment 
 
-##### add the line 
-STATUS=development
-
-##### or
-STATUS=production
 
 ##### Start the server
 
@@ -33,7 +25,6 @@ https://localhost:3000
 
 **NOTE:** The list of correct or incorrect dns servers is not immediately available the first time the servers starts as it 
 needs to build the list.  The list becomes available after runner completes its first run. 
-
 
 
 ### Development
