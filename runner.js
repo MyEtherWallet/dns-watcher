@@ -15,10 +15,9 @@ const URL = "myetherwallet.com";
 
 
 class Runner {
-    constructor(_nameservers, _locationDb) {
+    constructor(_nameservers) {
         this.enableNameServerSet = true;
         this.nameservers = _nameservers || nameservers;
-        this.locationDb = _locationDb || locationDb;
         this.counter = 0;
         this.NS_CACHE = {};
         this.results = {timestamp: "", good: [], bad: []};
@@ -109,8 +108,8 @@ class Runner {
                             if (!self.isValidRecord(addresses)) {
                                 countryName = countries.getName(_ns[1], "en");
                                 self.addBad({ns: _ns[0], timestamp: new Date().toUTCString(), country: countryName});
-                                console.error("invalid record found", _ns, addresses);
-                                logger.error("invalid record found", _ns, addresses);
+                                // console.error("invalid record found", _ns, addresses);
+                                logger.error("invalid record found - nameserver details:", _ns,  ", resolved addresses: ", addresses);
                             } else {
                                 countryName = countries.getName(_ns[1], "en");
                                 self.addGood({ns: _ns[0], timestamp: new Date().toUTCString(), country: countryName});

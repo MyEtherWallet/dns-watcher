@@ -10,13 +10,7 @@ const request = require("request-promise-native");
 const Runner = require("./runner");
 const nameservers = require("./ns_all.json");
 const countryListing = require("./raw_lists/country_List");
-// const logger = require("./logger");
-
-const logger = {
-    error: console.error,
-    warn: console.info,
-    info: console.log
-}
+const logger = require("./logger");
 
 const runner = new Runner(nameservers);
 const app = express();
@@ -113,7 +107,7 @@ app.use(function(req, res, next) {
 
 // error handler
 app.use(function(err, req, res, next) {
-    if(!req.originalUrl.test(/favicon/)) logger.warn(`INVALID ROUTING ATTEMPT: {hostname: ${req.hostname}, ip: ${req.ip}, originalUrl: ${req.originalUrl}, error: ${err}}`);
+    if(!/favicon/.test(req.originalUrl)) logger.warn(`INVALID ROUTING ATTEMPT: {hostname: ${req.hostname}, ip: ${req.ip}, originalUrl: ${req.originalUrl}, error: ${err}}`);
     res.status(err.status || 500);
 });
 
