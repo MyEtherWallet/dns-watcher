@@ -2,7 +2,7 @@
   <tr v-show="shoulddisplay">
     <td v-if="good" class="status"><i class="fa fa-check" aria-hidden="true"></i></td>
     <td v-if="bad" class="status"><i class="fa fa-times" aria-hidden="true"></i></td>
-    <td>{{ip.ns}}</td>
+    <td>{{ip.ns}} <br> <small>name: {{ip.serverName}}</small></td>
     <td>{{ip.country}}</td>
     <td>{{ip.timestamp}}</td>
     <!--<td>{{index}}</td>-->

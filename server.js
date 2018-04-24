@@ -35,7 +35,10 @@ server.listen(port, () => {
     getAndParseDNSList()
         .then(next => {
             logger.info("Initial Run Start");
-            runner.run();
+            // runner.run();
+            setTimeout(() => {
+                runner.run();
+            }, 30000)
         })
         .catch(err => {
             logger.error(err);
@@ -118,24 +121,24 @@ emitter.on("end", (results) => {
     fs.writeFileSync(path.join(__dirname, process.env.DNS_RESULT_FILE), JSON.stringify(results), (error) => {
         if (error) {
             logger.error("Name server results save Failed. ", error);
-            resultBkup = clone(results);
+            // resultBkup = clone(results);
         } else {
             resultBkup = null;
         }
     });
     getAndParseDNSList()
         .then(next => {
-            //todo remove dev item
             setTimeout(() => {
                 runner.run();
             }, 100000)
-            // runner.run(); //todo uncomment after dev
         })
         .catch(err => {
             logger.error("Updating NameServer list failed", err);
             logger.error("Proceeding with existing nameserver list");
             logger.error("Restarting Run.");
-            runner.run();
+            setTimeout(() => {
+                runner.run();
+            }, 100000)
         })
 });
 
@@ -157,5 +160,6 @@ function getAndParseDNSList(){
                 }
             }
             runner.setNameservers(locations);
+            split = [];
         })
 }

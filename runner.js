@@ -63,6 +63,7 @@ class Runner {
     }
 
     setNameservers(_nameservers) {
+        console.log(_nameservers.length); //todo remove dev item
         if (this.enableNameServerSet) {
             this.nameservers = _nameservers;
         }
@@ -107,12 +108,13 @@ class Runner {
                             let countryName;
                             if (!self.isValidRecord(addresses)) {
                                 countryName = countries.getName(_ns[1], "en");
-                                self.addBad({ns: _ns[0], timestamp: new Date().toUTCString(), country: countryName});
+                                self.addBad({ns: _ns[0], timestamp: new Date().toUTCString(), country: countryName, serverName: _ns[1]});
                                 // console.error("invalid record found", _ns, addresses);
-                                logger.error("invalid record found - nameserver details:", _ns,  ", resolved addresses: ", addresses);
+                                logger.error("invalid record found: ");
+                                logger.error(" - nameserver details:", _ns,  ", resolved addresses: ", addresses);
                             } else {
                                 countryName = countries.getName(_ns[1], "en");
-                                self.addGood({ns: _ns[0], timestamp: new Date().toUTCString(), country: countryName});
+                                self.addGood({ns: _ns[0], timestamp: new Date().toUTCString(), country: countryName, serverName: _ns[1]});
                             }
                         }
                     })
