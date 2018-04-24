@@ -2,10 +2,10 @@
   "name": "dnsWatcher",
   "version": "0.0.1",
   "scripts": {
-    "prestart": "cd ./MewChecker && npm run build",
+    "prestart": "npm run --prefix ./MewChecker build",
     "start": "node server.js",
-    "postinstall": "cd ./MewChecker && npm install",
-    "build": "cd ./MewChecker && npm run build"
+    "postinstall": "npm run --prefix ./MewChecker install",
+    "build": "npm run --prefix ./MewChecker build"
   },
   "dependencies": {
     "cli-progress": "^1.8.0",
