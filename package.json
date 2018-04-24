@@ -4,7 +4,7 @@
   "scripts": {
     "prestart": "npm run --prefix ./MewChecker build",
     "start": "node server.js",
-    "postinstall": "npm --prefix ./MewChecker install",
+    "postinstall": "npm --prefix ./MewChecker install ./MewChecker",
     "build": "npm run --prefix ./MewChecker build"
   },
   "dependencies": {
