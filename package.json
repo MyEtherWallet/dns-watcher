@@ -5,6 +5,7 @@
     "prestart": "cd ./MewChecker && npm run build",
     "start": "node server.js",
     "postinstall": "cd ./MewChecker && npm install",
+    "heroku-prebuild": "npm install",
     "build": "cd ./MewChecker && npm run build"
   },
   "dependencies": {
