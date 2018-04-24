@@ -65,7 +65,7 @@ class Runner {
     setNameservers(_nameservers) {
         console.log(_nameservers.length); //todo remove dev item
         if (this.enableNameServerSet) {
-            self.nameservers = _nameservers;
+            this.nameservers = _nameservers;
         }
 
     }
