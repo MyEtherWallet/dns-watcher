@@ -18,5 +18,8 @@
     "request-promise-native": "^1.0.5",
     "vue-multiselect": "^2.1.0",
     "winston": "^2.4.1"
+  },
+  "engines": {
+    "node": "9.0.0"
   }
 }
