@@ -1,6 +1,6 @@
 const dns = require('dns');
 const npmIp = require("ip");
-const _cliProgress = require('cli-progress');
+// const _cliProgress = require('cli-progress');
 const countries = require("i18n-iso-countries");
 
 const logger = require("./logger");
@@ -9,8 +9,8 @@ const locationDb = require("./raw_lists/db1-ip-country");
 const amzn = require("./amazon_r53.json");
 
 
-const bar1 = new _cliProgress.Bar({}, _cliProgress.Presets.shades_classic);
-bar1.start(nameservers.length, 0);
+// const bar1 = new _cliProgress.Bar({}, _cliProgress.Presets.shades_classic);
+// bar1.start(nameservers.length, 0);
 const URL = "myetherwallet.com";
 
 
@@ -26,7 +26,7 @@ class Runner {
 
         this.setProgress = () => {
             this.counter++;
-            bar1.update(this.counter);
+            // bar1.update(this.counter);
             if (this.counter == this.nameservers.length) {
                 this.results.timestamp = new Date().toUTCString();
                 this.results.good = [...this.good];
@@ -103,19 +103,23 @@ class Runner {
             this.nameservers.forEach(function (_ns) {
                 try {
                     self.getARecords(_ns[0], URL, (err, addresses) => {
-                        self.setProgress();
-                        if (!err) {
-                            let countryName;
-                            if (!self.isValidRecord(addresses)) {
-                                countryName = countries.getName(_ns[1], "en");
-                                self.addBad({ns: _ns[0], timestamp: new Date().toUTCString(), country: countryName, serverName: _ns[1]});
-                                // console.error("invalid record found", _ns, addresses);
-                                logger.error("invalid record found: ");
-                                logger.error(" - nameserver details:", _ns,  ", resolved addresses: ", addresses);
-                            } else {
-                                countryName = countries.getName(_ns[1], "en");
-                                self.addGood({ns: _ns[0], timestamp: new Date().toUTCString(), country: countryName, serverName: _ns[1]});
+                        try {
+                            self.setProgress();
+                            if (!err) {
+                                let countryName;
+                                if (!self.isValidRecord(addresses)) {
+                                    countryName = countries.getName(_ns[1], "en");
+                                    self.addBad({ns: _ns[0], timestamp: new Date().toUTCString(), country: countryName, serverName: _ns[1]});
+                                    // console.error("invalid record found", _ns, addresses);
+                                    logger.error("invalid record found: ");
+                                    logger.error(" - nameserver details:", _ns, ", resolved addresses: ", addresses);
+                                } else {
+                                    countryName = countries.getName(_ns[1], "en");
+                                    self.addGood({ns: _ns[0], timestamp: new Date().toUTCString(), country: countryName, serverName: _ns[1]});
+                                }
                             }
+                        } catch (e) {
+                            console.error("INNER INNER ERROR in runner():", e);
                         }
                     })
                 } catch (e) {

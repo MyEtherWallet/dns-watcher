@@ -34,9 +34,10 @@ server.listen(port, () => {
     console.log(`Server Listening on Port ${port}`);
     getAndParseDNSList()
         .then(next => {
-            logger.info("Initial Run Start");
             // runner.run();
             setTimeout(() => {
+                logger.info("Initial Run Start");
+
                 runner.run();
             }, 30000)
         })
