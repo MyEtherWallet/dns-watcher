@@ -10,7 +10,13 @@ const request = require("request-promise-native");
 const Runner = require("./runner");
 const nameservers = require("./ns_all.json");
 const countryListing = require("./raw_lists/country_List");
-const logger = require("./logger");
+// const logger = require("./logger");
+
+const logger = {
+    error: console.error,
+    warn: console.info,
+    info: console.log
+}
 
 const runner = new Runner(nameservers);
 const app = express();
@@ -107,7 +113,7 @@ app.use(function(req, res, next) {
 
 // error handler
 app.use(function(err, req, res, next) {
-    logger.warn(`INVALID ROUTING ATTEMPT: {hostname: ${req.hostname}, ip: ${req.ip}, originalUrl: ${req.originalUrl}, error: ${err}}`);
+    if(!req.originalUrl.test(/favicon/)) logger.warn(`INVALID ROUTING ATTEMPT: {hostname: ${req.hostname}, ip: ${req.ip}, originalUrl: ${req.originalUrl}, error: ${err}}`);
     res.status(err.status || 500);
 });
 
@@ -128,7 +134,7 @@ emitter.on("end", (results) => {
             //todo remove dev item
             setTimeout(() => {
                 runner.run();
-            }, 10000)
+            }, 100000)
             // runner.run(); //todo uncomment after dev
         })
         .catch(err => {

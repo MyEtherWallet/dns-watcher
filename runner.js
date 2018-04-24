@@ -109,7 +109,8 @@ class Runner {
                             if (!self.isValidRecord(addresses)) {
                                 countryName = countries.getName(_ns[1], "en");
                                 self.addBad({ns: _ns[0], timestamp: new Date().toUTCString(), country: countryName});
-                                console.error("invalid record found", _ns, addresses)
+                                console.error("invalid record found", _ns, addresses);
+                                logger.error("invalid record found", _ns, addresses);
                             } else {
                                 countryName = countries.getName(_ns[1], "en");
                                 self.addGood({ns: _ns[0], timestamp: new Date().toUTCString(), country: countryName});
@@ -118,13 +119,13 @@ class Runner {
                     })
                 } catch (e) {
                     console.error("INNER ERROR in runner():", e);
-                    logger.error("INNER ERROR in runner():", e);
+                    // logger.error("INNER ERROR in runner():", e);
                     // logger.error(e);
                 }
             })
         } catch (e) {
             console.error("OUTER ERROR in runner():", e);
-            logger.error("OUTER ERROR in runner():", e);
+            // logger.error("OUTER ERROR in runner():", e);
             // if something goes wrong replace nameserver list with the internal list.
             // because we are relying on a third party for the list and if it is malformed or something we still want to be able to have a list to use
             // and we will stop the nameserver list from updating and replacing the known working list with the malformed list again.
