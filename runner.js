@@ -71,7 +71,7 @@ class Runner {
 
 
     getARecords(_nameServer, _url, cb) {
-        console.log(_nameServer, _url, cb);
+        console.log(_nameServer, _url);
         let resolver = new dns.Resolver();
         resolver.setServers([_nameServer]);
         resolver.resolve(_url, 'A', (err, addresses) => {
