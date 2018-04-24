@@ -65,14 +65,14 @@ class Runner {
     setNameservers(_nameservers) {
         console.log(_nameservers.length); //todo remove dev item
         if (this.enableNameServerSet) {
-            this.nameservers = _nameservers;
+            self.nameservers = _nameservers;
         }
 
     }
 
 
     getARecords(_nameServer, _url, cb) {
-        console.log(_nameServer, _url);
+        // console.log("---", _nameServer, _url); //todo remove dev item
         let resolver = new dns.Resolver();
         resolver.setServers([_nameServer]);
         resolver.resolve(_url, 'A', (err, addresses) => {
@@ -85,8 +85,8 @@ class Runner {
             let addr = addresses[i];
             if (!this.NS_CACHE[addr]) {
                 let ipValid = false;
-                for (let j = 0; j < amzn.length; j++) {
-                    if (npmIp.cidrSubnet(amzn[j].ip_prefix).contains(addr)) {
+                for (let j = 0; j < this.amzn.length; j++) {
+                    if (npmIp.cidrSubnet(this.amzn[j].ip_prefix).contains(addr)) {
                         this.NS_CACHE[addr] = true;
                         ipValid = true;
                         break;
@@ -101,8 +101,10 @@ class Runner {
     runner() {
         let self = this;
         try {
+            // console.log(this.nameservers); //todo remove dev item
             this.nameservers.forEach(function (_ns) {
                 try {
+                    // console.log(_ns); //todo remove dev item
                     self.getARecords(_ns[0], URL, (err, addresses) => {
                         try {
                             self.setProgress();
@@ -110,7 +112,7 @@ class Runner {
                                 let countryName;
                                 if (!self.isValidRecord(addresses)) {
                                     countryName = countries.getName(_ns[1], "en");
-                                    console.log(_ns[0], _ns[1]);
+                                    // console.log(_ns[0], _ns[1]); //todo remove dev item
                                     self.addBad({ns: _ns[0], timestamp: new Date().toUTCString(), country: countryName, serverName: _ns[1]});
                                     // console.error("invalid record found", _ns, addresses);
                                     logger.error("invalid record found: ");
@@ -137,7 +139,7 @@ class Runner {
             // because we are relying on a third party for the list and if it is malformed or something we still want to be able to have a list to use
             // and we will stop the nameserver list from updating and replacing the known working list with the malformed list again.
 
-            this.enableNameServerSet = false;
+            self.enableNameServerSet = false;
             // this.setNameservers(nameservers);
             // this.run();
         }

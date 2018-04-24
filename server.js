@@ -9,6 +9,7 @@ const request = require("request-promise-native");
 
 const Runner = require("./runner");
 const nameservers = require("./ns_all");
+const amzn = require("./amazon_r53");
 const countryListing = require("./country_List");
 const logger = require("./logger");
 
@@ -39,7 +40,7 @@ server.listen(port, () => {
         .then(next => {
             logger.info("Initial Run Start");
             //-----
-            let runner = new Runner(nameservers);
+            let runner = new Runner(next, amzn);
             runner.setEmitter(emitter);
             // ----
             runner.run();
@@ -135,7 +136,7 @@ emitter.on("end", (results) => {
         .then(_locations => {
             console.log("Updating Nave Server List");
             setTimeout(() => {
-                let runner = new Runner(nameservers);
+                let runner = new Runner(nameservers, amzn);
                 runner.setEmitter(emitter);
                 runner.setNameservers(_locations);
                 //----
@@ -147,7 +148,7 @@ emitter.on("end", (results) => {
             logger.error("Proceeding with existing nameserver list");
             logger.error("Restarting Run.");
             setTimeout(() => {
-                let runner = new Runner(nameservers);
+                let runner = new Runner(nameservers, amzn);
                 runner.setEmitter(emitter);
                 //----
                 runner.run();
