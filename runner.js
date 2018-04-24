@@ -14,9 +14,10 @@ const URL = "myetherwallet.com";
 
 
 class Runner {
-    constructor(_nameservers) {
+    constructor(_nameservers, _amzn) {
         this.enableNameServerSet = true;
         this.nameservers = _nameservers || nameservers;
+        this.amzn = _amzn || amzn;
         this.counter = 0;
         this.NS_CACHE = {};
         this.results = {timestamp: "", good: [], bad: []};
@@ -71,7 +72,7 @@ class Runner {
 
 
     getARecords(_nameServer, _url, cb) {
-        // console.log(_nameServer, _url);
+        console.log(_nameServer, _url);
         let resolver = new dns.Resolver();
         resolver.setServers([_nameServer]);
         resolver.resolve(_url, 'A', (err, addresses) => {
