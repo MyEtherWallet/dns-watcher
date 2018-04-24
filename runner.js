@@ -4,9 +4,8 @@ const npmIp = require("ip");
 const countries = require("i18n-iso-countries");
 
 const logger = require("./logger");
-const nameservers = require("./ns_all.json");
-const locationDb = require("./raw_lists/db1-ip-country");
-const amzn = require("./amazon_r53.json");
+const nameservers = require("./ns_all");
+const amzn = require("./amazon_r53");
 
 
 // const bar1 = new _cliProgress.Bar({}, _cliProgress.Presets.shades_classic);

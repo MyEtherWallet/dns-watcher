@@ -8,8 +8,8 @@ const clone = require("clone");
 const request = require("request-promise-native");
 
 const Runner = require("./runner");
-const nameservers = require("./ns_all.json");
-const countryListing = require("./raw_lists/country_List");
+const nameservers = require("./ns_all");
+const countryListing = require("./country_List");
 const logger = require("./logger");
 
 const runner = new Runner(nameservers);
@@ -19,7 +19,10 @@ const emitter = new events.EventEmitter();
 const DNS_LIST_URL = process.env.DNS_LIST_URL || "https://public-dns.info/nameservers.csv";
 runner.setEmitter(emitter);
 
-let resultBkup;
+// //todo remove dev item
+// const v8 = require('v8');
+// v8.setFlagsFromString('--trace_gc --print_cumulative_gc_stat');
+// setTimeout(function() { v8.setFlagsFromString('--notrace_gc'); }, 60e3);
 
 const options = {
     key: fs.readFileSync(path.join(__dirname, process.env.HTTPS_KEY_FILE)),
@@ -34,12 +37,12 @@ server.listen(port, () => {
     console.log(`Server Listening on Port ${port}`);
     getAndParseDNSList()
         .then(next => {
+            logger.info("Initial Run Start");
+            runner.run();
+            // setTimeout(() => {
+            // logger.info("Initial Run Start");
             // runner.run();
-            setTimeout(() => {
-                logger.info("Initial Run Start");
-
-                runner.run();
-            }, 30000)
+            // }, 30000)
         })
         .catch(err => {
             logger.error(err);
@@ -122,9 +125,6 @@ emitter.on("end", (results) => {
     fs.writeFileSync(path.join(__dirname, process.env.DNS_RESULT_FILE), JSON.stringify(results), (error) => {
         if (error) {
             logger.error("Name server results save Failed. ", error);
-            // resultBkup = clone(results);
-        } else {
-            resultBkup = null;
         }
     });
     getAndParseDNSList()
