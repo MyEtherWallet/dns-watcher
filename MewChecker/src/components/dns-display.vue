@@ -5,7 +5,7 @@
     <td>{{ip.ns}}</td>
     <td>{{ip.country}}</td>
     <td>{{ip.timestamp}}</td>
-    <td>{{index}}</td>
+    <!--<td>{{index}}</td>-->
   </tr>
 </template>
 
