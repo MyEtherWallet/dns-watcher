@@ -129,6 +129,7 @@ emitter.on("end", (results) => {
     });
     getAndParseDNSList()
         .then(next => {
+            console.log("Updating Nave Server List");
             setTimeout(() => {
                 runner.run();
             }, 100000)
