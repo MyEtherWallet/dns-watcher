@@ -2,7 +2,7 @@
   "name": "dnsWatcher",
   "version": "0.0.1",
   "scripts": {
-    "prestart": "cd ./MewChecker && npm run build",
+    "predevStart": "cd ./MewChecker && npm run build",
     "start": "node server.js",
     "postinstall": "cd ./MewChecker && npm install",
     "build": "cd ./MewChecker && npm run build"
