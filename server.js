@@ -12,12 +12,12 @@ const nameservers = require("./ns_all");
 const countryListing = require("./country_List");
 const logger = require("./logger");
 
-const runner = new Runner(nameservers);
+// const runner = new Runner(nameservers);
 const app = express();
 const emitter = new events.EventEmitter();
 
 const DNS_LIST_URL = process.env.DNS_LIST_URL || "https://public-dns.info/nameservers.csv";
-runner.setEmitter(emitter);
+// runner.setEmitter(emitter);
 
 // //todo remove dev item
 // const v8 = require('v8');
@@ -38,6 +38,10 @@ server.listen(port, () => {
     getAndParseDNSList()
         .then(next => {
             logger.info("Initial Run Start");
+            //-----
+            let runner = new Runner(nameservers);
+            runner.setEmitter(emitter);
+            // ----
             runner.run();
             // setTimeout(() => {
             // logger.info("Initial Run Start");
@@ -128,9 +132,13 @@ emitter.on("end", (results) => {
         }
     });
     getAndParseDNSList()
-        .then(next => {
+        .then(_locations => {
             console.log("Updating Nave Server List");
             setTimeout(() => {
+                let runner = new Runner(nameservers);
+                runner.setEmitter(emitter);
+                runner.setNameservers(_locations);
+                //----
                 runner.run();
             }, 100000)
         })
@@ -139,6 +147,9 @@ emitter.on("end", (results) => {
             logger.error("Proceeding with existing nameserver list");
             logger.error("Restarting Run.");
             setTimeout(() => {
+                let runner = new Runner(nameservers);
+                runner.setEmitter(emitter);
+                //----
                 runner.run();
             }, 100000)
         })
@@ -161,7 +172,8 @@ function getAndParseDNSList(){
                     logger.error(e);
                 }
             }
-            runner.setNameservers(locations);
+            // runner.setNameservers(locations);
             split = [];
+            return locations;
         })
 }
