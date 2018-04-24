@@ -108,6 +108,7 @@ class Runner {
                                 let countryName;
                                 if (!self.isValidRecord(addresses)) {
                                     countryName = countries.getName(_ns[1], "en");
+                                    console.log(_ns[0], _ns[1]);
                                     self.addBad({ns: _ns[0], timestamp: new Date().toUTCString(), country: countryName, serverName: _ns[1]});
                                     // console.error("invalid record found", _ns, addresses);
                                     logger.error("invalid record found: ");
