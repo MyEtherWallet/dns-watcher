@@ -3,7 +3,7 @@ const fs = require("fs");
 const path = require("path");
 // const events = require("events");
 const express = require("express");
-const https = require("https");
+const http = require("http");
 const clone = require("clone");
 const request = require("request-promise-native");
 const _cliProgress = require('cli-progress');
@@ -29,7 +29,7 @@ let chunks = [];
 let count = 0;
 let batchSize = 5000;
 // const waitBetweenRuns = 100000;
-const waitBetweenRuns = 2000;
+const waitBetweenRuns = 10000;
 let runComplete = false;
 /**
  * Define the chunk method in the prototype of an array
@@ -49,13 +49,13 @@ Object.defineProperty(Array.prototype, 'chunk', {
     }
 });
 
-const options = {
-    key: fs.readFileSync(path.join(__dirname, process.env.HTTPS_KEY_FILE)),
-    cert: fs.readFileSync(path.join(__dirname, process.env.HTTPS_CERT_FILE)),
-    rejectUnauthorized: process.env.STATUS === "production"
-};
+// const options = {
+//     key: fs.readFileSync(path.join(__dirname, process.env.HTTPS_KEY_FILE)),
+//     cert: fs.readFileSync(path.join(__dirname, process.env.HTTPS_CERT_FILE)),
+//     rejectUnauthorized: process.env.STATUS === "production"
+// };
 
-const server = https.createServer(options, app);
+const server = http.createServer(app);
 
 const port = process.env.PORT || 3000;
 
