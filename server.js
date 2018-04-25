@@ -201,12 +201,14 @@ runner.on("nextBatch", () => {
             // count += 10;
         } else {
             runner.emit("sendResults");
+            runComplete = true;
         }
         // likely hung up or some responses were lost. wait a second then send results and wait for restart
         if (count > parseInt(batchLength * 0.98) && !endRunCountDown) {
             endRunCountDown = true;
             setTimeout(() => {
                 count = locations.length * 3;
+                runComplete = true;
                 runner.emit("sendResults");
             }, 1000)
         }
