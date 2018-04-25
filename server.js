@@ -13,12 +13,16 @@ const amzn = require("./amazon_r53");
 const countryListing = require("./country_List");
 const logger = require("./logger");
 
-const runner = new Runner(nameservers, amzn);
+const runOptions = {
+    batchSize: 5000,
+waitBetweenRuns: 10000 //100000
+};
+// const runner = new Runner(nameservers, amzn, runOptions);
 const app = express();
 const emitter = new events.EventEmitter();
 
 const DNS_LIST_URL = process.env.DNS_LIST_URL || "https://public-dns.info/nameservers.csv";
-runner.setEmitter(emitter);
+// runner.setEmitter(emitter);
 
 // //todo remove dev item
 // const v8 = require('v8');
@@ -36,19 +40,45 @@ const server = https.createServer(options, app);
 const port = process.env.PORT || 3000;
 server.listen(port, () => {
     console.log(`Server Listening on Port ${port}`);
-    getAndParseDNSList()
-        .then(next => {
-            logger.info("Initial Run Start");
-            runner.run();
-            // setTimeout(() => {
-            // logger.info("Initial Run Start");
-            // runner.run();
-            // }, 30000)
+    request(DNS_LIST_URL)
+        .then(function(result){
+            let locations = [];
+            let split = result.split("\n");
+            logger.info("Updating NameServer list. Restarting Run.");
+            for (let i = 1; i < split.length; i++) {
+                try {
+                    let row = split[i].replace("\r", "").split(",");
+                    if(row.length >= 8) locations.push([row[0], row[2], row[1]]);
+
+                } catch (e) {
+                    logger.error(e);
+                }
+            }
+            // runner.setNameservers(locations);
+            split = [];
+            emitter.emit("startRun", locations);
+            // return locations;
         })
+        // .then(_nameservers => {
+        //     logger.info("Initial Run Start");
+        //     emitter.emit("startRun", _nameservers);
+        //     // runner.run(_nameservers);
+        //     // setTimeout(() => {
+        //     // logger.info("Initial Run Start");
+        //     // runner.run();
+        //     // }, 30000)
+        // })
         .catch(err => {
             logger.error(err);
         })
 
+});
+
+
+emitter.on("startRun", function(_nameServers){
+    let runner = new Runner(nameservers, amzn, runOptions);
+    runner.setEmitter(emitter);
+    runner.run(_nameServers);
 });
 
 
@@ -128,27 +158,8 @@ emitter.on("end", (results) => {
             logger.error("Name server results save Failed. ", error);
         }
     });
-    getAndParseDNSList()
-        .then(next => {
-            setTimeout(() => {
-                runner.run();
-            }, 100000)
-        })
-        .catch(err => {
-            logger.error("Updating NameServer list failed", err);
-            logger.error("Proceeding with existing nameserver list");
-            logger.error("Restarting Run.");
-            setTimeout(() => {
-                runner.run();
-            }, 100000)
-        })
-});
-
-
-
-function getAndParseDNSList(){
-   return request(DNS_LIST_URL)
-        .then(result => {
+    request(DNS_LIST_URL)
+        .then(function(result){
             let locations = [];
             let split = result.split("\n");
             logger.info("Updating NameServer list. Restarting Run.");
@@ -161,7 +172,49 @@ function getAndParseDNSList(){
                     logger.error(e);
                 }
             }
-            runner.setNameservers(locations);
+            // runner.setNameservers(locations);
             split = [];
+            return locations;
+        })
+        .then(_nameServers => {
+            setTimeout(() => {
+                let runner = new Runner(nameservers, amzn, runOptions);
+                runner.setEmitter(emitter);
+                runner.run(_nameServers);
+            }, 100000)
+        })
+        .catch(err => {
+            logger.error("Updating NameServer list failed", err);
+            logger.error("Proceeding with existing nameserver list");
+            logger.error("Restarting Run.");
+            setTimeout(() => {
+                let runner = new Runner(nameservers, amzn, runOptions);
+                runner.setEmitter(emitter);
+                runner.run();
+            }, 100000)
+        })
+});
+
+
+
+function getAndParseDNSList(){
+   return request(DNS_LIST_URL)
+        .then(function(result){
+            let locations = [];
+            let split = result.split("\n");
+            logger.info("Updating NameServer list. Restarting Run.");
+            for (let i = 1; i < split.length; i++) {
+                try {
+                    let row = split[i].replace("\r", "").split(",");
+                    if(row.length >= 8) locations.push([row[0], row[2], row[1]]);
+
+                } catch (e) {
+                    logger.error(e);
+                }
+            }
+            // runner.setNameservers(locations);
+            split = [];
+            emitter.emit("startRun", locations);
+            return locations;
         })
 }
