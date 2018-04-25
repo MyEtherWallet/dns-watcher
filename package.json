@@ -16,6 +16,7 @@
     "ip": "^1.1.5",
     "request": "^2.85.0",
     "request-promise-native": "^1.0.5",
+    "v8-profiler": "^5.7.0",
     "vue-multiselect": "^2.1.0",
     "winston": "^2.4.1"
   },
