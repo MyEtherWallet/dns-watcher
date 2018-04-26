@@ -4,7 +4,6 @@ const _cliProgress = require('cli-progress');
 const countries = require("i18n-iso-countries");
 
 const nameservers = require("./ns_all.json");
-const locationDb = require("./raw_lists/db1-ip-country");
 const amzn = require("./amazon_r53.json");
 
 
@@ -17,7 +16,6 @@ class Runner {
     constructor(_nameservers, _locationDb) {
         this.enableNameServerSet = true;
         this.nameservers = _nameservers || nameservers;
-        this.locationDb = _locationDb || locationDb;
         this.counter = 0;
         this.NS_CACHE = {};
         this.results = {timestamp: "", good: [], bad: []};

@@ -9,7 +9,7 @@ const request = require("request-promise-native");
 
 const Runner = require("./runner");
 const nameservers = require("./ns_all.json");
-const countryListing = require("./raw_lists/country_List");
+const countryListing = require("./country_List.json");
 
 const logger = require("./logger").verbose;
 const serverErrorLogger = require("./logger").serverErrors;

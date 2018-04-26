@@ -1,9 +1,0 @@
-
-
-LOOK AT unref() [regarding setTimeout and related]
-
-  // Ensure this won't keep a node process open.
-  if (this.mining_interval_timeout && this.mining_interval_timeout.unref) {
-    this.mining_interval_timeout.unref();
-  }
-};
