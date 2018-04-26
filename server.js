@@ -8,22 +8,18 @@ const clone = require("clone");
 const request = require("request-promise-native");
 
 const Runner = require("./runner");
-const nameservers = require("./ns_all");
-const amzn = require("./amazon_r53");
-const countryListing = require("./country_List");
-const logger = require("./logger");
+const nameservers = require("./ns_all.json");
+const countryListing = require("./raw_lists/country_List");
+const logger = require("./logger").verbose;
 
-const runner = new Runner(nameservers, amzn);
+const runner = new Runner(nameservers);
 const app = express();
 const emitter = new events.EventEmitter();
 
 const DNS_LIST_URL = process.env.DNS_LIST_URL || "https://public-dns.info/nameservers.csv";
 runner.setEmitter(emitter);
 
-// //todo remove dev item
-// const v8 = require('v8');
-// v8.setFlagsFromString('--trace_gc --print_cumulative_gc_stat');
-// setTimeout(function() { v8.setFlagsFromString('--notrace_gc'); }, 60e3);
+let resultBkup;
 
 const options = {
     key: fs.readFileSync(path.join(__dirname, process.env.HTTPS_KEY_FILE)),
@@ -40,15 +36,10 @@ server.listen(port, () => {
         .then(next => {
             logger.info("Initial Run Start");
             runner.run();
-            // setTimeout(() => {
-            // logger.info("Initial Run Start");
-            // runner.run();
-            // }, 30000)
         })
         .catch(err => {
             logger.error(err);
         })
-
 });
 
 
@@ -115,7 +106,7 @@ app.use(function(req, res, next) {
 
 // error handler
 app.use(function(err, req, res, next) {
-    if(!/favicon/.test(req.originalUrl)) logger.warn(`INVALID ROUTING ATTEMPT: {hostname: ${req.hostname}, ip: ${req.ip}, originalUrl: ${req.originalUrl}, error: ${err}}`);
+    if(!req.originalUrl.test(/favicon/)) logger.warn(`INVALID ROUTING ATTEMPT: {hostname: ${req.hostname}, ip: ${req.ip}, originalUrl: ${req.originalUrl}, error: ${err}}`);
     res.status(err.status || 500);
 });
 
@@ -126,21 +117,24 @@ emitter.on("end", (results) => {
     fs.writeFileSync(path.join(__dirname, process.env.DNS_RESULT_FILE), JSON.stringify(results), (error) => {
         if (error) {
             logger.error("Name server results save Failed. ", error);
+            resultBkup = clone(results);
+        } else {
+            resultBkup = null;
         }
     });
     getAndParseDNSList()
         .then(next => {
+            //todo remove dev item
             setTimeout(() => {
                 runner.run();
             }, 100000)
+            // runner.run(); //todo uncomment after dev
         })
         .catch(err => {
             logger.error("Updating NameServer list failed", err);
             logger.error("Proceeding with existing nameserver list");
             logger.error("Restarting Run.");
-            setTimeout(() => {
-                runner.run();
-            }, 100000)
+            runner.run();
         })
 });
 
@@ -162,6 +156,5 @@ function getAndParseDNSList(){
                 }
             }
             runner.setNameservers(locations);
-            split = [];
         })
 }

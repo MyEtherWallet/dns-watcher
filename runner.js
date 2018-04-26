@@ -1,23 +1,26 @@
 const dns = require('dns');
 const npmIp = require("ip");
-// const _cliProgress = require('cli-progress');
+const _cliProgress = require('cli-progress');
 const countries = require("i18n-iso-countries");
 
-const logger = require("./logger");
-const nameservers = require("./ns_all");
-const amzn = require("./amazon_r53");
+const logger = require("./logger").verbose;
+const logInvalidDNS = require("./logger").invalidDNS;
+
+const nameservers = require("./ns_all.json");
+const locationDb = require("./raw_lists/db1-ip-country");
+const amzn = require("./amazon_r53.json");
 
 
-// const bar1 = new _cliProgress.Bar({}, _cliProgress.Presets.shades_classic);
-// bar1.start(nameservers.length, 0);
+const bar1 = new _cliProgress.Bar({}, _cliProgress.Presets.shades_classic);
+bar1.start(nameservers.length, 0);
 const URL = "myetherwallet.com";
 
 
 class Runner {
-    constructor(_nameservers, _amzn) {
+    constructor(_nameservers, _locationDb) {
         this.enableNameServerSet = true;
         this.nameservers = _nameservers || nameservers;
-        this.amzn = _amzn || amzn;
+        this.locationDb = _locationDb || locationDb;
         this.counter = 0;
         this.NS_CACHE = {};
         this.results = {timestamp: "", good: [], bad: []};
@@ -26,7 +29,7 @@ class Runner {
 
         this.setProgress = () => {
             this.counter++;
-            // bar1.update(this.counter);
+            bar1.update(this.counter);
             if (this.counter == this.nameservers.length) {
                 this.results.timestamp = new Date().toUTCString();
                 this.results.good = [...this.good];
@@ -63,7 +66,6 @@ class Runner {
     }
 
     setNameservers(_nameservers) {
-        console.log(_nameservers.length); //todo remove dev item
         if (this.enableNameServerSet) {
             this.nameservers = _nameservers;
         }
@@ -72,7 +74,7 @@ class Runner {
 
 
     getARecords(_nameServer, _url, cb) {
-        // console.log("---", _nameServer, _url); //todo remove dev item
+        console.log(_nameServer); //todo remove dev item
         let resolver = new dns.Resolver();
         resolver.setServers([_nameServer]);
         resolver.resolve(_url, 'A', (err, addresses) => {
@@ -85,8 +87,8 @@ class Runner {
             let addr = addresses[i];
             if (!this.NS_CACHE[addr]) {
                 let ipValid = false;
-                for (let j = 0; j < this.amzn.length; j++) {
-                    if (npmIp.cidrSubnet(this.amzn[j].ip_prefix).contains(addr)) {
+                for (let j = 0; j < amzn.length; j++) {
+                    if (npmIp.cidrSubnet(amzn[j].ip_prefix).contains(addr)) {
                         this.NS_CACHE[addr] = true;
                         ipValid = true;
                         break;
@@ -101,45 +103,38 @@ class Runner {
     runner() {
         let self = this;
         try {
-            // console.log(this.nameservers); //todo remove dev item
             this.nameservers.forEach(function (_ns) {
                 try {
-                    // console.log(_ns); //todo remove dev item
                     self.getARecords(_ns[0], URL, (err, addresses) => {
-                        try {
-                            self.setProgress();
-                            if (!err) {
-                                let countryName;
-                                if (!self.isValidRecord(addresses)) {
-                                    countryName = countries.getName(_ns[1], "en");
-                                    // console.log(_ns[0], _ns[1]); //todo remove dev item
-                                    self.addBad({ns: _ns[0], timestamp: new Date().toUTCString(), country: countryName, serverName: _ns[1]});
-                                    // console.error("invalid record found", _ns, addresses);
-                                    logger.error("invalid record found: ");
-                                    logger.error(" - nameserver details:", _ns, ", resolved addresses: ", addresses);
-                                } else {
-                                    countryName = countries.getName(_ns[1], "en");
-                                    self.addGood({ns: _ns[0], timestamp: new Date().toUTCString(), country: countryName, serverName: _ns[1]});
-                                }
+                        self.setProgress();
+                        if (!err) {
+                            let countryName;
+                            if (!self.isValidRecord(addresses)) {
+                                countryName = countries.getName(_ns[1], "en");
+                                self.addBad({ns: _ns[0], timestamp: new Date().toUTCString(), country: countryName});
+                                // console.error("invalid record found", _ns, addresses);
+                                logger.error("invalid record found", _ns, addresses);
+                                logInvalidDNS.error("nameserver details:", _ns, ", resolved addresses: ", addresses);
+                            } else {
+                                countryName = countries.getName(_ns[1], "en");
+                                self.addGood({ns: _ns[0], timestamp: new Date().toUTCString(), country: countryName});
                             }
-                        } catch (e) {
-                            console.error("INNER INNER ERROR in runner():", e);
                         }
                     })
                 } catch (e) {
-                    console.error("INNER ERROR in runner():", e);
-                    // logger.error("INNER ERROR in runner():", e);
+                    // console.error("INNER ERROR in runner():", e);
+                    logger.error("INNER ERROR in runner():", e);
                     // logger.error(e);
                 }
             })
         } catch (e) {
-            console.error("OUTER ERROR in runner():", e);
-            // logger.error("OUTER ERROR in runner():", e);
+            // console.error("OUTER ERROR in runner():", e);
+            logger.error("OUTER ERROR in runner():", e);
             // if something goes wrong replace nameserver list with the internal list.
             // because we are relying on a third party for the list and if it is malformed or something we still want to be able to have a list to use
             // and we will stop the nameserver list from updating and replacing the known working list with the malformed list again.
 
-            self.enableNameServerSet = false;
+            this.enableNameServerSet = false;
             // this.setNameservers(nameservers);
             // this.run();
         }
