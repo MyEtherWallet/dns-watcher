@@ -3,9 +3,6 @@ const npmIp = require("ip");
 const _cliProgress = require('cli-progress');
 const countries = require("i18n-iso-countries");
 
-const logger = require("./logger").verbose;
-const logInvalidDNS = require("./logger").invalidDNS;
-
 const nameservers = require("./ns_all.json");
 const locationDb = require("./raw_lists/db1-ip-country");
 const amzn = require("./amazon_r53.json");
@@ -48,8 +45,7 @@ class Runner {
             this.results = {timestamp: "", good: [], bad: []};
             this.runner();
         } catch (e) {
-            logger.error(e);
-            this.emitter.emit("error");
+            this.emitter ? this.emitter.emit("error", ` ERROR in run(): ${e}`) : console.error(e);
         }
     }
 
@@ -74,7 +70,6 @@ class Runner {
 
 
     getARecords(_nameServer, _url, cb) {
-        console.log(_nameServer); //todo remove dev item
         let resolver = new dns.Resolver();
         resolver.setServers([_nameServer]);
         resolver.resolve(_url, 'A', (err, addresses) => {
@@ -113,8 +108,9 @@ class Runner {
                                 countryName = countries.getName(_ns[1], "en");
                                 self.addBad({ns: _ns[0], timestamp: new Date().toUTCString(), country: countryName});
                                 // console.error("invalid record found", _ns, addresses);
-                                logger.error("invalid record found", _ns, addresses);
-                                logInvalidDNS.error("nameserver details:", _ns, ", resolved addresses: ", addresses);
+                                let invalidDetails = " NameServer Details:" +  _ns.join(", ") + ", Resolved Addresses: " + addresses.join(", ");
+                                self.emitter ?  self.emitter.emit("invalidDNS", invalidDetails) : console.error(invalidDetails);
+
                             } else {
                                 countryName = countries.getName(_ns[1], "en");
                                 self.addGood({ns: _ns[0], timestamp: new Date().toUTCString(), country: countryName});
@@ -122,19 +118,17 @@ class Runner {
                         }
                     })
                 } catch (e) {
-                    // console.error("INNER ERROR in runner():", e);
-                    logger.error("INNER ERROR in runner():", e);
+                    this.emitter ? this.emitter.emit("error", `INNER ERROR in runner(): ${e}`): console.error(e);
                     // logger.error(e);
                 }
             })
         } catch (e) {
-            // console.error("OUTER ERROR in runner():", e);
-            logger.error("OUTER ERROR in runner():", e);
+            this.emitter ? this.emitter.emit("error",`OUTER ERROR in runner(): ${e}`) : console.error(e);
             // if something goes wrong replace nameserver list with the internal list.
             // because we are relying on a third party for the list and if it is malformed or something we still want to be able to have a list to use
             // and we will stop the nameserver list from updating and replacing the known working list with the malformed list again.
 
-            this.enableNameServerSet = false;
+             this.enableNameServerSet = false;
             // this.setNameservers(nameservers);
             // this.run();
         }

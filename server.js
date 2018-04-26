@@ -10,7 +10,10 @@ const request = require("request-promise-native");
 const Runner = require("./runner");
 const nameservers = require("./ns_all.json");
 const countryListing = require("./raw_lists/country_List");
+
 const logger = require("./logger").verbose;
+const serverErrorLogger = require("./logger").serverErrors;
+const logInvalidDNS = require("./logger").invalidDNS;
 
 const runner = new Runner(nameservers);
 const app = express();
@@ -31,14 +34,15 @@ const server = https.createServer(options, app);
 
 const port = process.env.PORT || 3000;
 server.listen(port, () => {
-    console.log(`Server Listening on Port ${port}`);
+    console.log(`\nServer Listening on Port ${port}`);
     getAndParseDNSList()
-        .then(next => {
+        .then(_nameServers => {
             logger.info("Initial Run Start");
+            runner.setNameservers(_nameServers);
             runner.run();
         })
         .catch(err => {
-            logger.error(err);
+            serverErrorLogger.error(err);
         })
 });
 
@@ -64,7 +68,7 @@ app.get("/dns-report", (req, res) => {
             }
         });
     } catch (e) {
-        logger.error(e);
+        serverErrorLogger.error(e);
     }
 });
 
@@ -87,13 +91,13 @@ app.get("/new-results", (req, res) => {
                             res.send({result: false});
                         }
                     } catch (e) {
-                        logger.error(e);
+                        serverErrorLogger.error(e);
                     }
                 })
             }
         });
     } catch (e) {
-        logger.error(e);
+        serverErrorLogger.error(e);
     }
 });
 
@@ -106,7 +110,7 @@ app.use(function(req, res, next) {
 
 // error handler
 app.use(function(err, req, res, next) {
-    if(!req.originalUrl.test(/favicon/)) logger.warn(`INVALID ROUTING ATTEMPT: {hostname: ${req.hostname}, ip: ${req.ip}, originalUrl: ${req.originalUrl}, error: ${err}}`);
+    if(!/favicon/.test(req.originalUrl)) logger.warn(`INVALID ROUTING ATTEMPT: {hostname: ${req.hostname}, ip: ${req.ip}, originalUrl: ${req.originalUrl}, error: ${err}}`);
     res.status(err.status || 500);
 });
 
@@ -123,21 +127,27 @@ emitter.on("end", (results) => {
         }
     });
     getAndParseDNSList()
-        .then(next => {
-            //todo remove dev item
+        .then(_nameServers => {
             setTimeout(() => {
+                runner.setNameservers(_nameServers);
                 runner.run();
             }, 100000)
-            // runner.run(); //todo uncomment after dev
         })
         .catch(err => {
-            logger.error("Updating NameServer list failed", err);
+            serverErrorLogger.error("Updating NameServer list failed", err);
             logger.error("Proceeding with existing nameserver list");
             logger.error("Restarting Run.");
             runner.run();
         })
 });
 
+emitter.on("error", (_error) =>{
+    serverErrorLogger.error(_error);
+});
+
+emitter.on("invalidDNS", (_error) =>{
+    logInvalidDNS.error(_error);
+});
 
 
 function getAndParseDNSList(){
@@ -152,9 +162,9 @@ function getAndParseDNSList(){
                     if(row.length >= 8) locations.push([row[0], row[2], row[1]]);
 
                 } catch (e) {
-                    logger.error(e);
+                    serverErrorLogger.error(e);
                 }
             }
-            runner.setNameservers(locations);
+            return locations;
         })
 }
