@@ -104,14 +104,14 @@ class Runner {
                             let countryName;
                             if (!self.isValidRecord(addresses)) {
                                 countryName = countries.getName(_ns[1], "en");
-                                self.addBad({ns: _ns[0], timestamp: new Date().toUTCString(), country: countryName});
+                                self.addBad({ns: _ns[0], timestamp: new Date().toUTCString(), country: countryName, name: _ns[2]});
                                 // console.error("invalid record found", _ns, addresses);
                                 let invalidDetails = " NameServer Details:" +  _ns.join(", ") + ", Resolved Addresses: " + addresses.join(", ");
                                 self.emitter ?  self.emitter.emit("invalidDNS", invalidDetails) : console.error(invalidDetails);
 
                             } else {
                                 countryName = countries.getName(_ns[1], "en");
-                                self.addGood({ns: _ns[0], timestamp: new Date().toUTCString(), country: countryName});
+                                self.addGood({ns: _ns[0], timestamp: new Date().toUTCString(), country: countryName, name: _ns[2]});
                             }
                         }
                     })

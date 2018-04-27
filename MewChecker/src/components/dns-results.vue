@@ -15,6 +15,7 @@
                  v-bind:index = "index"
                  v-bind:ip="ip"
                  v-bind:status="0"
+                 v-bind:timestamp="timestamp"
                  v-bind:detailedfilter="detailedfilter"
                  v-bind:sort="sortopt == 1 || sortopt == 0"></dns-display>
     <dns-display v-if="displayList" v-for="(ip, index) in good"
@@ -22,6 +23,7 @@
                  v-bind:index = "index"
                  v-bind:ip="ip"
                  v-bind:status="1"
+                 v-bind:timestamp="timestamp"
                  v-bind:detailedfilter="detailedfilter"
                  v-bind:sort="sortopt == 2 || sortopt == 0"></dns-display>
     </tbody>
@@ -31,9 +33,6 @@
 
 <script>
   import dnsDisplay from "./dns-display.vue";
-  const host = "54.70.164.31";
-  const port = "";
-  const proto = "http";
 
   const request = require("request-promise-native");
 
@@ -53,7 +52,7 @@
     },
     methods: {
       getDnsResults() {
-          request(proto + "://" + host + ":" + port + "/dns-report")
+          request("/dns-report")
             .then((result) => {
               console.log("got DNS Results");
               this.updateGood = [];
@@ -83,13 +82,14 @@
       },
       checkForResultUpdate() {
         this.updateChecker = setInterval(() => {
-          request(proto + "://" + host + ":" + port + "/new-results?timestamp=" + Date.parse(this.timestamp))
+          request("/new-results?timestamp=" + Date.parse(this.timestamp))
             .then(JSON.parse)
             .then((result) => {
               try {
                 if (result.result) {
                   this.getDnsResults();
                 }
+                console.log(result); //todo remove dev item
                 console.log("can update check", result.result);
               } catch (e) {
                 console.error(e);

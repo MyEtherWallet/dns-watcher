@@ -3,7 +3,8 @@ const fs = require("fs");
 const path = require("path");
 const events = require("events");
 const express = require("express");
-const https = require("https");
+// const https = require("https");
+const http = require("http");
 const clone = require("clone");
 const request = require("request-promise-native");
 
@@ -24,15 +25,18 @@ runner.setEmitter(emitter);
 
 let resultBkup;
 
-const options = {
-    key: fs.readFileSync(path.join(__dirname, process.env.HTTPS_KEY_FILE)),
-    cert: fs.readFileSync(path.join(__dirname, process.env.HTTPS_CERT_FILE)),
-    rejectUnauthorized: process.env.STATUS === "production"
-};
+// const options = {
+//     key: fs.readFileSync(path.join(__dirname, process.env.HTTPS_KEY_FILE)),
+//     cert: fs.readFileSync(path.join(__dirname, process.env.HTTPS_CERT_FILE)),
+//     rejectUnauthorized: process.env.STATUS === "production"
+// };
+//
+// const server = https.createServer(options, app);
 
-const server = https.createServer(options, app);
+const server = http.createServer(app);
 
 const port = process.env.PORT || 3000;
+// const host = process.env.HOST || "127.0.0.1";
 server.listen(port, () => {
     console.log(`\nServer Listening on Port ${port}`);
     getAndParseDNSList()
@@ -46,12 +50,12 @@ server.listen(port, () => {
         })
 });
 
-
-app.use("/static", express.static(path.join(__dirname, "MewChecker/dist/static")));
-
-app.get("/", (req, res) => {
-    res.sendFile(path.join(__dirname, "MewChecker/dist/index.html"));
-});
+//
+// app.use("/static", express.static(path.join(__dirname, "MewChecker/dist/static")));
+//
+// app.get("/", (req, res) => {
+//     res.sendFile(path.join(__dirname, "MewChecker/dist/index.html"));
+// });
 
 app.get("/country-list", (req, res) => {
     res.send(countryListing.name);
@@ -73,7 +77,7 @@ app.get("/dns-report", (req, res) => {
 });
 
 app.get("/new-results", (req, res) => {
-    let filepath = path.join(__dirname, process.env.DNS_RESULT_FILE);
+    let filepath = path.join(__dirname, "MewChecker", "dist", process.env.DNS_RESULT_FILE);
     try {
         fs.access(filepath, fs.constants.R_OK | fs.constants.W_OK, (err) => {
             if (err) {
@@ -118,7 +122,7 @@ app.use(function(err, req, res, next) {
 emitter.on("end", (results) => {
     //todo uncomment after dev
     logger.info("Run Complete.");
-    fs.writeFileSync(path.join(__dirname, process.env.DNS_RESULT_FILE), JSON.stringify(results), (error) => {
+    fs.writeFileSync(path.join(__dirname, "MewChecker", "dist", process.env.DNS_RESULT_FILE), JSON.stringify(results), (error) => {
         if (error) {
             logger.error("Name server results save Failed. ", error);
             resultBkup = clone(results);

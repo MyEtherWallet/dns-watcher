@@ -1,0 +1,12 @@
+{
+  "apps" : [{
+    "name"        : "webServer",
+    "script"      : "./MewChecker/webServer.js",
+    "env": {
+      "NODE_ENV": "production"
+    }
+  },{
+    "name"       : "runnerServer",
+    "script"     : "./server.js"
+  }]
+}

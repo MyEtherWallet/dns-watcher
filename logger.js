@@ -6,9 +6,9 @@ var serverErrorsTransport = new (require('winston-daily-rotate-file'))({
 //=>
     name: 'serverErrors',
 //<=
-    filename: process.env.ERROR_LOG_FILE,
+    filename: "errors.log",
     datePattern: 'D-MM-YYYY',
-    dirname: process.env.LOG_DIR + process.env.ERROR_LOG_DIR,
+    dirname: "./log/server",
     prepend: true,
     json: false,
     zippedArchive: true,
@@ -23,9 +23,9 @@ var invalidDnsTransport = new (require('winston-daily-rotate-file'))({
 //=>
     name: 'invalidDNS',
 //<=
-    filename: process.env.INVALID_DNS_LOG_FILE,
+    filename: "invalid_dns.log",
     datePattern: 'D-MM-YYYY',
-    dirname: process.env.LOG_DIR + process.env.INVALID_DNS_LOG_DIR,
+    dirname: "./log/dns",
     prepend: true,
     json: false,
     zippedArchive: true,
