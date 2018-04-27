@@ -31,6 +31,9 @@
 
 <script>
   import dnsDisplay from "./dns-display.vue";
+  const host = "54.70.164.31";
+  const port = "";
+  const proto = "http";
 
   const request = require("request-promise-native");
 
@@ -50,7 +53,7 @@
     },
     methods: {
       getDnsResults() {
-          request("https://localhost:3000/dns-report")
+          request(proto + "://" + host + ":" + port + "/dns-report")
             .then((result) => {
               console.log("got DNS Results");
               this.updateGood = [];
@@ -80,7 +83,7 @@
       },
       checkForResultUpdate() {
         this.updateChecker = setInterval(() => {
-          request("https://localhost:3000/new-results?timestamp=" + Date.parse(this.timestamp))
+          request(proto + "://" + host + ":" + port + "/new-results?timestamp=" + Date.parse(this.timestamp))
             .then(JSON.parse)
             .then((result) => {
               try {
