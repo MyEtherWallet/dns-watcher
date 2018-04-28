@@ -14,6 +14,7 @@
     "build": "node build/build.js"
   },
   "dependencies": {
+    "connect-history-api-fallback": "^1.5.0",
     "i18n-iso-countries": "^3.6.2",
     "qs": "^6.5.1",
     "superstatic": "^5.0.1",

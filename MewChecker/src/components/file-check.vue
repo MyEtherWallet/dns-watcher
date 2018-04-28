@@ -50,6 +50,19 @@
     "/js/jquery-1.12.3.min.js"
   ];
 
+  // function fileChecker() {
+  //   fileCheck(files)
+  //     .then(result => {
+  //       console.log("complete");
+  //       this.fileCheckResult = result;
+  //       this.checkComplete = true;
+  //     })
+  //     .catch(error => {
+  //       console.error(error);
+  //       clearInterval(this.fileCheckResult);
+  //     })
+  // }
+
 
   export default {
     name: "file-check",
@@ -61,7 +74,21 @@
       }
     },
     methods: {
-      fileCheck() {
+      // fileCheck() {
+      //   fileCheck(files)
+      //     .then(result => {
+      //       console.log("complete");
+      //       this.fileCheckResult = result;
+      //       this.checkComplete = true;
+      //     })
+      //     .catch(error => {
+      //       console.error(error);
+      //       clearInterval(this.fileCheckResult);
+      //     })
+      // }
+    },
+    mounted() {
+      this.$nextTick(() =>{
         fileCheck(files)
           .then(result => {
             console.log("complete");
@@ -72,14 +99,20 @@
             console.error(error);
             clearInterval(this.fileCheckResult);
           })
-      }
-    },
-    created() {
-      this.fileCheck();
-      this.poolingFileCheck = setInterval(() => {
-        this.checkComplete = false;
-        this.fileCheck();
-      }, 300000) // checks file status every 5 minutes
+        this.poolingFileCheck = setInterval(() => {
+          this.checkComplete = false;
+          fileCheck(files)
+            .then(result => {
+              console.log("complete");
+              this.fileCheckResult = result;
+              this.checkComplete = true;
+            })
+            .catch(error => {
+              console.error(error);
+              clearInterval(this.fileCheckResult);
+            })
+        }, 300000) // checks file status every 5 minutes
+      })
     }
   }
 </script>

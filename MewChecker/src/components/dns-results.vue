@@ -52,7 +52,8 @@
     },
     methods: {
       getDnsResults() {
-          request("/dns-report")
+        console.log(window.location); //todo remove dev item
+          request(window.location.origin + "/dns-report")
             .then((result) => {
               console.log("got DNS Results");
               this.updateGood = [];
@@ -82,7 +83,7 @@
       },
       checkForResultUpdate() {
         this.updateChecker = setInterval(() => {
-          request("/new-results?timestamp=" + Date.parse(this.timestamp))
+          request(window.location.origin + "/new-results?timestamp=" + Date.parse(this.timestamp))
             .then(JSON.parse)
             .then((result) => {
               try {

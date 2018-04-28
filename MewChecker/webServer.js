@@ -2,34 +2,33 @@ require("dotenv").config("../.env");
 var superstatic = require('superstatic').server;
 const fs = require("fs");
 const path = require("path");
+var history = require('connect-history-api-fallback');
+
 const serverErrorLogger = require("../logger").serverErrors;
 
 
 var spec = {
     port: 8080,
     // host: "54.70.164.31",
+  "trailingSlash": false,
+  compression: true,
+  cwd: __dirname,
+  // errorPage: __dirname + '/error.html',
+  debug: true,
     config: {
         public: "./dist",
         "rewrites": [
             {"source": "/dns-report", "destination": "./validityList.json" }
         ]
-    },
-    cwd: __dirname,
-    // errorPage: __dirname + '/error.html',
-    compression: true,
-    debug: true
+    }
 };
 
 var app = superstatic(spec);
+// app.use(history);
 
-var server = app.listen(function() {
-console.log("Website running", process.cwd());
+app.listen(function() {
+  console.log("Website running", process.cwd());
 });
-
-
-// app.use(function(req, res){
-//   res.end('Hello from Connect!\n');
-// });
 
 
 app.use("/new-results", (req, res) => {
@@ -64,3 +63,4 @@ app.use("/new-results", (req, res) => {
     serverErrorLogger.error(e);
   }
 });
+

@@ -57,6 +57,12 @@ let noop = {
     }
 };
 
+const logger = {
+    error: console.error,
+    warn: console.info,
+    info: console.log
+};
+
 if (process.env.STATUS === "development") {
 
     var verboseTransport = new (require('winston-daily-rotate-file'))({
@@ -82,9 +88,9 @@ if (process.env.STATUS === "development") {
     });
 
     module.exports = {
-        invalidDNS,
-        verbose,
-        serverErrors
+        invalidDNS: logger,
+        verbose: logger,
+        serverErrors: logger
     };
 } else {
     module.exports = {

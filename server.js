@@ -1,174 +1,34 @@
 require("dotenv").config();
-const fs = require("fs");
-const path = require("path");
-const events = require("events");
-const express = require("express");
-// const https = require("https");
-const http = require("http");
-const clone = require("clone");
-const request = require("request-promise-native");
-
-const Runner = require("./runner");
-const nameservers = require("./ns_all.json");
-const countryListing = require("./country_List.json");
-
-const logger = require("./logger").verbose;
-const serverErrorLogger = require("./logger").serverErrors;
-const logInvalidDNS = require("./logger").invalidDNS;
-
-const runner = new Runner(nameservers);
-const app = express();
-const emitter = new events.EventEmitter();
 
 const DNS_LIST_URL = process.env.DNS_LIST_URL || "https://public-dns.info/nameservers.csv";
-runner.setEmitter(emitter);
 
-let resultBkup;
+const cp = require('child_process');
+let doRun = cp.fork(`${__dirname}/runHandler.js`);
+const serverErrorLogger = require("./logger").serverErrors;
 
-// const options = {
-//     key: fs.readFileSync(path.join(__dirname, process.env.HTTPS_KEY_FILE)),
-//     cert: fs.readFileSync(path.join(__dirname, process.env.HTTPS_CERT_FILE)),
-//     rejectUnauthorized: process.env.STATUS === "production"
-// };
-//
-// const server = https.createServer(options, app);
 
-const server = http.createServer(app);
-
-const port = process.env.PORT || 3000;
-// const host = process.env.HOST || "127.0.0.1";
-server.listen(port, () => {
-    console.log(`\nServer Listening on Port ${port}`);
-    getAndParseDNSList()
-        .then(_nameServers => {
-            logger.info("Initial Run Start");
-            runner.setNameservers(_nameServers);
-            runner.run();
-        })
-        .catch(err => {
-            serverErrorLogger.error(err);
-        })
-});
-
-//
-// app.use("/static", express.static(path.join(__dirname, "MewChecker/dist/static")));
-//
-// app.get("/", (req, res) => {
-//     res.sendFile(path.join(__dirname, "MewChecker/dist/index.html"));
-// });
-
-app.get("/country-list", (req, res) => {
-    res.send(countryListing.name);
-});
-
-app.get("/dns-report", (req, res) => {
-    let filepath = path.join(__dirname, process.env.DNS_RESULT_FILE);
-    try {
-        fs.access(filepath, fs.constants.R_OK | fs.constants.W_OK, (err) => {
-            if (err) {
-                res.send("{\"timestamp\": \"" + new Date().toUTCString() + "\",\"good\":[\"building initial list\"], \"bad\":[\"building initial list\"]}");
-            } else {
-                res.sendFile(filepath);
-            }
-        });
-    } catch (e) {
-        serverErrorLogger.error(e);
+doRun.on("message", (msg) => {
+    console.log(msg); //todo remove dev item
+    if(msg == "runComplete"){
+        doRun.kill('SIGTERM');
+        console.log("run complete. child process terminated");
+        setTimeout(() => {
+            doRun = cp.fork(`${__dirname}/runHandler.js`);
+        }, 100000)
     }
 });
 
-app.get("/new-results", (req, res) => {
-    let filepath = path.join(__dirname, "MewChecker", "dist", process.env.DNS_RESULT_FILE);
-    try {
-        fs.access(filepath, fs.constants.R_OK | fs.constants.W_OK, (err) => {
-            if (err) {
-                res.send("{\"timestamp\": \"" + new Date().toUTCString() + "\",\"good\":[\"building initial list\"], \"bad\":[\"building initial list\"]}");
-            } else {
-                fs.readFile(filepath, "utf-8", (err, result) => {
-                    try {
-                        if(err) throw err;
-                        let jsonResult = JSON.parse(result);
-                        let displayedList = req.query.timestamp;
-                        let currentList = Date.parse(jsonResult.timestamp);
-                        if (+currentList > +displayedList) {
-                            res.send({result: true});
-                        } else {
-                            res.send({result: false});
-                        }
-                    } catch (e) {
-                        serverErrorLogger.error(e);
-                    }
-                })
-            }
-        });
-    } catch (e) {
-        serverErrorLogger.error(e);
-    }
+
+doRun.on("close", () =>{
+    console.log("child process closed"); //todo remove dev item
 });
-
-// 404 handlerish
-app.use(function(req, res, next) {
-    var err = new Error('Not Found');
-    err.status = 404;
-    next(err);
+doRun.on("disconnect", () =>{
+    console.log("child process disconnect"); //todo remove dev item
 });
-
-// error handler
-app.use(function(err, req, res, next) {
-    if(!/favicon/.test(req.originalUrl)) logger.warn(`INVALID ROUTING ATTEMPT: {hostname: ${req.hostname}, ip: ${req.ip}, originalUrl: ${req.originalUrl}, error: ${err}}`);
-    res.status(err.status || 500);
+doRun.on("error", (err) =>{
+    serverErrorLogger.error(err);
+    console.log("child process error"); //todo remove dev item
 });
-
-
-emitter.on("end", (results) => {
-    //todo uncomment after dev
-    logger.info("Run Complete.");
-    fs.writeFileSync(path.join(__dirname, "MewChecker", "dist", process.env.DNS_RESULT_FILE), JSON.stringify(results), (error) => {
-        if (error) {
-            logger.error("Name server results save Failed. ", error);
-            resultBkup = clone(results);
-        } else {
-            resultBkup = null;
-        }
-    });
-    getAndParseDNSList()
-        .then(_nameServers => {
-            setTimeout(() => {
-                runner.setNameservers(_nameServers);
-                runner.run();
-            }, 100000)
-        })
-        .catch(err => {
-            serverErrorLogger.error("Updating NameServer list failed", err);
-            logger.error("Proceeding with existing nameserver list");
-            logger.error("Restarting Run.");
-            runner.run();
-        })
+doRun.on("exit", () =>{
+    console.log("child process exit"); //todo remove dev item
 });
-
-emitter.on("error", (_error) =>{
-    serverErrorLogger.error(_error);
-});
-
-emitter.on("invalidDNS", (_error) =>{
-    logInvalidDNS.error(_error);
-});
-
-
-function getAndParseDNSList(){
-   return request(DNS_LIST_URL)
-        .then(result => {
-            let locations = [];
-            let split = result.split("\n");
-            logger.info("Updating NameServer list. Restarting Run.");
-            for (let i = 1; i < split.length; i++) {
-                try {
-                    let row = split[i].replace("\r", "").split(",");
-                    if(row.length >= 8) locations.push([row[0], row[2], row[1]]);
-
-                } catch (e) {
-                    serverErrorLogger.error(e);
-                }
-            }
-            return locations;
-        })
-}
