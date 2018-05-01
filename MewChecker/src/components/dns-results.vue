@@ -10,22 +10,22 @@
     </thead>
 
     <tbody>
-    <dns-display v-if="displayList" v-for="(ip, index) in bad"
+    <dns-display v-if="displayBad && showBad" v-for="(ip, index) in bad"
                  v-bind:key="ip.key"
-                 v-bind:index = "index"
-                 v-bind:ip="ip"
-                 v-bind:status="0"
+                 v-bind:name="ip.name"
+                 v-bind:ns="ip.ns"
+                 v-bind:good-status="false"
+                 v-bind:bad-status="true"
                  v-bind:timestamp="timestamp"
-                 v-bind:detailedfilter="detailedfilter"
-                 v-bind:sort="sortopt == 1 || sortopt == 0"></dns-display>
-    <dns-display v-if="displayList" v-for="(ip, index) in good"
+                 v-bind:country="ip.country"></dns-display>
+    <dns-display v-if="displayGood && showGood" v-for="(ip, index) in good"
                  v-bind:key="ip.key"
-                 v-bind:index = "index"
-                 v-bind:ip="ip"
-                 v-bind:status="1"
+                 v-bind:name="ip.name"
+                 v-bind:ns="ip.ns"
+                 v-bind:good-status="true"
+                 v-bind:bad-status="false"
                  v-bind:timestamp="timestamp"
-                 v-bind:detailedfilter="detailedfilter"
-                 v-bind:sort="sortopt == 2 || sortopt == 0"></dns-display>
+                 v-bind:country="ip.country"></dns-display>
     </tbody>
 
   </table>
@@ -38,9 +38,11 @@
 
   export default {
     name: "dns-results",
-    props: ["sortopt", "detailedfilter"],
+    props: ["showGood", "showBad"],
     data: function () {
       return {
+        displayBad: false,
+        displayGood: false,
         displayList: false,
         statusGood: 'good',
         statusBad: 'bad',
@@ -50,48 +52,59 @@
         updateChecker: ""
       }
     },
+    watch: {
+
+    },
     methods: {
       getDnsResults() {
-        console.log(window.location); //todo remove dev item
-          request(window.location.origin + "/dns-report")
-            .then((result) => {
-              console.log("got DNS Results");
-              this.updateGood = [];
-              this.updateBad = [];
-              let vForKey = 0;
-              try {
-                let json = JSON.parse(result);
-                json.good.forEach(val => {
-                  val.key = ++vForKey;
-                  this.updateGood.push(val);
-                });
-                json.bad.forEach(val => {
-                  val.key = ++vForKey;
-                  this.updateBad.push(val);
-                });
+        request(window.location.origin + "/dns-report")
+          .then((result) => {
+            console.log("got DNS Results");
+            this.updateGood = [];
+            this.updateBad = [];
+            let vForKey = 0;
+            try {
+              let json = JSON.parse(result);
+              json.good.forEach(val => {
+                val.key = ++vForKey;
+                this.updateGood.push(val);
+              });
+              json.bad.forEach(val => {
+                val.key = ++vForKey;
+                this.updateBad.push(val);
+              });
 
-                this.good.splice(0, this.good.length, ...this.updateGood);
-                this.bad.splice(0, this.bad.length, ...this.updateBad);
-                if(!this.displayList){
-                  this.displayList = true;
-                }
-                this.timestamp = json.timestamp;
-              } catch (e) {
-                console.error(e);
+              this.good.splice(0, this.good.length, ...this.updateGood);
+              this.bad.splice(0, this.bad.length, ...this.updateBad);
+              if (!this.displayList) {
+                this.displayList = true;
+                this.displayBad = true;
+                this.displayGood = true;
               }
-            })
+              console.log("parsed DNS Results");
+              console.log(this.detailedfilter); //todo remove dev item
+              this.timestamp = json.timestamp;
+              this.$forceUpdate();
+            } catch (e) {
+              console.error(e);
+            }
+          })
       },
       checkForResultUpdate() {
         this.updateChecker = setInterval(() => {
-          request(window.location.origin + "/new-results?timestamp=" + Date.parse(this.timestamp))
+          request(window.location.origin + "/new-results")
             .then(JSON.parse)
             .then((result) => {
               try {
-                if (result.result) {
+                let displayedList = Date.parse(this.timestamp);
+                let currentList = Date.parse(result.timestamp);
+                console.log("displayedList", displayedList); //todo remove dev item
+                console.log("currentList", currentList); //todo remove dev item
+                if (+currentList > +displayedList) {
                   this.getDnsResults();
                 }
                 console.log(result); //todo remove dev item
-                console.log("can update check", result.result);
+                console.log("can update check", result.timestamp);
               } catch (e) {
                 console.error(e);
               }
@@ -105,6 +118,11 @@
               }, 60000) // retry after a minute
             })
         }, 10000)
+      }
+    },
+    computed: {
+      filterResults(){
+
       }
     },
     created() {

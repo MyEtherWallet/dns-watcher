@@ -21,6 +21,10 @@ runner.setEmitter(emitter);
 let resultBkup;
 
 
+function saveToFile(name){
+   return path.join(__dirname, "MewChecker", "dist", name)
+}
+
 console.log("Child Process Started"); //todo remove dev item
 process.send("child");
 
@@ -47,13 +51,25 @@ getAndParseDNSList()
 emitter.on("end", (results) => {
     //todo uncomment after dev
     logger.info("Run Complete.");
-    fs.writeFile(path.join(__dirname, "MewChecker", "dist", process.env.DNS_RESULT_FILE), JSON.stringify(results), (error) => {
+    let newtimeStamp = new Date().toUTCString();
+    results.timestamp = newtimeStamp;
+    fs.writeFile(saveToFile(process.env.DNS_RESULT_FILE), JSON.stringify(results), (error) => {
         if (error) {
             logger.error("Name server results save Failed. ", error);
             process.send("runComplete")
         } else {
-            resultBkup = null;
-            process.send("runComplete")
+            let timestamp = {timestamp: newtimeStamp};
+            fs.writeFile(saveToFile(process.env.DNS_TIMECHECK_FILE), JSON.stringify(timestamp), (error) => {
+                if (error) {
+                    logger.error("time check file save Failed. ", error);
+                    process.send("runComplete")
+                } else {
+                    resultBkup = null;
+                    process.send("runComplete")
+                }
+            });
+            // resultBkup = null;
+            // process.send("runComplete")
         }
     });
 });

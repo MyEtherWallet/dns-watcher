@@ -1,13 +1,13 @@
 <template>
   <div class="table-contents">
     <div class="validation-status">
-      <p v-bind:class="{ active: errorActive }" v-on:click="showErrors">Errors</p>
-      <p v-bind:class="{ active: validActive }" v-on:click="showValid">Valid</p>
+      <p v-bind:class="{ active: errorHighLight }" v-on:click="showErrors">Errors</p>
+      <p v-bind:class="{ active: validHighLight }" v-on:click="showValid">Valid</p>
     </div>
 
       <dns-results
-        v-bind:sortopt="sortopt"
-        v-bind:detailedfilter="detailedfilter"
+        v-bind:show-good="showGood"
+        v-bind:show-bad="showBad"
       ></dns-results>
   </div>
 
@@ -24,9 +24,10 @@
     data: function () {
       return {
         sortopt: 0,
-        detailedfilter: "",
-        errorActive: false,
-        validActive: false,
+        showGood: true,
+        showBad: true,
+        errorHighLight: false,
+        validHighLight: false,
         selected: null
       }
     },
@@ -35,7 +36,10 @@
         if (this.sortopt === 1) {
           this.resetSorting();
         } else {
-          this.errorActive = true;
+          this.showBad = true;
+          this.showGood = false;
+          this.validHighLight = false;
+          this.errorHighLight = true;
           this.sortopt = 1;
         }
       },
@@ -44,16 +48,26 @@
           this.resetSorting();
         }
         else {
-          this.validActive = true;
+          this.showBad = false;
+          this.showGood = true;
+          this.errorHighLight = false;
+          this.validHighLight = true;
           this.sortopt = 2;
         }
-        // this.sortopt = 2;
-      }, resetSorting: function(event){
-        this.validActive = false;
-        this.validActive = false;
+      },
+      resetSorting: function(event){
+        this.validHighLight = false;
+        this.errorHighLight = false;
+        this.showBad = true;
+        this.showGood = true;
         this.sortopt = 0;
       }
     },
   }
 </script>
 
+<style lang="scss">
+  p.active{
+    border-bottom: 1px solid rgba(0, 0, 0, 0.28);
+  }
+</style>
