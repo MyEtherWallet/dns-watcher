@@ -28,7 +28,7 @@ var app = superstatic(spec);
 // app.use(history);
 
 app.listen(function () {
-    console.log("Website running", process.cwd());
+    console.log("Website running on port 8080.  http://localhost:8080");
 });
 /*
 
