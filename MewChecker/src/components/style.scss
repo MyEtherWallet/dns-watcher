@@ -201,13 +201,6 @@ i {
           }
         }
         tbody {
-         /* .table-body{
-            !*44.875 + 46 + 53 + 35 + 56*!
-
-          }*/
-          height: calc(100% - 234.875px) !important;
-          overflow-x: hidden !important;
-          overflow-y: scroll !important;
           tr {
             border-bottom: 2px solid #f2f2f2;
             td {
