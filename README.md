@@ -21,7 +21,7 @@ $ npm install
 $ npm start
 
 ##### Navigate to 
-https://localhost:3000
+https://localhost:8080
 
 **NOTE:** The list of correct or incorrect dns servers is not immediately available the first time the servers starts as it 
 needs to build the list.  The list becomes available after runner completes its first run. 

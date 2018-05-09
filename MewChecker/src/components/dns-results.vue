@@ -10,7 +10,7 @@
         </tr>
         </thead>
 
-        <tbody>
+        <tbody class="table-body">
         <dns-display-bad v-if="displayBad" v-for="(ip, index) in bad"
                          v-bind:key="ip.ns"
                          v-bind:name="ip.name"
@@ -169,4 +169,5 @@
 
 <style lang="scss">
     @import 'style.scss';
+
 </style>
