@@ -102,9 +102,10 @@ class Runner {
                         self.setProgress();
                         if (!err) {
                             let countryName;
+                            console.log(addresses); //todo remove dev item
                             if (!self.isValidRecord(addresses)) {
                                 countryName = countries.getName(_ns[1], "en");
-                                self.addBad({ns: _ns[0], timestamp: new Date().toUTCString(), country: countryName, name: _ns[2]});
+                                self.addBad({ns: _ns[0], timestamp: new Date().toUTCString(), country: countryName, name: _ns[2], resolved: addresses});
                                 // console.error("invalid record found", _ns, addresses);
                                 let invalidDetails = " NameServer Details:" +  _ns.join(", ") + ", Resolved Addresses: " + addresses.join(", ");
                                 self.emitter ?  self.emitter.emit("invalidDNS", invalidDetails) : console.error(invalidDetails);

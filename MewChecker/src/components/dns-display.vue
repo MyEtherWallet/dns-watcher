@@ -5,6 +5,8 @@
     <td>{{ns}} <small v-if="name"><br><em >{{name}}</em></small></td>
     <td>{{country}}</td>
     <td>{{timestamp}}</td>
+    <td><div class=""><small v-for="addr in addresses" >{{addr}}</small><br></div></td>
+
     <!--<td>{{index}}</td>-->
   </tr>
 </template>
@@ -15,8 +17,8 @@
   // const countries = require("i18n-iso-countries");
 
   export default {
-    name: "dns-display-bad",
-    props: ["goodStatus", "badStatus", "name", "ns", "country", "timestamp"]
+    name: "dns-display",
+    props: ["goodStatus", "badStatus", "name", "ns", "country", "addresses", "timestamp"]
   }
 </script>
 
@@ -26,4 +28,7 @@
     font-size: 12px;
     font-weight: 200;
   }
+  /*.address-list:last-child{*/
+
+  /*}*/
   </style>

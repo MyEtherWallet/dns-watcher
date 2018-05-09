@@ -74,19 +74,21 @@
       }
     },
     methods: {
-      // fileCheck() {
-      //   fileCheck(files)
-      //     .then(result => {
-      //       console.log("complete");
-      //       this.fileCheckResult = result;
-      //       this.checkComplete = true;
-      //     })
-      //     .catch(error => {
-      //       console.error(error);
-      //       clearInterval(this.fileCheckResult);
-      //     })
-      // }
-    },
+      startPolling(){
+        this.poolingFileCheck = setInterval(() => {
+      this.checkComplete = false;
+      fileCheck(files)
+        .then(result => {
+          console.log("polling check complete");
+          this.fileCheckResult = result;
+          this.checkComplete = true;
+        })
+        .catch(error => {
+          console.error(error);
+          clearInterval(this.poolingFileCheck);
+        })
+    }, 300000) // checks file status every 5 minutes
+    }},
     mounted() {
       this.$nextTick(() =>{
         fileCheck(files)
@@ -94,24 +96,13 @@
             console.log("complete");
             this.fileCheckResult = result;
             this.checkComplete = true;
+            this.startPolling();
           })
           .catch(error => {
             console.error(error);
-            clearInterval(this.fileCheckResult);
+            // clearInterval(this.fileCheckResult);
           })
-        this.poolingFileCheck = setInterval(() => {
-          this.checkComplete = false;
-          fileCheck(files)
-            .then(result => {
-              console.log("complete");
-              this.fileCheckResult = result;
-              this.checkComplete = true;
-            })
-            .catch(error => {
-              console.error(error);
-              clearInterval(this.fileCheckResult);
-            })
-        }, 300000) // checks file status every 5 minutes
+
       })
     }
   }

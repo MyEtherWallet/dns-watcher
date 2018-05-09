@@ -7,7 +7,7 @@ var serverErrorsTransport = new (require('winston-daily-rotate-file'))({
     name: 'serverErrors',
 //<=
     filename: "errors.log",
-    datePattern: 'D-MM-YYYY',
+    // datePattern: 'D-MM-YYYY',
     dirname: "./log/server",
     prepend: true,
     json: false,
@@ -24,7 +24,7 @@ var invalidDnsTransport = new (require('winston-daily-rotate-file'))({
     name: 'invalidDNS',
 //<=
     filename: "invalid_dns.log",
-    datePattern: 'D-MM-YYYY',
+    // datePattern: 'D-MM-YYYY',
     dirname: "./log/dns",
     prepend: true,
     json: false,
@@ -68,7 +68,7 @@ if (process.env.STATUS === "development") {
     var verboseTransport = new (require('winston-daily-rotate-file'))({
         name: 'verbose',
         filename: process.env.VERBOSE_LOG_FILE,
-        datePattern: 'D-MM-YYYY',
+        // datePattern: 'D-MM-YYYY',
         dirname: process.env.LOG_DIR + process.env.VERBOSE_LOG_DIR,
         prepend: true,
         json: true,

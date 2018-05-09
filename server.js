@@ -37,23 +37,9 @@ var valid = cron.validate(cronTime);
 
 if(!valid) process.exit(1);
 
-let doRun = cp.fork(`${__dirname}/runHandler.js`);
-
-doRun.on("message", (msg) => {
-    console.log(msg); //todo remove dev item
-    if(msg == "runComplete"){
-        doRun.kill('SIGTERM');
-        console.log("run complete. child process terminated");
-        // setTimeout(() => {
-        //     doRun = cp.fork(`${__dirname}/runHandler.js`);
-        // }, 100000)
-    }
-});
-
-
 
 let task = cron.schedule(cronTime, function(){
-    console.log('running every minute 1, 2, 4 and 5');
+    console.log('running every 10 minutes');
 
     let doRun = cp.fork(`${__dirname}/runHandler.js`);
 

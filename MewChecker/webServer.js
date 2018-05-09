@@ -10,16 +10,16 @@ console.log(__dirname); //todo remove dev item
 var spec = {
     port: 8080,
     // host: "54.70.164.31",
-  "trailingSlash": false,
-  compression: true,
-  cwd: __dirname + "/dist",
-  errorPage: __dirname + '/error.html',
-  debug: true,
+    "trailingSlash": false,
+    compression: true,
+    cwd: __dirname + "/dist",
+    errorPage: __dirname + '/error.html',
+    debug: true,
     config: {
         // public: "./dist",
         "rewrites": [
-            {"source": "/dns-report", "destination": "./validityList.json" },
-          {"source": "/new-results", "destination" : "./timeCheck.json"}
+            {"source": "/dns-report", "destination": "./validityList.json"},
+            {"source": "/new-results", "destination": "./timeCheck.json"}
         ]
     }
 };
@@ -27,8 +27,8 @@ var spec = {
 var app = superstatic(spec);
 // app.use(history);
 
-app.listen(function() {
-  console.log("Website running", process.cwd());
+app.listen(function () {
+    console.log("Website running", process.cwd());
 });
 /*
 
