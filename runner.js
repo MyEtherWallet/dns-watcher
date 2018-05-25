@@ -4,8 +4,7 @@ const _cliProgress = require('cli-progress');
 const countries = require("i18n-iso-countries");
 
 const nameservers = require("./ns_all.json");
-const amzn = require("./amazon_r53.json");
-
+const allowedResolutions = require("./allowedResolutions.json");
 
 const bar1 = new _cliProgress.Bar({}, _cliProgress.Presets.shades_classic);
 bar1.start(nameservers.length, 0);
@@ -13,7 +12,7 @@ const URL = "myetherwallet.com";
 
 
 class Runner {
-    constructor(_nameservers, _locationDb) {
+    constructor(_nameservers, _allowedResolutions) {
         this.enableNameServerSet = true;
         this.nameservers = _nameservers || nameservers;
         this.counter = 0;
@@ -21,6 +20,7 @@ class Runner {
         this.results = {timestamp: "", good: [], bad: []};
         this.good = new Set();
         this.bad = new Set();
+        this.allowedResolutions = _allowedResolutions
 
         this.setProgress = () => {
             this.counter++;
@@ -80,8 +80,8 @@ class Runner {
             let addr = addresses[i];
             if (!this.NS_CACHE[addr]) {
                 let ipValid = false;
-                for (let j = 0; j < amzn.length; j++) {
-                    if (npmIp.cidrSubnet(amzn[j].ip_prefix).contains(addr)) {
+                for (let j = 0; j < allowedResolutions.length; j++) {
+                    if (npmIp.cidrSubnet(allowedResolutions[j]).contains(addr)) {
                         this.NS_CACHE[addr] = true;
                         ipValid = true;
                         break;
@@ -102,17 +102,17 @@ class Runner {
                         self.setProgress();
                         if (!err) {
                             let countryName;
-                            console.log(addresses); //todo remove dev item
+                            // console.log(addresses); //todo remove dev item
                             if (!self.isValidRecord(addresses)) {
                                 countryName = countries.getName(_ns[1], "en");
-                                self.addBad({ns: _ns[0], timestamp: new Date().toUTCString(), country: countryName, name: _ns[2], resolved: addresses});
+                                self.addBad({ns: _ns[0], timestamp: new Date().toUTCString(), country: countryName, countryShort: _ns[1],  name: _ns[2], resolved: addresses});
                                 // console.error("invalid record found", _ns, addresses);
                                 let invalidDetails = " NameServer Details:" +  _ns.join(", ") + ", Resolved Addresses: " + addresses.join(", ");
                                 self.emitter ?  self.emitter.emit("invalidDNS", invalidDetails) : console.error(invalidDetails);
 
                             } else {
                                 countryName = countries.getName(_ns[1], "en");
-                                self.addGood({ns: _ns[0], timestamp: new Date().toUTCString(), country: countryName, name: _ns[2]});
+                                self.addGood({ns: _ns[0], timestamp: new Date().toUTCString(), country: countryName, countryShort: _ns[1], name: _ns[2]});
                             }
                         }
                     })

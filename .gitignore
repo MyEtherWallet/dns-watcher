@@ -16,7 +16,8 @@ yarn-error.log*
 /.env
 /scraps/
 /scraps/inBrowserFileCheck.js
-/MewChecker/dist/
+/MewChecker/dist/static/
+/MewChecker/dist/index.html
 /MewChecker/node_modules/
 /validityList.json
 /log/*

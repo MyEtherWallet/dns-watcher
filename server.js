@@ -30,18 +30,6 @@ CRON Syntax Ref.:
     day of week	0-7 (or names, 0 or 7 are sunday)
 * */
 
-let webServer;
-if(process.argv.length >= 2){
-    if(process.argv[2] == "withServer"){
-        webServer = cp.fork(`${__dirname}/MewChecker/webServer.js`)
-    }
-}
-
-process.on('exit', () => {
-    if(webServer){
-        webServer.kill('SIGTERM');
-    }
-});
 
 let cronTime = '*/10 * * * *';
 
