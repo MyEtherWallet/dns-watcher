@@ -36,10 +36,20 @@ export default {
             good: [],
             bad: [],
             entries: [],
+            all: [],
             timestamp: '',
             updateChecker: '',
             paginate: ["allEntries"],
             pageNum: 1
+        }
+    },
+    watch: {
+        currentFilter: function(newVal) {
+            if (newVal == 3) this.entries = this.bad
+            else if (newVal == 4) this.entries = this.good
+            else this.entries = this.all
+            this.goToPage(1)
+            this.pageNum = 1
         }
     },
     methods: {
@@ -56,7 +66,8 @@ export default {
                     try {
                         let json = JSON.parse(result)
                         let allItems = [...json.bad, ...json.good]
-                        this.entries = allItems
+                        this.all = allItems
+                        if(this.entries.length==0) this.entries = this.all
                         this.good.splice(0, this.good.length, ...json.good);
                         this.bad.splice(0, this.bad.length, ...json.bad);
                         this.timestamp = json.timestamp

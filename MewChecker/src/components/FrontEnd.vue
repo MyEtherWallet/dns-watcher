@@ -25,7 +25,7 @@
     <div class="dns-table" >
       <div class="page-container">
         <dns-result-table
-        v-bind:currentFilter="currentFilter"></dns-result-table>
+        :currentFilter="currentFilter"></dns-result-table>
       </div>
     </div>
 
