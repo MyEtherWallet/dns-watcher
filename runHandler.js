@@ -20,8 +20,6 @@ runner.setEmitter(emitter);
 
 let lastBad = {};
 let resultBkup;
-let badCount = 0;
-let badReset = 0;
 
 function saveToFile(name) {
   return path.join(__dirname, 'MewChecker', 'dist', name);
@@ -99,13 +97,13 @@ function processBadResults(results) {
     try {
       fs.readFile(saveToFile('lastBad.json'), (error, data) => {
         if (!error) lastBad = JSON.parse(data);
-        if (lastBad['count'] >= 144) {
-          lastBad = {};
-          badReset = 0;
-        } else {
-          badReset++;
-          lastBad['count'] = typeof lastBad['count'] !== 'undefined' ? lastBad['count'] + 1 : 1;
+
+
+        if(!lastBad.lastReset) lastBad = {lastReset: Date.now()};
+        if (lastBad.lastReset >= Date.now() + 86400000) {
+          lastBad = {lastReset: Date.now()};
         }
+
         const newResults = [];
         results.bad.forEach(item => {
           if (!lastBad[item.ns]) {

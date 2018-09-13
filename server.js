@@ -30,14 +30,15 @@ CRON Syntax Ref.:
     day of week	0-7 (or names, 0 or 7 are sunday)
 * */
 
-let cronTime = '*/5 * * * *';
+let cronTime = '*/10 * * * *';
+console.log('DNS server check set to run every 10 minutes');
 
 var valid = cron.validate(cronTime);
 
 if (!valid) process.exit(1);
 
 let task = cron.schedule(cronTime, function() {
-  console.log('running every 10 minutes');
+  console.log(`DNS server check started at ${new Date().toUTCString()}`);
 
   let doRun = cp.fork(`${__dirname}/runHandler.js`);
 
