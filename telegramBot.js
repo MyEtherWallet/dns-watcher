@@ -7,7 +7,7 @@ function sendUpdate(toSend) {
 
     var options = {
       method: 'POST',
-      url: 'https://api.telegram.org/bot654177986:AAG2XPtWIQorabuqb6-KLmQF5uP53KGc6ZM/sendMessage',
+      url: `https://api.telegram.org/${process.env.TELEGRAM_BOT}/sendMessage`,
       headers:
         {
           'Cache-Control': 'no-cache',

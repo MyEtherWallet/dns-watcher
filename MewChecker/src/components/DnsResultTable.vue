@@ -1,10 +1,18 @@
 <template>
     <!--<div ref="resultsTable">-->
     <div>
-        <div>
-            <button @click="goToPage(--pageNum)">Go to previous page</button>
-            <button @click="goToPage(++pageNum)">Go to next page</button>
+      <div class="pagination-buttons-container" >
+        <div class="page-container">
+          <div class="buttons flex-box-item-center">
+            <h4 class="button" @click="goToPage(--pageNum)"><i class="fa fa-arrow-left" aria-hidden="true"></i> Go to previous page</h4>
+            <h4 class="button" @click="goToPage(++pageNum)">Go to next page <i class="fa fa-arrow-right" aria-hidden="true"></i></h4>
+          </div>
         </div>
+      </div>
+        <!--<div class="pagination buttons flex-box-item-center">-->
+            <!--<button class="prior-btn" @click="goToPage(&#45;&#45;pageNum)">Go to previous page</button>-->
+            <!--<button class="next-btn" @click="goToPage(++pageNum)">Go to next page</button>-->
+        <!--</div>-->
         <paginate ref="paginator" name="allEntries" :list="entries" :per="50">
             <table>
                 <thead>
@@ -112,3 +120,8 @@ export default {
     }
 }
 </script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style lang="scss" scoped>
+  @import "Pagination.scss";
+</style>
