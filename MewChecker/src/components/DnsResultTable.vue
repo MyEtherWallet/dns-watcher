@@ -9,10 +9,6 @@
           </div>
         </div>
       </div>
-        <!--<div class="pagination buttons flex-box-item-center">-->
-            <!--<button class="prior-btn" @click="goToPage(&#45;&#45;pageNum)">Go to previous page</button>-->
-            <!--<button class="next-btn" @click="goToPage(++pageNum)">Go to next page</button>-->
-        <!--</div>-->
         <paginate ref="paginator" name="allEntries" :list="entries" :per="50">
             <table>
                 <thead>
