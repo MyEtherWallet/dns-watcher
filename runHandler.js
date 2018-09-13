@@ -104,7 +104,7 @@ function processBadResults(results) {
           badReset = 0;
         } else {
           badReset++;
-          lastBad['count'] = lastBad['count'] ? lastBad['count'] + 1 : 1;
+          lastBad['count'] = typeof lastBad['count'] !== 'undefined' ? lastBad['count'] + 1 : 1;
         }
         const newResults = [];
         results.bad.forEach(item => {
