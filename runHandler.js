@@ -8,9 +8,10 @@ const Runner = require('./runner');
 const nameservers = require('./ns_all.json');
 const countryListing = require('./country_List.json');
 
-const logger = require('./logger').verbose;
-const serverErrorLogger = require('./logger').serverErrors;
-const logInvalidDNS = require('./logger').invalidDNS;
+const debug = require('debug');
+const logger = debug('dns-checker:verbose');
+const logInvalidDNS = debug('dns-checker:invalidDNS');
+const serverErrorLogger = debug('dns-checker:runHandlerError');
 
 const runner = new Runner(nameservers);
 const emitter = new events.EventEmitter();
@@ -37,59 +38,82 @@ process.on('message', (msg) => {
 
 getAndParseDNSList()
   .then(_nameServers => {
-    logger.info('Initial Run Start');
-    console.log('Initial Run Start'); //todo remove dev item
+    logger('Initial Run Start');
     runner.setNameservers(_nameServers);
     runner.run();
   })
   .catch(err => {
-    serverErrorLogger.error(err);
+    serverErrorLogger(err);
   });
 
 emitter.on('end', (results) => {
   //todo uncomment after dev
-  logger.info('Run Complete.');
-  let newtimeStamp = new Date().toUTCString();
-  results.timestamp = newtimeStamp;
-  fs.writeFile(saveToFile(process.env.DNS_RESULT_FILE), JSON.stringify(results), (error) => {
-    if (error) {
-      logger.error('Name server results save Failed. ', error);
+  logger('Run Complete.');
+  try {
+    let newtimeStamp = new Date().toUTCString();
+    results.timestamp = newtimeStamp;
+    fs.writeFile(saveToFile(process.env.DNS_RESULT_FILE), JSON.stringify(results), (error) => {
+      if (error) {
+        logger('Name server results save Failed. ', error);
+        process.send('runComplete');
+      } else {
+        let timestamp = {timestamp: newtimeStamp};
+        fs.writeFile(saveToFile(process.env.DNS_TIMECHECK_FILE), JSON.stringify(timestamp), (error) => {
+
+          if (error) {
+            logger('time check file save Failed. ', error);
+            processBadResults(results)
+              .then(() => {
+                logger('Run Completing');
+                process.send('runComplete');
+              })
+              .catch(_error => {
+                logger('Send bad results Failed. ', _error);
+                process.send('runComplete');
+              });
+            // process.send('runComplete');
+          } else {
+            resultBkup = null;
+            processBadResults(results)
+              .then(() => {
+                logger('Run Completing');
+                process.send('runComplete');
+              })
+              .catch(_error => {
+                logger('Send bad results Failed. ', _error);
+                process.send('runComplete');
+              });
+            // process.send('runComplete');
+          }
+
+        });
+        // resultBkup = null;
+        // process.send("runComplete")
+      }
+    });
+  } catch (e) {
+    resultBkup = null;
+    serverErrorLogger('Error on end');
+    process.send('runComplete');
+  } finally {
+    // terminates process if it fails to get killed before 30 seconds is up after end is received
+    setTimeout(() => {
       process.send('runComplete');
-    } else {
-      let timestamp = {timestamp: newtimeStamp};
-      fs.writeFile(saveToFile(process.env.DNS_TIMECHECK_FILE), JSON.stringify(timestamp), (error) => {
-        try {
-          processBadResults(results)
-            .then(() => {
-              if (error) {
-                logger.error('time check file save Failed. ', error);
-                process.send('runComplete');
-              } else {
-                resultBkup = null;
-                process.send('runComplete');
-              }
-            })
-            .catch(_error => {
-              logger.error('Send bad results Failed. ', _error);
-              process.send('runComplete');
-            });
-        } catch (e) {
-          resultBkup = null;
-          process.send('runComplete');
-        }
-      });
-      // resultBkup = null;
-      // process.send("runComplete")
-    }
-  });
+    }, 30000);
+  }
 });
 
 emitter.on('error', (_error) => {
-  serverErrorLogger.error(_error);
+  serverErrorLogger(_error);
 });
 
 emitter.on('invalidDNS', (_error) => {
-  logInvalidDNS.error(_error);
+  logInvalidDNS(_error);
+});
+
+emitter.on('terminate', () => {
+  console.error('Exited due to error. Terminating Run.');
+  process.send('runComplete');
 });
 
 function processBadResults(results) {
@@ -98,8 +122,7 @@ function processBadResults(results) {
       fs.readFile(saveToFile('lastBad.json'), (error, data) => {
         if (!error) lastBad = JSON.parse(data);
 
-
-        if(!lastBad.lastReset) lastBad = {lastReset: Date.now()};
+        if (!lastBad.lastReset) lastBad = {lastReset: Date.now()};
         if (lastBad.lastReset >= Date.now() + 86400000) {
           lastBad = {lastReset: Date.now()};
         }
@@ -114,7 +137,8 @@ function processBadResults(results) {
         });
         fs.writeFile(saveToFile('lastBad.json'), JSON.stringify(lastBad), (error) => {
           if (error) {
-            logger.error('recent incorrect DNS record file save Failed. ', error);
+            logger('recent incorrect DNS record file save Failed. ', error);
+            process.send('runComplete');
           }
         });
 
@@ -125,7 +149,7 @@ function processBadResults(results) {
       });
 
     } catch (e) {
-      console.error(e); // todo replace with proper error
+      serverErrorLogger(e); // todo replace with proper error
       reject(e);
     }
   });
@@ -136,14 +160,14 @@ function getAndParseDNSList() {
     .then(result => {
       let locations = [];
       let split = result.split('\n');
-      logger.info('Updating NameServer list. Restarting Run.');
+      logger('Updating NameServer list. Restarting Run.');
       for (let i = 1; i < split.length; i++) {
         try {
           let row = split[i].replace('\r', '').split(',');
           if (row.length >= 8) locations.push([row[0], row[2], row[1]]);
 
         } catch (e) {
-          serverErrorLogger.error(e);
+          serverErrorLogger(e);
         }
       }
       return locations;

@@ -5,7 +5,8 @@ const cp = require('child_process');
 
 const DNS_LIST_URL = process.env.DNS_LIST_URL || 'https://public-dns.info/nameservers.csv';
 
-const serverErrorLogger = require('./logger').serverErrors;
+const debug = require('debug');
+const serverErrorLogger = debug('dns-checker:server');
 const sendTelegramMessage = require('./telegramBot');
 
 /*
@@ -30,7 +31,7 @@ CRON Syntax Ref.:
     day of week	0-7 (or names, 0 or 7 are sunday)
 * */
 
-let cronTime = '*/10 * * * *';
+let cronTime = '*/1 * * * *';
 console.log('DNS server check set to run every 10 minutes');
 
 var valid = cron.validate(cronTime);
@@ -44,8 +45,9 @@ let task = cron.schedule(cronTime, function() {
 
   doRun.on('message', (msg) => {
     if (msg == 'runComplete') {
+      console.log('Run Comple');
       doRun.kill('SIGTERM');
-      console.log('run complete. child process terminated');
+      console.log('Child process terminated');
       // setTimeout(() => {
       //     doRun = cp.fork(`${__dirname}/runHandler.js`);
       // }, 100000)
@@ -61,7 +63,7 @@ let task = cron.schedule(cronTime, function() {
     console.log('child process disconnect'); //todo remove dev item
   });
   doRun.on('error', (err) => {
-    serverErrorLogger.error(err);
+    serverErrorLogger(err);
     console.log('child process error'); //todo remove dev item
   });
   doRun.on('exit', () => {

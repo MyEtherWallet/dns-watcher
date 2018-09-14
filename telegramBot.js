@@ -1,5 +1,7 @@
 require('dotenv').config();
-const logger = require('./logger').verbose;
+
+const createLogger = require('logging').default;
+const logger = createLogger('verbose');
 const request = require('request-promise-native');
 
 function sendUpdate(toSend) {
@@ -23,7 +25,6 @@ function sendUpdate(toSend) {
         logger.error(error); // todo remove dev item
       });
   }
-
 }
 
 module.exports = sendUpdate;

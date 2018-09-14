@@ -1,10 +1,8 @@
 require("dotenv").config("../.env");
 var superstatic = require('superstatic').server;
-const fs = require("fs");
-const path = require("path");
-var history = require('connect-history-api-fallback');
-
-const serverErrorLogger = require("../logger").serverErrors;
+// const fs = require("fs");
+// const path = require("path");
+// var history = require('connect-history-api-fallback');
 
 var spec = {
     port: 8080,
@@ -13,7 +11,7 @@ var spec = {
     compression: true,
     cwd: __dirname + "/dist",
     errorPage: __dirname + '/error.html',
-    debug: true,
+    // debug: true,
     config: {
         // public: "./dist",
         "rewrites": [
