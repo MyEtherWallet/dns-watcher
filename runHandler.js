@@ -123,7 +123,7 @@ function processBadResults(results) {
         if (!error) lastBad = JSON.parse(data);
 
         if (!lastBad.lastReset) lastBad = {lastReset: Date.now()};
-        if (lastBad.lastReset + 86400000 >= Date.now()) {
+        if (lastBad.lastReset + 86400000 <= Date.now()) {
           lastBad = {lastReset: Date.now()};
         }
 

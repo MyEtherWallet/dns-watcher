@@ -31,7 +31,7 @@ CRON Syntax Ref.:
     day of week	0-7 (or names, 0 or 7 are sunday)
 * */
 
-let cronTime = '*/1 * * * *';
+let cronTime = '*/10 * * * *';
 console.log('DNS server check set to run every 10 minutes');
 
 var valid = cron.validate(cronTime);
@@ -48,9 +48,6 @@ let task = cron.schedule(cronTime, function() {
       console.log('Run Comple');
       doRun.kill('SIGTERM');
       console.log('Child process terminated');
-      // setTimeout(() => {
-      //     doRun = cp.fork(`${__dirname}/runHandler.js`);
-      // }, 100000)
     } else if (/^bad\s/.test(msg)) {
       sendTelegramMessage(msg.slice(4, msg.length));
     }
