@@ -18,26 +18,23 @@
             <span class="for-mobile">{{countryShort}}</span>
         </td>
         <td>{{timestamp}}</td>
-        <td class="for-desktop"><p v-for="(address, index) in addresses" v-bind:key="index">{{address}}</p></td>
+        <td class="for-desktop"><p v-for="(address, index) in addresses" v-bind:key="index">{{address}} <img :src="hostName + '/badResolutions/' + address + '-480x320.png'" height="75px" width="150px"/></p></td>
     </tr>
 </template>
 
 <script>
-  // import * as countries from "i18n-iso-countries";
-
-  // const countries = require("i18n-iso-countries");
-
   export default {
     name: "result-entry",
-    props: ['name', 'ns', 'country','countryShort', 'addresses', 'timestamp'],
+    props: ['name', 'ns', 'country','countryShort', 'addresses', 'timestamp', 'hostName'],
     data() {
         return {
           fa: "fa",
           good: "good",
           bad: "bad",
           goodIcon: "fa-check-circle",
-          badIcon: "fa-times-circle"
+          badIcon: "fa-times-circle",
+          image: ''
         }
-    }
+    },
   }
 </script>

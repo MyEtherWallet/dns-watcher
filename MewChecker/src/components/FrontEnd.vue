@@ -1,6 +1,4 @@
 <template>
-  <!--<div class="home">-->
-
   <div class="frontend">
 
     <header class="header">
@@ -10,46 +8,49 @@
         </div>
       </div>
     </header>
-<file-check/>
+    <file-check/>
 
-    <div class="buttons-container" >
+    <div class="buttons-container">
       <div class="page-container">
         <div class="buttons flex-box-item-center">
-          <h3 v-bind:class="[buttonClass, (currentFilter === 2) ? selectedClass : '']" v-on:click="filterEntries(2)">All</h3>
-          <h3 v-bind:class="[buttonClass, (currentFilter === 3) ? selectedClass : '']" v-on:click="filterEntries(3)">Errors</h3>
-          <h3 v-bind:class="[buttonClass, (currentFilter === 4) ? selectedClass : '']" v-on:click="filterEntries(4)">Valid</h3>
+          <h3 v-bind:class="[buttonClass, (currentFilter === 2) ? selectedClass : '']"
+              v-on:click="filterEntries(2)">All</h3>
+          <h3 v-bind:class="[buttonClass, (currentFilter === 3) ? selectedClass : '']"
+              v-on:click="filterEntries(3)">Errors</h3>
+          <h3 v-bind:class="[buttonClass, (currentFilter === 4) ? selectedClass : '']"
+              v-on:click="filterEntries(4)">Valid</h3>
         </div>
       </div>
     </div>
 
-    <div class="dns-table" >
+    <div class="dns-table">
       <div class="page-container">
         <dns-result-table
-        :currentFilter="currentFilter"></dns-result-table>
+          :currentFilter="currentFilter"></dns-result-table>
       </div>
     </div>
 
   </div>
-  <!--</div>-->
 </template>
 
 <script>
-import FileCheck from './FileCheck.vue'
-import DnsResultTable from './DnsResultTable.vue'
+import FileCheck from './FileCheck.vue';
+import DnsResultTable from './DnsResultTable.vue';
+
 export default {
   name: 'FrontEnd',
   props: {
     msg: String
   },
-  data(){
+  data() {
     return {
       currentFilter: 2,
-      buttonClass: "button",
-      selectedClass: "selected"
-    }
+      buttonClass: 'button',
+      selectedClass: 'selected'
+    };
   },
   methods: {
-    filterEntries(filter){
+    filterEntries(filter) {
       this.currentFilter = filter;
     }
   },
@@ -57,10 +58,9 @@ export default {
     'file-check': FileCheck,
     'dns-result-table': DnsResultTable
   }
-}
+};
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss">
   @import "FrontEnd.scss";
 </style>

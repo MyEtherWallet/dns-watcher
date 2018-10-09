@@ -1,5 +1,4 @@
 <template>
-    <!--<div ref="resultsTable">-->
     <div>
       <div class="pagination-buttons-container" >
         <div class="page-container">
@@ -21,7 +20,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <result-entry v-for="ip in paginated('allEntries')" :key="ip.ns" :name="ip.name" :ns="ip.ns" :addresses="ip.resolved" :timestamp="timestamp" :country="ip.country" :country-short="ip.countryShort"></result-entry>
+                    <result-entry v-for="ip in paginated('allEntries')" :key="ip.ns" :name="ip.name" :ns="ip.ns" :addresses="ip.resolved" :timestamp="timestamp" :country="ip.country" :country-short="ip.countryShort" :host-name="hostName"></result-entry>
                 </tbody>
             </table>
         </paginate>
@@ -42,6 +41,7 @@ export default {
             entries: [],
             all: [],
             timestamp: '',
+            hostName: window.location.origin,
             updateChecker: '',
             paginate: ["allEntries"],
             pageNum: 1
@@ -75,7 +75,6 @@ export default {
                         this.good.splice(0, this.good.length, ...json.good);
                         this.bad.splice(0, this.bad.length, ...json.bad);
                         this.timestamp = json.timestamp
-                        console.log("done")
                     } catch (e) {
                         console.error(e)
                     }
@@ -117,7 +116,6 @@ export default {
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
   @import "Pagination.scss";
 </style>

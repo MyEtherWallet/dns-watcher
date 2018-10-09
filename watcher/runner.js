@@ -3,23 +3,21 @@ const npmIp = require('ip');
 const _cliProgress = require('cli-progress');
 const countries = require('i18n-iso-countries');
 
-const nameservers = require('./ns_all.json');
-const allowedResolutions = require('./allowedResolutions.json');
-
 const bar1 = new _cliProgress.Bar({}, _cliProgress.Presets.shades_classic);
-bar1.start(nameservers.length, 0);
+
 const URL = 'myetherwallet.com';
 
 class Runner {
   constructor(_nameservers, _allowedResolutions) {
     this.enableNameServerSet = true;
     this.nameservers = _nameservers || nameservers;
+    bar1.start(this.nameservers.length, 0);
     this.counter = 0;
     this.NS_CACHE = {};
     this.results = {timestamp: '', good: [], bad: []};
     this.good = new Set();
     this.bad = new Set();
-    this.allowedResolutions = _allowedResolutions;
+    this.allowedResolutions = _allowedResolutions || allowedResolutions;
 
     this.setProgress = () => {
       this.counter++;
@@ -79,8 +77,8 @@ class Runner {
       let addr = addresses[i];
       if (!this.NS_CACHE[addr]) {
         let ipValid = false;
-        for (let j = 0; j < allowedResolutions.length; j++) {
-          if (npmIp.cidrSubnet(allowedResolutions[j]).contains(addr)) {
+        for (let j = 0; j < this.allowedResolutions.length; j++) {
+          if (npmIp.cidrSubnet(this.allowedResolutions[j]).contains(addr)) {
             this.NS_CACHE[addr] = true;
             ipValid = true;
             break;
@@ -101,7 +99,6 @@ class Runner {
             self.setProgress();
             if (!err) {
               let countryName;
-              // console.log(addresses); //todo remove dev item
               if (!self.isValidRecord(addresses)) {
                 countryName = countries.getName(_ns[1], 'en');
                 self.addBad({
@@ -112,7 +109,6 @@ class Runner {
                   name: _ns[2],
                   resolved: addresses
                 });
-                // console.error("invalid record found", _ns, addresses);
                 let invalidDetails = ' NameServer Details:' + _ns.join(', ') + ', Resolved Addresses: ' + addresses.join(', ');
                 self.emitter ? self.emitter.emit('invalidDNS', invalidDetails) : console.error(invalidDetails);
 
@@ -131,7 +127,6 @@ class Runner {
         } catch (e) {
           console.error(e);
           this.emitter ? this.emitter.emit('error', `INNER ERROR in runner(): ${e}`) : console.error(e);
-          // logger.error(e);
         }
       });
     } catch (e) {
@@ -140,10 +135,7 @@ class Runner {
       // if something goes wrong replace nameserver list with the internal list.
       // because we are relying on a third party for the list and if it is malformed or something we still want to be able to have a list to use
       // and we will stop the nameserver list from updating and replacing the known working list with the malformed list again.
-
       this.enableNameServerSet = false;
-      // this.setNameservers(nameservers);
-      // this.run();
     }
   }
 
