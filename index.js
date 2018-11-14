@@ -3,12 +3,6 @@
 // See: https://www.npmjs.com/package/module-alias //
 require('module-alias/register')
 
-const rs = require('@lib/redis-store')
+const hc = require('@lib/health-check')
 
-rs.setNameServerStatus('test', {'hi': 'lala'})
-
-rs.getNameServerStatus('test')
-  .then(data => {
-    console.log(data)
-  })
-
+hc.init()

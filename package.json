@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "RES_OPTIONS='retrans:100' node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -11,7 +12,7 @@
   "dependencies": {
     "async": "^2.6.1",
     "async-redis": "^1.1.4",
-    "dns": "^0.2.2",
+    "i18n-iso-countries": "^3.7.8",
     "ip": "^1.1.5",
     "module-alias": "^2.1.0",
     "redis": "^2.8.0",
