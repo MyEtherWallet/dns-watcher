@@ -1,0 +1,25 @@
+{
+  "name": "dns-watcher",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "async": "^2.6.1",
+    "async-redis": "^1.1.4",
+    "dns": "^0.2.2",
+    "ip": "^1.1.5",
+    "module-alias": "^2.1.0",
+    "redis": "^2.8.0",
+    "request": "^2.88.0"
+  },
+  "_moduleAliases": {
+    "@": "",
+    "@lib": "lib",
+    "@lists": "lists"
+  }
+}
