@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "RES_OPTIONS='retrans:5000' node index.js",
+    "start": "RES_OPTIONS='retrans:5000' node --max-old-space-size=8192 index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
