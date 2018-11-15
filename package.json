@@ -21,6 +21,7 @@
     "module-alias": "^2.1.0",
     "moment": "^2.22.2",
     "native-dns": "^0.7.0",
+    "pageres": "^4.5.1",
     "redis": "^2.8.0",
     "redis-await": "^1.0.6",
     "request": "^2.88.0",
