@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "RES_OPTIONS='retrans:100' node index.js",
+    "start": "RES_OPTIONS='retrans:5000' node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -12,11 +12,19 @@
   "dependencies": {
     "async": "^2.6.1",
     "async-redis": "^1.1.4",
+    "cli-progress": "^2.1.0",
+    "firstline": "^2.0.2",
+    "fs-extra": "^7.0.1",
+    "function-rate-limit": "^1.1.0",
     "i18n-iso-countries": "^3.7.8",
     "ip": "^1.1.5",
     "module-alias": "^2.1.0",
+    "moment": "^2.22.2",
+    "native-dns": "^0.7.0",
     "redis": "^2.8.0",
-    "request": "^2.88.0"
+    "redis-await": "^1.0.6",
+    "request": "^2.88.0",
+    "request-promise-native": "^1.0.5"
   },
   "_moduleAliases": {
     "@": "",
