@@ -12,7 +12,6 @@ function init() {
 }
 
 hc.emitter.on('end', async () => {
-  console.log('\n Updating JSON list...')
   await jg.init()
   init()
 })
