@@ -1,5 +1,5 @@
 {
-  "name": "dns-watcher",
+  "name": "dns-watcher-frtonednd",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -10,6 +10,7 @@
   "dependencies": {
     "request-promise-native": "^1.0.5",
     "superstatic": "^5.0.1",
+    "underscore": "^1.9.1",
     "vue": "^2.5.16",
     "vue-paginate": "^3.6.0",
     "vue-router": "^3.0.1",

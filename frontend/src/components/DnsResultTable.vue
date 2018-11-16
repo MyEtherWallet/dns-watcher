@@ -30,6 +30,7 @@
 import ResultEntry from './ResultEntry.vue'
 
 const request = require('request-promise-native')
+const _ = require('underscore')
 
 export default {
     name: 'dns-result-table',
@@ -69,6 +70,8 @@ export default {
                 .then((result) => {
                     try {
                         let json = JSON.parse(result)
+                        let sorted = _.groupBy(json, 'status')
+                        console.log(sorted)
                         let allItems = [...json.bad, ...json.good]
                         this.all = allItems
                         if(this.entries.length==0) this.entries = this.all

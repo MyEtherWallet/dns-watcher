@@ -9,7 +9,7 @@ var spec = {
   errorPage: __dirname + '/error.html',
   config: {
     'rewrites': [
-      {'source': '/dns-report', 'destination': './validityList.json'},
+      {'source': '/dns-report', 'destination': './status-list.json'},
       {'source': '/new-results', 'destination': './timeCheck.json'},
     ],
     "headers": [

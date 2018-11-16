@@ -13,7 +13,7 @@ module.exports = {
       app.use('/dns-report', (req, res, next) => {
         console.log(req.url); //todo remove dev item
 
-        let _filepath = path.join(__dirname, 'dist', 'validityList.json');
+        let _filepath = path.join(__dirname, 'dist', 'status-list.json');
         try {
           fs.access(_filepath, fs.constants.R_OK | fs.constants.W_OK, (err) => {
             if (err) {
