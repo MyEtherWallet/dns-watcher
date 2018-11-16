@@ -1,4 +1,4 @@
-2018-11-16T00:32:59.571Z
+2018-11-16T01:08:39.674Z
 ip,name,country_id,city,version,error,dnssec,reliability,checked_at,created_at
 8.8.8.8,google-public-dns-a.google.com.,US,,,,true,1.00,2018-11-15T07:28:47Z,2009-12-04T10:01:47Z
 194.150.168.168,dns.as250.net.,DE,,,,true,1.00,2018-11-15T07:28:47Z,2009-05-13T01:05:07Z

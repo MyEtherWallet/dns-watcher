@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "RES_OPTIONS='retrans:2000 retry:2' node --max-old-space-size=8192 index.js"
+    "start": "RES_OPTIONS='retrans:2500 retry:2' node --max-old-space-size=8192 index.js"
   },
   "author": "",
   "license": "ISC",
