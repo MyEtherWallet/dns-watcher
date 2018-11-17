@@ -25,7 +25,7 @@
 <script>
   export default {
     name: "result-entry",
-    props: ['name', 'ns', 'country','countryShort', 'addresses', 'timestamp', 'hostName'],
+    props: ['name', 'ns', 'status', 'country','countryShort', 'addresses', 'timestamp', 'hostName'],
     data() {
         return {
           fa: "fa",

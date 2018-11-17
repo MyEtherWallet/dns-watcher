@@ -20,7 +20,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <result-entry v-for="ip in paginated('allEntries')" :key="ip.ns" :name="ip.name" :ns="ip.ns" :addresses="ip.resolved" :timestamp="timestamp" :country="ip.country" :country-short="ip.countryShort" :host-name="hostName"></result-entry>
+                    <result-entry v-for="ip in paginated('allEntries')" :key="ip.ns" :status="ip.status" :name="ip.name" :ns="ip.ns" :addresses="ip.resolved" :timestamp="timestamp" :country="ip.country" :country-short="ip.countryShort" :host-name="hostName"></result-entry>
                 </tbody>
             </table>
         </paginate>
@@ -50,8 +50,8 @@ export default {
     },
     watch: {
         currentFilter: function(newVal) {
-            if (newVal == 3) this.entries = this.bad
-            else if (newVal == 4) this.entries = this.good
+            if (newVal == 3) this.entries = this.false
+            else if (newVal == 4) this.entries = this.true
             else this.entries = this.all
             this.goToPage(1)
             this.pageNum = 1
@@ -71,12 +71,11 @@ export default {
                     try {
                         let json = JSON.parse(result)
                         let sorted = _.groupBy(json, 'status')
-                        console.log(sorted)
-                        let allItems = [...json.bad, ...json.good]
+                        let allItems = [...sorted.false, ...sorted.true]
                         this.all = allItems
                         if(this.entries.length==0) this.entries = this.all
-                        this.good.splice(0, this.good.length, ...json.good);
-                        this.bad.splice(0, this.bad.length, ...json.bad);
+                        this.true.splice(0, this.true.length, ...json.true);
+                        this.false.splice(0, this.false.length, ...json.false);
                         this.timestamp = json.timestamp
                     } catch (e) {
                         console.error(e)
