@@ -8,7 +8,7 @@
           <h4>status.myetherwallet.com</h4>
         </div>
         <div class="current-status ">
-          <p class="good-files"><i class="fa fa-check-circle-o" aria-hidden="true"></i> Valid</p>
+          <p class="good-files"><i class="fa fa-check-circle-o" aria-hidden="true"></i> VALID</p>
         </div>
       </div>
     </div>
@@ -31,7 +31,7 @@
         <h4>status.myetherwallet.com</h4>
       </div>
       <div class="current-status">
-        <p class="checking-files"><i class="fa fa-refresh" aria-hidden="true"></i> checking</p>
+        <p class="checking-files"><i class="fa fa-refresh" aria-hidden="true"></i> CHECKING</p>
 
       </div>
     </div>

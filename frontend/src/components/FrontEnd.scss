@@ -2,12 +2,12 @@
 $white: #fff;
 $black: #7b7b7b;
 $real-black: #000;
-$green: #28e2b9;
+$green: #1685a8; // #28e2b9;
 $red: #e20000;
 $grey: #bdbdbd;
 $light-grey: #cecece;
-$header-background: #04c699;
-$page-title-background: #28e2b9;
+$header-background: linear-gradient(149deg,#132a45,#143a56,#21a4ce,#19b4ad); // #3e3e3e; // #04c699;
+$page-title-background: #FFF; // #1685a8; // #28e2b9;
 $thead-background: #f2f2f2;
 
 // RESET ==================================
@@ -173,7 +173,7 @@ h4 {
 }
 
 .header {
-  background-color: $header-background;
+  background: $header-background;
   padding: 10px 0;
 
   @media (max-width: 799px) {
@@ -181,6 +181,7 @@ h4 {
   }
 
   .header-elements-container {
+    background: none;
     display: flex;
 
     .logo-image {
@@ -192,7 +193,6 @@ h4 {
 }
 
 .page-title {
-  background-color: $page-title-background;
   padding: 20px 0;
 
   @media (max-width: 799px) {
@@ -201,7 +201,6 @@ h4 {
 
   .title {
     h1 {
-      color: $white;
       font-size: 28px;
       font-weight: 600;
 
@@ -212,7 +211,7 @@ h4 {
     }
 
     h4 {
-      color: $white;
+      color: #a2a2a2;
       font-size: 20px;
 
       @media (max-width: 799px) {
@@ -231,27 +230,27 @@ h4 {
 
 
       @media (min-width: 800px) {
-        background-color: $white;
-        border: 2px solid $white;
+        background-color: darken($green, 7%);
+        border: 1px solid darken($green, 14%);
         border-radius: 100px;
-         color: $page-title-background;
-
-
-        // color: $white;
-        font-size: 40px;
-        // font-weight: 400;
+        color: #fff;
+        // text-shadow: 1px 1px rgba(0, 0, 0, 0.17);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 27px;
         padding: 15px 40px;
 
         i {
-          font-size: 60px;
+          font-size: 32px;
           vertical-align: middle;
-
+          margin-right: 5px;
         }
       }
 
       @media (max-width: 799px) {
         color: $white;
-        font-size: 30px;
+        font-size: 28px;
         font-weight: 600;
         padding: 0 10px 0 3px;
         text-transform: uppercase;
@@ -272,6 +271,7 @@ h4 {
   padding: 0;
   padding-bottom: 20px;
   user-select: none;
+  border-bottom: 1px solid #eaeaea;
 
   >div {
     justify-content: center;
@@ -283,10 +283,13 @@ h4 {
     .button {
       background-color: $white;
       border-radius: 100px;
-      color: $header-background;
+      width: 86px;
+      text-align: center;
       cursor: pointer;
       padding: 10px 15px;
       text-transform: uppercase;
+      font-size: 16px;
+      border: 1px solid #7c7c7c;
 
       @media (max-width: 799px) {
         font-size: 12px;
@@ -295,16 +298,34 @@ h4 {
       }
 
       &.selected {
-        // border-bottom: 2px solid $black;
-        // background-color: $real-black;
-        // color: $white;
-        border: 10px solid $header-background;
+        background: $green;
+        border-color: darken($green, 7%);
+        color: #FFF;
+        font-weight: bold;
       }
     }
   }
 }
 
 .dns-table {
+
+  background: #fafafa;
+  padding: 20px 10px;
+
+  & > .page-container {
+    padding: 20px;
+    background: #FFF;
+    box-shadow: 0px 19px 47px 2px rgba(0,0,0,.07);
+  }
+
+  .buttons {
+    padding-bottom: 10px;
+
+    h4 {
+      font-size: 16px;
+    }
+  }
+
   .fa {
     font-size: 20px;
 
@@ -327,6 +348,19 @@ h4 {
     td {
       $table-element-padding: 15px;
       padding: $table-element-padding;
+      vertical-align: middle;
+      line-height: 1.3;
+      font-size: 14px;
+
+      h6 {
+        font-weight: bold;
+      }
+
+      h6 + p {
+        color: #a2a2a2;
+        font-weight: 300;
+        font-size: 13px;
+      }
 
       @media (max-width: 799px) {
         padding: 6px 3px;
@@ -385,13 +419,16 @@ h4 {
   }
 
   .bad-files {
-    color: #e20000 !important;
+    background: #e20000 !important;
+    border-color: darken(#e20000, 10%) !important;
   }
   .good-files {
-    color: #28e2b9 !important;
+    background: $green !important;
   }
   .checking-files {
-    color: #dfe286 !important;
+    background: #dfe286 !important;
+    border-color: darken(#dfe286, 14%) !important;
+    color: #000 !important;
   }
 }
 

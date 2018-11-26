@@ -7,7 +7,8 @@
     "prestart": "npm --prefix ./frontend run build",
     "start": "RES_OPTIONS='retrans:2500 retry:2' node --max-old-space-size=8192 index.js",
     "postinstall": "npm --prefix ./frontend install ./frontend",
-    "build": "npm --prefix ./frontend build ./frontend"
+    "build": "npm --prefix ./frontend build ./frontend",
+    "dev": "npm --prefix ./frontend run build && node frontend/web-server.js"
   },
   "author": "",
   "license": "ISC",

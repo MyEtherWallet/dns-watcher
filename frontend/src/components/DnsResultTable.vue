@@ -3,12 +3,12 @@
       <div class="pagination-buttons-container" >
         <div class="page-container">
           <div class="buttons flex-box-item-center">
-            <h4 class="button" @click="goToPage(--pageNum)"><i class="fa fa-arrow-left" aria-hidden="true"></i> Go to previous page</h4>
-            <h4 class="button" @click="goToPage(++pageNum)">Go to next page <i class="fa fa-arrow-right" aria-hidden="true"></i></h4>
+            <h4 class="button" @click="goToPage(--pageNum)"><i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp;&nbsp;PREV</h4>
+            <h4 class="button" @click="goToPage(++pageNum)">NEXT&nbsp;&nbsp;<i class="fa fa-arrow-right" aria-hidden="true"></i></h4>
           </div>
         </div>
       </div>
-        <paginate ref="paginator" name="allEntries" :list="entries" :per="50">
+        <paginate ref="paginator" name="allEntries" :list="all" :per="50">
             <table>
                 <thead>
                     <tr>
@@ -20,7 +20,18 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <result-entry v-for="ip in paginated('allEntries')" :key="ip.ns" :status="ip.status" :name="ip.name" :ns="ip.ns" :addresses="ip.resolved" :timestamp="timestamp" :country="ip.country" :country-short="ip.countryShort" :host-name="hostName"></result-entry>
+                    <result-entry 
+                        v-for="ip in paginated('allEntries')" 
+                        :key="ip.ns" :status="ip.status" 
+                        :name="ip.name" 
+                        :ns="ip.ns"
+                        :status="ip.status"
+                        :addresses="ip.resolved" 
+                        :timestamp="ip.timestamp" 
+                        :country="ip.country" 
+                        :country-short="ip.countryShort" 
+                        :host-name="hostName">
+                    </result-entry>
                 </tbody>
             </table>
         </paginate>
@@ -39,7 +50,7 @@ export default {
         return {
             good: [],
             bad: [],
-            entries: [],
+            // entries: [],
             all: [],
             timestamp: '',
             hostName: window.location.origin,
@@ -71,12 +82,9 @@ export default {
                     try {
                         let json = JSON.parse(result)
                         let sorted = _.groupBy(json, 'status')
-                        let allItems = [...sorted.false, ...sorted.true]
-                        this.all = allItems
-                        if(this.entries.length==0) this.entries = this.all
-                        this.true.splice(0, this.true.length, ...json.true);
-                        this.false.splice(0, this.false.length, ...json.false);
-                        this.timestamp = json.timestamp
+                        this.good = sorted.true
+                        this.bad = sorted.false
+                        this.all = [...this.bad, ...this.good]
                     } catch (e) {
                         console.error(e)
                     }
@@ -109,7 +117,7 @@ export default {
     },
     created() {
         this.getDnsResults()
-        this.checkForResultUpdate()
+        // this.checkForResultUpdate()
     },
     beforeCreate() {},
     components: {
