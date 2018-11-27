@@ -5,8 +5,9 @@ $real-black: #000;
 $green: #1685a8; // #28e2b9;
 $red: #e20000;
 $grey: #bdbdbd;
+$good: #16aea0;
 $light-grey: #cecece;
-$header-background: linear-gradient(149deg,#132a45,#143a56,#21a4ce,#19b4ad); // #3e3e3e; // #04c699;
+$header-background: #083340; //linear-gradient(149deg,#132a45,#143a56,#21a4ce,#19b4ad); // #3e3e3e; // #04c699;
 $page-title-background: #FFF; // #1685a8; // #28e2b9;
 $thead-background: #f2f2f2;
 
@@ -172,8 +173,12 @@ h4 {
   display: flex;
 }
 
-.header {
+.top {
   background: $header-background;
+}
+
+.header {
+  // background: $header-background;
   padding: 10px 0;
 
   @media (max-width: 799px) {
@@ -201,8 +206,9 @@ h4 {
 
   .title {
     h1 {
-      font-size: 28px;
+      font-size: 32px;
       font-weight: 600;
+      color: #FFF;
 
       @media (max-width: 799px) {
         font-size: 18px;
@@ -211,8 +217,8 @@ h4 {
     }
 
     h4 {
-      color: #a2a2a2;
-      font-size: 20px;
+      color: #ddd;
+      font-size: 18px;
 
       @media (max-width: 799px) {
         font-size: 13px;
@@ -230,11 +236,9 @@ h4 {
 
 
       @media (min-width: 800px) {
-        background-color: darken($green, 7%);
-        border: 1px solid darken($green, 14%);
+        background: #FFF;
         border-radius: 100px;
-        color: #fff;
-        // text-shadow: 1px 1px rgba(0, 0, 0, 0.17);
+        color: $green;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -267,9 +271,8 @@ h4 {
 }
 
 .buttons-container {
-  background-color: $page-title-background;
+  // background-color: $page-title-background;
   padding: 0;
-  padding-bottom: 20px;
   user-select: none;
   border-bottom: 1px solid #eaeaea;
 
@@ -281,15 +284,14 @@ h4 {
     justify-content: space-evenly;
 
     .button {
-      background-color: $white;
-      border-radius: 100px;
       width: 86px;
       text-align: center;
       cursor: pointer;
       padding: 10px 15px;
       text-transform: uppercase;
       font-size: 16px;
-      border: 1px solid #7c7c7c;
+      border: 2px solid rgba(0, 0, 0, 0);
+      color: #e2e2e2;
 
       @media (max-width: 799px) {
         font-size: 12px;
@@ -297,11 +299,12 @@ h4 {
         margin: 0;
       }
 
-      &.selected {
-        background: $green;
-        border-color: darken($green, 7%);
-        color: #FFF;
+      &.selected,
+      &:hover {
+        transition: color 0.2s linear;
+        color: #FFF;  
         font-weight: bold;
+        border-bottom: 3px solid #FFF;
       }
     }
   }
@@ -330,7 +333,7 @@ h4 {
     font-size: 20px;
 
     &.good {
-      color: $green;
+      color: $good;
 		}
 
     &.bad {
@@ -419,16 +422,13 @@ h4 {
   }
 
   .bad-files {
-    background: #e20000 !important;
-    border-color: darken(#e20000, 10%) !important;
+    color: #e20000 !important;
   }
   .good-files {
-    background: $green !important;
+    color: $good !important;
   }
   .checking-files {
-    background: #dfe286 !important;
-    border-color: darken(#dfe286, 14%) !important;
-    color: #000 !important;
+    color: #dfe286 !important;
   }
 }
 
