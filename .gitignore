@@ -16,6 +16,7 @@ yarn-error.log*
 /.env
 /scraps/
 /scraps/inBrowserFileCheck.js
+/frontend/dist/*
 /frontend/dist/static/
 /frontend/dist/index.html
 /frontend/node_modules/
