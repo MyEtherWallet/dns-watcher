@@ -22,19 +22,16 @@ export default function fileCheck(files) {
 
 }
 
-function getAndCompare(file, callback) {
+async function getAndCompare(file, callback) {
   let github = 'https://raw.githubusercontent.com/kvhnuke/etherwallet/gh-pages';
   let site = 'https://www.myetherwallet.com';
   let time_stamp = Date.now();
-  request(github + file + '?' + time_stamp)
-    .then((result) => {
-      request(site + file + '?' + time_stamp)
-        .then((_result) => {
-          if (result === _result) {
-            callback(true);
-          } else {
-            callback(false);
-          }
-        });
-    });
+  let githubResult = await request(github + file + '?' + time_stamp)
+  try {
+    let siteResult = await request(site + file + '?' + time_stamp)
+    if (githubResult === siteResult) return callback(true)
+    return callback(false)
+  } catch(e) {
+    return callback(false)    
+  }
 }

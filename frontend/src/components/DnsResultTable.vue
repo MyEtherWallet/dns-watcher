@@ -3,12 +3,13 @@
       <div class="pagination-buttons-container" >
         <div class="page-container">
           <div class="buttons flex-box-item-center">
-            <h4 class="button" @click="goToPage(--pageNum)"><i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp;&nbsp;PREV</h4>
-            <h4 class="button" @click="goToPage(++pageNum)">NEXT&nbsp;&nbsp;<i class="fa fa-arrow-right" aria-hidden="true"></i></h4>
+            <h4 class="button" v-if="pageNum != 1" @click="goToPage(--pageNum)"><i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp;&nbsp;PREV</h4>
+            <div v-else></div>
+            <h4 class="button" v-if="pageNum < maxPages" @click="goToPage(++pageNum)">NEXT&nbsp;&nbsp;<i class="fa fa-arrow-right" aria-hidden="true"></i></h4>
           </div>
         </div>
       </div>
-        <paginate ref="paginator" name="allEntries" :list="all" :per="50">
+        <paginate ref="paginator" name="allEntries" :list="entries" :per="resultsPerPage">
             <table>
                 <thead>
                     <tr>
@@ -50,20 +51,27 @@ export default {
         return {
             good: [],
             bad: [],
-            // entries: [],
+            entries: [],
             all: [],
             timestamp: '',
             hostName: window.location.origin,
             updateChecker: '',
             paginate: ["allEntries"],
-            pageNum: 1
+            pageNum: 1,
+            resultsPerPage: 50
+        }
+    },
+    computed: {
+        maxPages() {
+            return Math.ceil(this.entries.length / this.resultsPerPage)
         }
     },
     watch: {
         currentFilter: function(newVal) {
-            if (newVal == 3) this.entries = this.false
-            else if (newVal == 4) this.entries = this.true
-            else this.entries = this.all
+            console.log(newVal)
+            if (newVal == 2) this.entries = this.all
+            else if (newVal == 3) this.entries = this.bad
+            else this.entries = this.good
             this.goToPage(1)
             this.pageNum = 1
         }
@@ -85,6 +93,7 @@ export default {
                         this.good = sorted.true
                         this.bad = sorted.false
                         this.all = [...this.bad, ...this.good]
+                        this.entries = this.all
                     } catch (e) {
                         console.error(e)
                     }

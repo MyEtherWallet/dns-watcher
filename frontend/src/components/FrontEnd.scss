@@ -5,9 +5,9 @@ $real-black: #000;
 $green: #1685a8; // #28e2b9;
 $red: #e20000;
 $grey: #bdbdbd;
-$good: #16aea0;
+$good: #12b5a0;
 $light-grey: #cecece;
-$header-background: #083340; //linear-gradient(149deg,#132a45,#143a56,#21a4ce,#19b4ad); // #3e3e3e; // #04c699;
+$header-background: #0b2a47; //linear-gradient(149deg,#132a45,#143a56,#21a4ce,#19b4ad); // #3e3e3e; // #04c699;
 $page-title-background: #FFF; // #1685a8; // #28e2b9;
 $thead-background: #f2f2f2;
 
@@ -217,7 +217,7 @@ h4 {
     }
 
     h4 {
-      color: #ddd;
+      color: #c5c5c5;
       font-size: 18px;
 
       @media (max-width: 799px) {
@@ -363,6 +363,11 @@ h4 {
         color: #a2a2a2;
         font-weight: 300;
         font-size: 13px;
+      }
+
+      &.for-desktop i {
+        display: block;
+        text-align: center;
       }
 
       @media (max-width: 799px) {
