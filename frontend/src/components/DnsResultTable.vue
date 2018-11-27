@@ -22,10 +22,10 @@
                 <tbody>
                     <result-entry 
                         v-for="ip in paginated('allEntries')" 
-                        :key="ip.ns" :status="ip.status" 
+                        :key="ip.ns" 
+                        :status="ip.status" 
                         :name="ip.name" 
                         :ns="ip.ns"
-                        :status="ip.status"
                         :addresses="ip.resolved" 
                         :timestamp="ip.timestamp" 
                         :country="ip.country" 

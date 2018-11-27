@@ -8,6 +8,7 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "node-notifier": "^5.3.0",
     "request-promise-native": "^1.0.5",
     "superstatic": "^5.0.1",
     "underscore": "^1.9.1",
