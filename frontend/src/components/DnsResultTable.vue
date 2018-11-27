@@ -87,6 +87,7 @@ export default {
         getDnsResults() {
             request(window.location.origin + '/dns-report')
                 .then((result) => {
+                    console.log(result)
                     try {
                         let json = JSON.parse(result)
                         let sorted = _.groupBy(json, 'status')
