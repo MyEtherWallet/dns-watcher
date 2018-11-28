@@ -9,7 +9,7 @@
           </div>
         </div>
       </div>
-        <paginate ref="paginator" name="allEntries" :list="entries" :per="resultsPerPage">
+        <paginate ref="paginator" name="entries" :list="entries" :per="resultsPerPage">
             <table>
                 <thead>
                     <tr>
@@ -22,7 +22,7 @@
                 </thead>
                 <tbody>
                     <result-entry 
-                        v-for="ip in paginated('allEntries')" 
+                        v-for="ip in paginated('entries')" 
                         :key="ip.ns" 
                         :status="ip.status" 
                         :name="ip.name" 
@@ -56,7 +56,7 @@ export default {
             timestamp: '',
             hostName: window.location.origin,
             updateChecker: '',
-            paginate: ["allEntries"],
+            paginate: ["entries"],
             pageNum: 1,
             resultsPerPage: 50
         }
@@ -64,16 +64,29 @@ export default {
     computed: {
         maxPages() {
             return Math.ceil(this.entries.length / this.resultsPerPage)
+        },
+        emptyEntries () {
+            return this.entries.length == 0
         }
     },
     watch: {
         currentFilter: function(newVal) {
-            console.log(newVal)
             if (newVal == 2) this.entries = this.all
             else if (newVal == 3) this.entries = this.bad
             else this.entries = this.good
+            this.entries = this.entries.slice(0)
             this.goToPage(1)
             this.pageNum = 1
+        },
+        // See: https://stackoverflow.com/questions/50632923/vue-vue-paginate-array-will-not-refresh-once-empty 
+        emptyEntries: function(newVal, oldVal) {
+          if ( newVal === false && oldVal === true ) {
+            setTimeout(() => {
+              if (this.$refs.paginator) {
+                this.$refs.paginator.goToPage(this.pageNum)
+              }
+            }, 50)
+          }
         }
     },
     methods: {
@@ -85,49 +98,25 @@ export default {
             if (_pnum > this.$refs.paginator.lastPage) this.pageNum = this.$refs.paginator.lastPage
         },
         getDnsResults() {
+            console.log('lol')
             request(window.location.origin + '/dns-report')
-                .then((result) => {
-                    console.log(result)
-                    try {
-                        let json = JSON.parse(result)
-                        let sorted = _.groupBy(json, 'status')
-                        this.good = sorted.true
-                        this.bad = sorted.false
-                        this.all = [...this.bad, ...this.good]
-                        this.entries = this.all
-                    } catch (e) {
-                        console.error(e)
-                    }
-                })
-        },
-        checkForResultUpdate() {
-            this.updateChecker = setInterval(() => {
-                request(window.location.origin + '/new-results')
-                    .then(JSON.parse)
-                    .then((result) => {
-                        try {
-                            let displayedList = Date.parse(this.timestamp)
-                            let currentList = Date.parse(result.timestamp)
-                            if (+currentList > +displayedList) {
-                                this.getDnsResults()
-                            }
-                        } catch (e) {
-                            console.error(e)
-                        }
-                    })
-                    .catch(error => {
-                        console.log(error)
-                        clearInterval(this.updateChecker)
-                        setTimeout(() => {
-                                this.checkForResultUpdate()
-                            }, 60000) // retry after a minute
-                    })
-            }, 10000)
+              .then((result) => {
+                try {
+                    let json = JSON.parse(result)
+                    let sorted = _.groupBy(json, 'status')
+                    this.good = sorted.true || []
+                    this.bad = sorted.false || []
+                    this.all = [...this.bad, ...this.good]
+                    this.entries = this.all
+                } catch (e) {
+                    console.error(e)
+                }
+              })
         }
     },
     created() {
         this.getDnsResults()
-        // this.checkForResultUpdate()
+        setInterval(this.getDnsResults, 60 * 1000)
     },
     beforeCreate() {},
     components: {

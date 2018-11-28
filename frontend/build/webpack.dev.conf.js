@@ -1,5 +1,7 @@
 'use strict'
 const utils = require('./utils')
+const express = require('express')
+const fs = require('fs')
 const webpack = require('webpack')
 const config = require('../config')
 const merge = require('webpack-merge')
@@ -12,6 +14,7 @@ const portfinder = require('portfinder')
 
 const HOST = process.env.HOST
 const PORT = process.env.PORT && Number(process.env.PORT)
+const STATUS_LIST_PATH = path.join(__dirname, '../public', 'status-list.json')
 
 const devWebpackConfig = merge(baseWebpackConfig, {
   module: {
@@ -23,10 +26,20 @@ const devWebpackConfig = merge(baseWebpackConfig, {
   // these devServer options should be customized in /config/index.js
   devServer: {
     clientLogLevel: 'warning',
-    historyApiFallback: {
-      rewrites: [
-        { from: /.*/, to: path.posix.join(config.dev.assetsPublicPath, 'index.html') },
-      ],
+    // historyApiFallback: {
+    //   rewrites: [
+    //     { from: /.*/, to: path.posix.join(config.dev.assetsPublicPath, 'index.html') },
+    //   ],
+    // },
+    before: function(app) {
+      app.get('/dns-report', function(req, res) {
+        fs.readFile(STATUS_LIST_PATH, 'utf8', (err, data) => {
+          if(err) return res.status(404).send()
+          let json = JSON.parse(data)
+          res.json(json)
+        })
+      })
+      app.use('/screenshots', express.static('../public/screenshots'))
     },
     hot: true,
     contentBase: false, // since we use CopyWebpackPlugin.

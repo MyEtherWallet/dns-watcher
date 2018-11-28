@@ -19,12 +19,12 @@ const jsonGenerator = require('@lib/json-generator')
  * 2) On Health Check "end", generate a resulting JSON file for the static frontend
  * 3) Re-run Health Check
  */
-(function init() {
+!function init() {
   healthCheck.emitter.on('end', async () => {
     await jsonGenerator.init()
     healthCheck.init()
   })
   healthCheck.init()
-})()
+}()
 
 

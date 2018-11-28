@@ -370,6 +370,11 @@ h4 {
         text-align: center;
       }
 
+      img {
+        display: block;
+        margin: 0 auto;
+      }
+
       @media (max-width: 799px) {
         padding: 6px 3px;
       }
