@@ -53,3 +53,7 @@ npm run dev
 ```bash
 npm run prod
 ```
+
+## References
+
+https://stackoverflow.com/questions/10777657/node-js-dns-lookup-how-to-set-timeout

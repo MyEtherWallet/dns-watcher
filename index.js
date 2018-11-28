@@ -1,7 +1,5 @@
 'use strict'
 
-// https://stackoverflow.com/questions/10777657/node-js-dns-lookup-how-to-set-timeout //
-
 // See: https://www.npmjs.com/package/module-alias //
 require('module-alias/register')
 
