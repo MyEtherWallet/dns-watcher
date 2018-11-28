@@ -98,7 +98,6 @@ export default {
             if (_pnum > this.$refs.paginator.lastPage) this.pageNum = this.$refs.paginator.lastPage
         },
         getDnsResults() {
-            console.log('lol')
             request(window.location.origin + '/dns-report')
               .then((result) => {
                 try {

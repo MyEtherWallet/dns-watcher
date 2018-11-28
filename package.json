@@ -4,11 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "prestart": "npm --prefix ./frontend run build",
-    "start": "RES_OPTIONS='retrans:2500 retry:2' node --max-old-space-size=8192 index.js",
     "postinstall": "npm --prefix ./frontend install ./frontend",
-    "build": "npm --prefix ./frontend build ./frontend",
-    "dev": "./frontend/node_modules/webpack-dev-server/bin/webpack-dev-server.js -d --history-api-fallback --config ./frontend/build/webpack.dev.conf.js"
+    "prestart": "npm run env && npm --prefix ./frontend run build",
+    "start": "RES_OPTIONS='retrans:2500 retry:2' node --max-old-space-size=8192 index.js",
+    "env": "node build/vue-env.js",
+    "dev": "./frontend/node_modules/webpack-dev-server/bin/webpack-dev-server.js -d --history-api-fallback --config ./frontend/build/webpack.dev.conf.js",
+    "prod": "npm --prefix ./frontend start"
   },
   "author": "",
   "license": "ISC",

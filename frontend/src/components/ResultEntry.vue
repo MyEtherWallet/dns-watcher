@@ -20,11 +20,11 @@
         <td>{{prettyDate}}</td>
         <td class="for-desktop">
           <p 
-            v-if="!status"
             v-for="(address, index) in addresses" 
             v-bind:key="index">
               <i>{{address}}</i>
-              <img 
+              <img
+                v-if="!status"
                 :src="hostName + '/screenshots/' + address + '-480x320.png'" 
                 height="100px" 
                 width="150px"/>

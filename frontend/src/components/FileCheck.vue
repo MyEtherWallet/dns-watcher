@@ -5,7 +5,7 @@
       <div class="page-container flex-box-item-center">
         <div class="title">
           <h1>DNS Watcher</h1>
-          <h4>status.myetherwallet.com</h4>
+          <h4>{{status_site}}</h4>
         </div>
         <div class="current-status ">
           <p class="good-files"><i class="fa fa-check-circle-o" aria-hidden="true"></i> VALID</p>
@@ -16,7 +16,7 @@
       <div class="page-container flex-box-item-center">
         <div class="title">
           <h1>DNS Watcher</h1>
-          <h4>status.myetherwallet.com</h4>
+          <h4>{{status_site}}</h4>
         </div>
         <div class="current-status ">
           <p class="bad-files"><i class="fa fa-times-circle-o" aria-hidden="true"></i> ERROR</p>
@@ -28,7 +28,7 @@
     <div class="page-container flex-box-item-center">
       <div class="title">
         <h1>DNS Watcher</h1>
-        <h4>status.myetherwallet.com</h4>
+        <h4>{{status_site}}</h4>
       </div>
       <div class="current-status">
         <p class="checking-files"><i class="fa fa-refresh" aria-hidden="true"></i> CHECKING</p>
@@ -60,7 +60,8 @@ export default {
     return {
       checkComplete: false,
       fileCheckResult: false,
-      poolingFileCheck: ''
+      poolingFileCheck: '',
+      status_site: (process.env.NODE_ENV == 'production') ? process.env.VUE_APP_STATUS_SITE : process.env.STATUS_SITE
     };
   },
   methods: {

@@ -23,9 +23,9 @@ export default function fileCheck(files) {
 }
 
 async function getAndCompare(file, callback) {
-  let github = 'https://raw.githubusercontent.com/kvhnuke/etherwallet/gh-pages';
-  let site = 'https://www.myetherwallet.com';
-  let time_stamp = Date.now();
+  let github = (process.env.NODE_ENV == 'production') ? process.env.VUE_APP_GITHUB_SITE : process.env.GITHUB_SITE
+  let site = (process.env.NODE_ENV == 'production') ? process.env.VUE_APP_PRODUCTION_SITE : process.env.PRODUCTION_SITE
+  let time_stamp = Date.now()
   let githubResult = await request(github + file + '?' + time_stamp)
   try {
     let siteResult = await request(site + file + '?' + time_stamp)
