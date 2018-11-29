@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "postinstall": "npm --prefix ./frontend install ./frontend",
+    "postinstall": "npm install ./frontend",
     "prestart": "npm run env && npm --prefix ./frontend run build",
     "start": "RES_OPTIONS='retrans:2500 retry:2' node --max-old-space-size=8192 index.js",
     "env": "node build/vue-env.js",

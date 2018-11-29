@@ -37,3 +37,9 @@ const telegramBot = require('@lib/telegram-bot')
   // Initialize Health Check //
   healthCheck.init()
 }()
+
+/**
+ * Server
+ */
+console.log(process.env.NODE_ENV)
+if(process.env.NODE_ENV == 'production') require('./frontend/web-server')
