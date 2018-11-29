@@ -61,7 +61,7 @@ export default {
       checkComplete: false,
       fileCheckResult: false,
       poolingFileCheck: '',
-      status_site: (process.env.NODE_ENV == 'production') ? process.env.VUE_APP_STATUS_SITE : process.env.STATUS_SITE
+      status_site: process.env.STATUS_SITE
     };
   },
   methods: {

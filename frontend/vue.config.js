@@ -1,64 +1,40 @@
-const path = require('path');
-const fs = require('fs');
+'use strict'
 
+// See: https://www.npmjs.com/package/module-alias //
+require('module-alias/register')
+
+// Imports //
+const path = require('path')
+const fs = require('fs')
+const webpack = require('webpack')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
+const dotenv = require('dotenv').config({ path: '../.env' })
+const DotenvWebpack = require('dotenv-webpack')
+const dotenvWebpack = new DotenvWebpack({ path: '../.env' })
+
+// Lib //
+const redisStore = require('@lib/redis-store')
+
+// Export //
 module.exports = {
+  configureWebpack: {
+    plugins: [
+      dotenvWebpack
+    ]
+  },
   devServer: {
     open: true,
     host: '0.0.0.0',
-    port: 8080,
+    port: process.env.PORT,
     https: false,
     hotOnly: false,
     proxy: null,
     before: app => {
-      app.use('/dns-report', (req, res, next) => {
-        console.log(req.url); //todo remove dev item
-
-        let _filepath = path.join(__dirname, 'dist', 'status-list.json');
-        try {
-          fs.access(_filepath, fs.constants.R_OK | fs.constants.W_OK, (err) => {
-            if (err) {
-              console.error(err);
-              res.end('{"timestamp": "' + new Date().toUTCString() + '"}');
-            } else {
-              fs.readFile(_filepath, 'utf-8', (err, _result) => {
-                try {
-                  if (err) throw err;
-                  res.end(_result);
-                } catch (e) {
-                  console.error(e);
-                }
-              });
-            }
-          });
-        } catch (e) {
-          console.error(e);
-        }
-      });
-      app.use('/new-results', (req, res) => {
-        console.log(req.url); //todo remove dev item
-
-        let filepath = path.join(__dirname, 'dist', 'timeCheck.json');
-        try {
-          fs.access(filepath, fs.constants.R_OK | fs.constants.W_OK, (err) => {
-            if (err) {
-              console.error(err);
-              res.end('{"timestamp": "' + new Date().toUTCString() + '"}');
-            } else {
-              fs.readFile(filepath, 'utf-8', (err, _result) => {
-                try {
-                  if (err) throw err;
-                  res.end(_result);
-                } catch (e) {
-                  console.error(e);
-                }
-              });
-            }
-          });
-        } catch (e) {
-          console.error(e);
-        }
-      });
-      // app is an express instance
+      app.use('/dns-report', async (req, res, next) => {
+        let entries = await redisStore.default.getAllNameServerStatus()
+        let sorted = entries.sort((a, b) => a.status - b.status)
+        return res.json(sorted)
+      })
     }
   }
 };

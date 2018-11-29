@@ -4,8 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "npm --prefix ./frontend start",
+    "build:frontend": "", 
     "build:watcher": "rimraf watcher/dist/ && babel ./watcher/src --out-dir watcher/dist/ --ignore ./node_modules --copy-files",
+    "start:dev": "npm --prefix ./frontend run serve",
+    "start:prod": "",
     "start:watcher": "npm run build:watcher && RES_OPTIONS='retrans:2500 retry:2' node --max-old-space-size=8192 --require dotenv/config watcher/dist/index.js"
   },
   "author": "",

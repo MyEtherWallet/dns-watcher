@@ -1,6 +1,6 @@
 'use strict'
 const path = require('path')
-// let ENV_PATH = path.join(__dirname, '../.env')
+// const ENV_PATH = path.join(__dirname, '../.env')
 // require('dotenv').config({ path: ENV_PATH })
 var superstatic = require('superstatic').server;
 

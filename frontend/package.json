@@ -9,6 +9,8 @@
     "start": "node web-server.js"
   },
   "dependencies": {
+    "async-redis": "^1.1.4",
+    "dotenv-webpack": "^1.5.7",
     "node-notifier": "^5.3.0",
     "request-promise-native": "^1.0.5",
     "superstatic": "^5.0.1",
