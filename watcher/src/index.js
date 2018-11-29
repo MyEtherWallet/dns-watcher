@@ -3,14 +3,11 @@
 // See: https://www.npmjs.com/package/module-alias //
 import 'module-alias/register'
 
-// See: https://www.npmjs.com/package/dotenv //
-require('dotenv').config()
-
 // Local Lib //
-const healthCheck = require('@lib/health-check')
-const jsonGenerator = require('@lib/json-generator')
-const screenshot = require('@lib/screenshot')
-const telegramBot = require('@lib/telegram-bot')
+import healthCheck from '@lib/health-check'
+import jsonGenerator from '@lib/json-generator'
+import screenshot from '@lib/screenshot'
+import telegramBot from '@lib/telegram-bot'
 
 /**
  * DNS Watcher Loop
@@ -18,13 +15,12 @@ const telegramBot = require('@lib/telegram-bot')
  * This is the "init" function for the application which will:
  * 
  * 1) Perform a "Health Check" on the DNS server resolutions
- * 2) On Health Check "end", generate a resulting JSON file for the static frontend, and re-run Health Check
+ * 2) On Health Check "end", re-run Health Check
  * 3) On Health Check "invalid" nameserver entry, create screenshot of resolution, and send Telegram message
  */
-!function init() {
-  // On 'end' event, generate JSON list and re-initialize Health Check //
+;(() => {
+  // On 'end' event, re-initialize Health Check //
   healthCheck.emitter.on('end', async () => {
-    await jsonGenerator.init()
     healthCheck.init()
   })
 
@@ -36,4 +32,4 @@ const telegramBot = require('@lib/telegram-bot')
 
   // Initialize Health Check //
   healthCheck.init()
-}()
+})()

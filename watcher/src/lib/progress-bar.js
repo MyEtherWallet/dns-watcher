@@ -1,8 +1,10 @@
 'use strict'
 
-const cliProgress = require('cli-progress')
+// Imports //
+import cliProgress from 'cli-progress'
 
-module.exports = function(){
+// Export //
+export default (() => {
 
   let bar // cli-progress bar object
   let max // Total progress entries
@@ -13,7 +15,7 @@ module.exports = function(){
    * 
    * @param  {Integer} total - Number of entries (typically the number of nameservers)
    */
-  function init(total) {
+  const init = (total) => {
     max = total
     current = 0
     bar = new cliProgress.Bar({
@@ -26,7 +28,7 @@ module.exports = function(){
    * Update the cli-progress bar.
    * This will increase the current entry counter and update the gui.
    */
-  function update() {
+  const update = () => {
     current++
     if(current <= max) bar.update(current)
   }
@@ -35,4 +37,4 @@ module.exports = function(){
     init,
     update
   }
-}()
+})()

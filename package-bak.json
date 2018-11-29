@@ -4,9 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "npm --prefix ./frontend start",
-    "build:watcher": "rimraf watcher/dist/ && babel ./watcher/src --out-dir watcher/dist/ --ignore ./node_modules --copy-files",
-    "start:watcher": "npm run build:watcher && RES_OPTIONS='retrans:2500 retry:2' node --max-old-space-size=8192 --require dotenv/config watcher/dist/index.js"
+    "postinstall": "npm install ./frontend",
+    "prestart": "npm run env && npm --prefix ./frontend run build",
+    "start": "RES_OPTIONS='retrans:2500 retry:2' node --max-old-space-size=8192 index.js",
+    "env": "node build/vue-env.js",
+    "dev": "./frontend/node_modules/webpack-dev-server/bin/webpack-dev-server.js -d --history-api-fallback --config ./frontend/build/webpack.dev.conf.js",
+    "prod": "npm --prefix ./frontend start",
+    "build:watcher": "rimraf watcher/dist/ && babel ./watcher/src --out-dir watcher/dist/ --ignore ./node_modules"
   },
   "author": "",
   "license": "ISC",
@@ -31,9 +35,9 @@
     "vue-multiselect": "^2.1.3"
   },
   "_moduleAliases": {
-    "@": "watcher/dist",
-    "@lib": "watcher/dist/lib",
-    "@lists": "watcher/dist/lists"
+    "@": "",
+    "@lib": "lib",
+    "@lists": "lists"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",

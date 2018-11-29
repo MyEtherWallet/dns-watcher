@@ -37,12 +37,7 @@ module.exports = function() {
    * @param {String} content - Stringified JSON object
    */
   async function createJSONList(content) {
-    try {
     await fs.writeFile(JSON_LIST_PATH_SRC, content, 'utf8')
-      
-    } catch(e) {
-      console.log(e)
-    }
   }
 
   /**

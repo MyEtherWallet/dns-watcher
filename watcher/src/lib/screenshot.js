@@ -1,10 +1,14 @@
 'use strict'
 
-const pageres = require('pageres')
+// Imports //
+import pageres from 'pageres'
+
+// Constants //
 const SCREENSHOT_PATH = 'frontend/public/screenshots'
 const DOMAIN = process.env.DOMAIN
 
-module.exports = function() {
+// Export //
+export default (() => {
 
   let queue = [] // Queue array
   let inProgress = false // Flag to prevent concurrent snap() instances
@@ -15,7 +19,7 @@ module.exports = function() {
    * 
    * @param {Array} addresses - Array of addresses that a nameserver resolves to
    */
-  function add(addresses) {
+  const add = (addresses) => {
     addresses.forEach(ip => {
       queue.unshift(ip)
       if(!inProgress) snap()
@@ -27,7 +31,7 @@ module.exports = function() {
    * Follows FIFO order.
    * If there is another item in the queue, continue, otherwise wait for one to be added.
    */
-  function snap() {
+  const snap = () => {
     // Set flag to true to avoid calling snap when adding an ip to the queue //
     inProgress = true
 
@@ -58,4 +62,4 @@ module.exports = function() {
   return {
     add
   }
-}()
+})()

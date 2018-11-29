@@ -1,15 +1,17 @@
 'use strict'
 
-const request = require('request-promise-native')
+// Imports //
+import request from 'request-promise-native'
 
-module.exports = function() {
+// Export //
+export default (() => {
 
   /**
    * Send a message via Telegram to a particular chat.
-   * Requires that process.env.TELEGRAM_KEY and process.env.TELEGRAM_CHAT_ID
-   * be defined in the .env file
+   * Requires that process.env.TELEGRAM_KEY and process.env.TELEGRAM_CHAT_ID...
+   * ...be defined in the .env file
    */
-  async function send(msg) {
+  const send = async (msg) => {
     // Ignore if no key provided //
     if(!process.env.TELEGRAM_KEY) return
 
@@ -32,11 +34,11 @@ module.exports = function() {
     try {
       await request(options)
     } catch(e) {
-      console.log('Error sending Telegram message')
+      console.log('\nError sending Telegram message')
     }
   }
 
   return {
     send
   }
-}()
+})()

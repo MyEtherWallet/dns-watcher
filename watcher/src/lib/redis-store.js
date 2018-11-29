@@ -1,9 +1,13 @@
 'use strict'
 
-const redis = require('async-redis')
+// Imports //
+import redis from 'async-redis'
+
+// Constants //
 const client = redis.createClient()
 
-module.exports = function() {
+// Export //
+export default (() => {
 
   /**
    * Update a given key/nameserver entry in Redis. The entry will expire in one day.
@@ -11,7 +15,7 @@ module.exports = function() {
    * @param  {String} key - The "key" (usually the nameserver) for the Redis entry
    * @param  {Object} obj - The object payload containing the status of a given key/nameserver
    */
-  async function setNameServerStatus(key, obj) {
+  const setNameServerStatus = async (key, obj) => {
     try {
       await client.set(key, JSON.stringify(obj))
       return client.expire(key, 86400)
@@ -26,7 +30,7 @@ module.exports = function() {
    * @param  {String} key - The "key" (usually the nameserver) for the Redis entry
    * @return {Object} - The object payload containing the status of a given key/nameserver 
    */
-  async function getNameServerStatus(key) {
+  const getNameServerStatus = async (key) => {
     try {
       let data = await client.get(key)
       return JSON.parse(data)
@@ -40,7 +44,7 @@ module.exports = function() {
    * 
    * @return {Array} - Array of nameserver payload objects
    */
-  async function getAllNameServerStatus() {
+  const getAllNameServerStatus = async () => {
     try {
       let keys = await client.keys('*')
       let entries = keys.map(async(key) => { return await getNameServerStatus(key) })
@@ -55,4 +59,4 @@ module.exports = function() {
     getNameServerStatus,
     getAllNameServerStatus
   }
-}()
+})()

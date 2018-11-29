@@ -1,26 +1,27 @@
 'use strict'
 
 // Modules //
-const dns = require('dns')
-const firstline = require('firstline')
-const fs = require('fs-extra')
-const ip = require('ip')
-const moment = require('moment')
-const request = require('request-promise-native')
+import dns from 'dns'
+import firstline from 'firstline'
+import fs from 'fs-extra'
+import ip from 'ip'
+import moment from 'moment'
+import request from 'request-promise-native'
 
 // Constants //
 const NAMESERVER_LIST_URL = 'https://public-dns.info/nameservers.csv'
-const NAMESERVER_LIST_PATH = 'lists/public-dns-nameservers.csv'
+const NAMESERVER_LIST_PATH = 'watcher/dist/lists/public-dns-nameservers.csv'
 const MINUTES_SINCE_LAST_UPDATE = 15
 
-module.exports = function() {
+// Export //
+export default (() => {
 
   /**
    * Initialize, format and return Array list of Nameservers
    * 
    * @return {Array} - Array of nameserver array-objects [IP, Country Code, Name]
    */
-  async function init() {
+  const init = async () => {
     // Retrieve public nameserver list if applicable //
     await checkNameServerList()
 
@@ -33,7 +34,7 @@ module.exports = function() {
    * Check if a public dns nameserver list a) exists and b) is recently updated.
    * If either of these conditions is not met, then request and update the list
    */
-  async function checkNameServerList() {
+  const checkNameServerList = async () => {
     try {
       let nameserverListExists = await fs.stat(NAMESERVER_LIST_PATH)
       let dateUpdated = await firstline(NAMESERVER_LIST_PATH)
@@ -48,13 +49,13 @@ module.exports = function() {
   /**
    * Retrieve most recent nameserver list and write to file, prepended with the date it is updated
    */
-  async function requestNameServerList() {
+  const requestNameServerList = async () => {
     try {
       let response = await request(NAMESERVER_LIST_URL)
       let fileContent = `${moment().utc().toISOString()}\n${response}`
       let file = await fs.writeFile(NAMESERVER_LIST_PATH, fileContent, 'utf8')
     } catch(e) {
-      console.log('\n Error retrieving nameserver list: \n', e)
+      console.log('\n Error retrieving nameserver list')
     }
   }
 
@@ -64,7 +65,7 @@ module.exports = function() {
    * @param  {String} list - CSV-formatted string of nameservers and their corresponding information
    * @return {Array} - Array of nameservers and curated information
    */
-  async function parseNameServerList(list) {
+  const parseNameServerList = async (list) => {
     let locations = []
     let split = list.split('\n')
     for(let i = 2; i < split.length; i++) {
@@ -81,4 +82,4 @@ module.exports = function() {
   return {
     init
   }
-}()
+})()
