@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "postinstall": "npm install ./frontend",
     "build:frontend": "", 
     "build:watcher": "rimraf watcher/dist/ && babel ./watcher/src --out-dir watcher/dist/ --ignore ./node_modules --copy-files",
     "start:dev": "npm run build:watcher && npm --prefix ./frontend run serve",
