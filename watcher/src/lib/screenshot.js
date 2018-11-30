@@ -40,8 +40,8 @@ export default (() => {
 
     // Take screenshot using pageres //
     new pageres({
-      delay: 5,
-      timeout: 12,
+      delay: 15,
+      timeout: 15,
       filename: '<%= url %>-<%= size %>',
       headers: {origin: DOMAIN}
     })

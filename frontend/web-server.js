@@ -1,4 +1,5 @@
 'use strict'
+
 const path = require('path')
 // const ENV_PATH = path.join(__dirname, '../.env')
 // require('dotenv').config({ path: ENV_PATH })
@@ -12,8 +13,7 @@ var spec = {
   errorPage: __dirname + '/error.html',
   config: {
     'rewrites': [
-      {'source': '/dns-report', 'destination': './status-list.json'},
-      {'source': '/new-results', 'destination': './timeCheck.json'},
+      {'source': '/dns-report', 'destination': './status-list.json'}
     ],
     "headers": [
       {

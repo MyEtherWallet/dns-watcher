@@ -25,7 +25,8 @@
               <i>{{address}}</i>
               <img
                 v-if="!status"
-                :src="hostName + '/screenshots/' + address + '-480x320.png'" 
+                :src="imgSrc[index]" 
+                @error="noImg(address)"
                 height="100px" 
                 width="150px"/>
           </p>
@@ -46,13 +47,29 @@
           bad: "bad",
           goodIcon: "fa-check-circle",
           badIcon: "fa-times-circle",
-          image: ''
+          images: {}
         }
     },
     computed: {
       prettyDate() {
         return moment(this.timestamp).format('lll')
+      },
+      imgSrc() {
+        let self = this
+        return this.addresses.map(address => {
+          return self.images[address]
+        })
       }
+    },
+    methods: {
+      noImg(address) {
+        this.images[address] = this.hostName + '/ScreenShotFailed-Placeholder-480x320.png'
+      }
+    },
+    created() {
+      this.addresses.forEach(address => {
+        this.images[address] = this.hostName + '/screenshots/' + address + '-480x320.png'
+      })
     }
   }
 </script>

@@ -36,22 +36,16 @@ TELEGRAM_CHAT_ID=chat_id_here
 
 ## Usage
 
-### DNS Check + Vue Production Build
+### DNS Check
 
 ```bash
-npm start
+npm run start:watcher
 ```
 
 ### Development Frontend Server
 
 ```bash
-npm run dev
-```
-
-### Production Superstatic Server
-
-```bash
-npm run prod
+npm run start:dev
 ```
 
 ## References
