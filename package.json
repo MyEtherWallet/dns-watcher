@@ -5,10 +5,10 @@
   "main": "index.js",
   "scripts": {
     "postinstall": "npm install ./frontend",
-    "build:frontend": "", 
+    "build:prod": "npm --prefix ./frontend run build", 
     "build:watcher": "rimraf watcher/dist/ && babel ./watcher/src --out-dir watcher/dist/ --ignore ./node_modules --copy-files",
     "start:dev": "npm run build:watcher && npm --prefix ./frontend run serve",
-    "start:prod": "",
+    "start:prod": "npm run build:watcher && npm --prefix ./frontend start",
     "start:watcher": "npm run build:watcher && RES_OPTIONS='retrans:2500 retry:2' node --max-old-space-size=8192 --require dotenv/config watcher/dist/index.js"
   },
   "author": "",
