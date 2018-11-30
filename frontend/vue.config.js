@@ -12,9 +12,6 @@ const dotenv = require('dotenv').config({ path: '../.env' })
 const DotenvWebpack = require('dotenv-webpack')
 const _ = require('underscore')
 
-// Lib //
-const redisStore = require('@lib/redis-store')
-
 // Export //
 module.exports = {
   configureWebpack: {
@@ -30,6 +27,7 @@ module.exports = {
     hotOnly: false,
     proxy: null,
     before: app => {
+      const redisStore = require('@lib/redis-store')
       app.use('/dns-report', async (req, res, next) => {
         let entries = await redisStore.default.getAllNameServerStatus()
         let sorted_by_date = _.sortBy(entries, function(o) { return - (new Date(o.timestamp) )})
