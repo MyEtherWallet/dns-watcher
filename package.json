@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "concurrently 'npm run start:watcher' 'npm run start:prod'",
     "lint": "prettier --write 'watcher/src/**/*.{js,json}' 'frontend/src/**/*.{js,jsx,json}'",
     "postinstall": "npm install ./frontend",
     "build:prod": "npm --prefix ./frontend run build",
@@ -43,6 +44,7 @@
   "devDependencies": {
     "@babel/cli": "^7.1.5",
     "@babel/preset-env": "^7.1.6",
+    "concurrently": "^4.1.0",
     "prettier": "^1.15.3",
     "rimraf": "^2.6.2"
   }

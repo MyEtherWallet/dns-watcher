@@ -4,7 +4,9 @@
 import redis from 'async-redis';
 
 // Constants //
-const client = redis.createClient();
+const client = redis.createClient({
+  host: process.env.REDIS_HOST || '127.0.0.1'
+});
 
 // Export //
 export default (() => {
