@@ -5,7 +5,7 @@ export default function fileCheck(files) {
   return new Promise((resolve, reject) => {
     try {
       for (let i = 0; i < files.length; i++) {
-        getAndCompare(files[i], (result) => {
+        getAndCompare(files[i], result => {
           count++;
           if (!result) {
             resolve(false);
@@ -19,19 +19,18 @@ export default function fileCheck(files) {
       reject(e);
     }
   });
-
 }
 
 async function getAndCompare(file, callback) {
-  let github = process.env.GITHUB_SITE
-  let site = process.env.PRODUCTION_SITE
-  let time_stamp = Date.now()
-  let githubResult = await request(github + file + '?' + time_stamp)
+  let github = process.env.GITHUB_SITE;
+  let site = process.env.PRODUCTION_SITE;
+  let time_stamp = Date.now();
+  let githubResult = await request(github + file + '?' + time_stamp);
   try {
-    let siteResult = await request(site + file + '?' + time_stamp)
-    if (githubResult === siteResult) return callback(true)
-    return callback(false)
-  } catch(e) {
-    return callback(false)    
+    let siteResult = await request(site + file + '?' + time_stamp);
+    if (githubResult === siteResult) return callback(true);
+    return callback(false);
+  } catch (e) {
+    return callback(false);
   }
 }

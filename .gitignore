@@ -1,5 +1,5 @@
 .DS_Store
-node_modules/
+node_modules
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
@@ -12,13 +12,9 @@ yarn-error.log*
 *.ntvs*
 *.njsproj
 *.sln
-/package-lock.json
-/.env
+.env
 /scraps/
 /scraps/inBrowserFileCheck.js
-/frontend/dist/*
-/frontend/dist/static/
-/frontend/dist/index.html
-/frontend/node_modules/
+/frontend/dist/**/*
 /log/*
-/watcher/dist/*
+/watcher/dist
