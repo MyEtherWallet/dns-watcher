@@ -4,11 +4,6 @@
 require('module-alias/register')
 
 // Imports //
-const path = require('path')
-const fs = require('fs')
-const webpack = require('webpack')
-const CopyWebpackPlugin = require('copy-webpack-plugin')
-const dotenv = require('dotenv').config({ path: '../.env' })
 const DotenvWebpack = require('dotenv-webpack')
 const _ = require('underscore')
 
@@ -16,7 +11,9 @@ const _ = require('underscore')
 module.exports = {
   configureWebpack: {
     plugins: [
-      new DotenvWebpack({ path: '../.env' })
+      new DotenvWebpack({ 
+        systemvars: true
+        })
     ]
   },
   devServer: {

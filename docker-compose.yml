@@ -1,17 +1,25 @@
-redis:
-  image: redis
-  container_name: cache
-  expose:
-    - 6379
+version: '3'
 
-app:
-  build: ./
-  links:
-    - redis
-  env_file:
-    - .env
-  environment:
-    - REDIS_HOST=cache
-  ports:
-    - 8080:8080
-  command: sh -c 'npm start'
+services:
+  redis:
+    image: redis
+    container_name: cache
+    expose:
+      - 6379
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args: 
+        - PRODUCTION_SITE=$PRODUCTION_SITE
+        - GITHUB_SITE=$GITHUB_SITE
+        - STATUS_SITE=$STATUS_SITE
+    env_file: .env
+    links:
+      - redis
+    environment:
+      - REDIS_HOST=cache
+    ports:
+      - 8080:8080
+    command: sh -c 'npm start'

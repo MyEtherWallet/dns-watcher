@@ -3,6 +3,9 @@ FROM alpine:3.8
 
 # Set environment variables.
 ENV HOME /root
+ARG STATUS_SITE
+ARG GITHUB_SITE
+ARG PRODUCTION_SITE
 
 # Copy everything
 WORKDIR /root
@@ -16,9 +19,9 @@ RUN cd /root/ && \
     npm install && \
     npm run build:prod
 
-RUN mv frontend/dist . &&  mv frontend/web-server.js . && \
+RUN mv frontend/dist . &&  mv frontend/web-server.js . && mv frontend/package.json ./package-frontend.json && \
     rm -rf frontend && mkdir frontend && \
-    mv dist frontend/ && mv web-server.js frontend/
+    mv dist frontend/ && mv web-server.js frontend/ && mv package-frontend.json frontend/package.json
 
 #Delete installed packages
 RUN npm cache clean --force 
