@@ -16,7 +16,7 @@ const redisStore = require("@lib/redis-store");
 
 // Superstatic Options //
 var spec = {
-  port: process.env.PORT,
+  port: 8080, // process.env.PORT,
   trailingSlash: false,
   compression: true,
   cwd: __dirname + "/dist",
@@ -45,7 +45,7 @@ var spec = {
 var app = connect();
 
 // Override /dns-report route //
-app.use("/dns-report", async (req, res, next) => {
+app.use('/dns-report', async (req, res, next) => {
   let entries = await redisStore.default.getAllNameServerStatus();
   let sorted_by_date = _.sortBy(entries, function(o) {
     return -new Date(o.timestamp);
@@ -60,5 +60,5 @@ app.use(superstatic(spec));
 
 // Start Server //
 app.listen(process.env.PORT, function() {
-  console.log("Website running on port 8080.  http://localhost:8080");
+  console.log('Website running on port 8080');
 });

@@ -12,9 +12,10 @@ services:
       context: .
       dockerfile: Dockerfile
       args: 
-        - PRODUCTION_SITE=$PRODUCTION_SITE
-        - GITHUB_SITE=$GITHUB_SITE
-        - STATUS_SITE=$STATUS_SITE
+        - DOMAIN=${DOMAIN:-myetherwallet.com}
+        - PRODUCTION_SITE=${PRODUCTION_SITE:-https://www.myetherwallet.com}
+        - GITHUB_SITE=${GITHUB_SITE:-https://raw.githubusercontent.com/kvhnuke/etherwallet/gh-pages}
+        - STATUS_SITE=${STATUS_SITE:-status.myetherwallet.com}
         - ALLOWED_IPS=${ALLOWED_IPS:-allowed-mew-ips.json}
     env_file: .env
     links:

@@ -19,7 +19,7 @@ module.exports = {
   devServer: {
     open: true,
     host: '0.0.0.0',
-    port: process.env.PORT,
+    port: 8080, //process.env.PORT,
     https: false,
     hotOnly: false,
     proxy: null,

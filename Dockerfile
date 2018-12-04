@@ -30,5 +30,5 @@ RUN mv frontend/dist . &&  mv frontend/web-server.js . && mv frontend/package.js
 # Delete installed packages
 RUN npm cache clean --force 
 
-#expose the ports
+# Expose the ports
 EXPOSE 8080
