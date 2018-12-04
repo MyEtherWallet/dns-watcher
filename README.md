@@ -1,5 +1,5 @@
 
-![MyEtherWallet Logo](https://www.myetherwallet.com/images/logo-myetherwallet.svg)
+![MyEtherWallet Logo](https://www.myetherwallet.com/images/myetherwallet-logo.png)
 
 # DNS Checker
 
@@ -36,11 +36,11 @@ ALLOWED_IPS=allowed-mew-ips.json
 
 ## Port
 
-By default, this application runs on port `8080`.
+By default, this application runs on port `8080`
 
 ## Allowed IPs
 
-By default, the application includes a `.json` file with an array of valid ips of A record resolutions for [MyEtherWallet.com](https://www.myetherwallet.com). This file can either be altered to include a desired array of valid ips for a different domain name, or the `.env` file can be updated with the variable ALLOWED_IPS to point to a different `.json` file containing a similarly formatted array of ips.
+By default, the application includes an `allowed-mew-ips.json` file with an array of valid ips of A record resolutions for [MyEtherWallet.com](https://www.myetherwallet.com). This file can either be altered to include a desired array of valid ips for a different domain name, or the `.env` file can be updated with the variable ALLOWED_IPS to point to a different `.json` file containing a similarly formatted array of ips.
 
 # Development
 
