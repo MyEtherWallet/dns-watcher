@@ -1,7 +1,7 @@
-'use strict';
+'use strict'
 
 // Imports //
-import request from 'request-promise-native';
+import request from 'request-promise-native'
 
 // Export //
 export default (() => {
@@ -12,7 +12,7 @@ export default (() => {
    */
   const send = async msg => {
     // Ignore if no key provided //
-    if (!process.env.TELEGRAM_KEY) return;
+    if (!process.env.TELEGRAM_KEY) return
 
     // Request Payload //
     let options = {
@@ -26,17 +26,17 @@ export default (() => {
         chat_id: process.env.TELEGRAM_CHAT_ID,
         text: msg
       }
-    };
+    }
 
     // Send request //
     try {
-      await request(options);
+      await request(options)
     } catch (e) {
-      console.log('\nError sending Telegram message');
+      console.log('\nError sending Telegram message')
     }
-  };
+  }
 
   return {
     send
-  };
-})();
+  }
+})()

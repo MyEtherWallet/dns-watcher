@@ -1,9 +1,9 @@
-'use strict';
+'use strict'
 
-const fs = require('fs-extra');
-const redisStore = require('@lib/redis-store');
-const JSON_LIST_PATH_SRC = 'frontend/public/status-list.json';
-const JSON_LIST_PATH_DST = 'frontend/dist/status-list.json';
+const fs = require('fs-extra')
+const redisStore = require('@lib/redis-store')
+const JSON_LIST_PATH_SRC = 'frontend/public/status-list.json'
+const JSON_LIST_PATH_DST = 'frontend/dist/status-list.json'
 
 module.exports = (function() {
   /**
@@ -11,11 +11,11 @@ module.exports = (function() {
    * Nameservers with status of FALSE (bad) will be first in the array.
    */
   async function init() {
-    console.log('\n Updating JSON list...');
-    let entries = await getAndSortEntries();
-    let content = JSON.stringify(entries);
-    await createJSONList(content);
-    await copyJSONListToDST();
+    console.log('\n Updating JSON list...')
+    let entries = await getAndSortEntries()
+    let content = JSON.stringify(entries)
+    await createJSONList(content)
+    await copyJSONListToDST()
   }
 
   /**
@@ -25,9 +25,9 @@ module.exports = (function() {
    * @return {Array} - Array of sorted nameserver status objects
    */
   async function getAndSortEntries() {
-    let entries = await redisStore.getAllNameServerStatus();
-    let sorted = entries.sort((a, b) => a.status - b.status);
-    return sorted;
+    let entries = await redisStore.getAllNameServerStatus()
+    let sorted = entries.sort((a, b) => a.status - b.status)
+    return sorted
   }
 
   /**
@@ -36,17 +36,17 @@ module.exports = (function() {
    * @param {String} content - Stringified JSON object
    */
   async function createJSONList(content) {
-    await fs.writeFile(JSON_LIST_PATH_SRC, content, 'utf8');
+    await fs.writeFile(JSON_LIST_PATH_SRC, content, 'utf8')
   }
 
   /**
    * Copy SRC JSON to DST directory
    */
   async function copyJSONListToDST() {
-    await fs.copy(JSON_LIST_PATH_SRC, JSON_LIST_PATH_DST);
+    await fs.copy(JSON_LIST_PATH_SRC, JSON_LIST_PATH_DST)
   }
 
   return {
     init
-  };
-})();
+  }
+})()

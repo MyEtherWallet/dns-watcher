@@ -15,6 +15,7 @@ services:
         - PRODUCTION_SITE=$PRODUCTION_SITE
         - GITHUB_SITE=$GITHUB_SITE
         - STATUS_SITE=$STATUS_SITE
+        - ALLOWED_IPS=${ALLOWED_IPS:-allowed-mew-ips.json}
     env_file: .env
     links:
       - redis
