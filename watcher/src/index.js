@@ -27,7 +27,8 @@ import telegramBot from '@lib/telegram-bot'
   // On 'invalid' nameserver event, create screenshot of resolution, and send Telegram message //
   healthCheck.emitter.on('invalid', async data => {
     screenshot.add(data.addresses)
-    await telegramBot.send(`Invalid DNS record found: ${data.nameserver}`)
+    console.log('invalid!', data)
+    // await telegramBot.send(`Invalid DNS record found: ${data.nameserver}`)
   })
 
   // Initialize Health Check //

@@ -19,6 +19,7 @@ export default (() => {
    * @param {Array} addresses - Array of addresses that a nameserver resolves to
    */
   const add = addresses => {
+    if(!Array.isArray(addresses)) addresses = [addresses]
     addresses.forEach(ip => {
       queue.unshift(ip)
       if (!inProgress) snap()
@@ -31,31 +32,35 @@ export default (() => {
    * If there is another item in the queue, continue, otherwise wait for one to be added.
    */
   const snap = () => {
-    // Set flag to true to avoid calling snap when adding an ip to the queue //
-    inProgress = true
+    try {
+      // Set flag to true to avoid calling snap when adding an ip to the queue //
+      inProgress = true
 
-    // Screenshot "first" item in the queue //
-    let ip = queue.pop()
+      // Screenshot "first" item in the queue //
+      let ip = queue.pop()
 
-    // Take screenshot using pageres //
-    new pageres({
-      delay: 15,
-      timeout: 15,
-      filename: '<%= url %>-<%= size %>',
-      headers: { origin: DOMAIN }
-    })
-      .src(`${ip}`, ['480x320'])
-      .dest(SCREENSHOT_PATH)
-      .run()
-      .then(() => {
-        inProgress = false
-        if (queue.length > 0) snap()
+      // Take screenshot using pageres //
+      new pageres({
+        delay: 15,
+        timeout: 15,
+        filename: '<%= url %>-<%= size %>',
+        headers: { origin: DOMAIN }
       })
-      .catch(e => {
-        // SET DEFAULT PIC //
-        inProgress = false
-        if (queue.length > 0) snap()
-      })
+        .src(`${ip}`, ['480x320'])
+        .dest(SCREENSHOT_PATH)
+        .run()
+        .then(() => {
+          inProgress = false
+          if (queue.length > 0) snap()
+        })
+        .catch(e => {
+          // SET DEFAULT PIC //
+          inProgress = false
+          if (queue.length > 0) snap()
+        })
+      } catch (e) {
+        console.log('\nError taking snapshot:', e)
+      }
   }
 
   return {

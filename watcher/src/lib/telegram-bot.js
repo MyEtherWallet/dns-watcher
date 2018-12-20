@@ -32,7 +32,7 @@ export default (() => {
     try {
       await request(options)
     } catch (e) {
-      console.log('\nError sending Telegram message')
+      console.log('\nError sending Telegram message', e)
     }
   }
 
