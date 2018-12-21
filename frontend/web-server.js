@@ -20,7 +20,7 @@ var spec = {
   trailingSlash: false,
   compression: true,
   cwd: __dirname + "/dist",
-  errorPage: __dirname + "/dist/error.html",
+  // errorPage: __dirname + "/dist/error.html",
   config: {
     rewrites: [],
     headers: [

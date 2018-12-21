@@ -19,7 +19,7 @@ export default (() => {
   const setNameServerStatus = async (key, obj) => {
     try {
       await client.set(key, JSON.stringify(obj))
-      return client.expire(key, 86400)
+      client.expire(key, 86400)
     } catch (e) {
       console.log(e)
     }
@@ -54,6 +54,7 @@ export default (() => {
       return await Promise.all(entries)
     } catch (e) {
       console.log(e)
+      return []
     }
   }
 
