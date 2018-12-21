@@ -60,8 +60,12 @@ export default (() => {
 
     // Function that will be rate-limited //
     let fn = rateLimit(REQUESTS_PER_SECOND, 1000, async (ns, done) => {
-      await checkNameServer(ns)
-      progressBar.update()
+      try {
+        await checkNameServer(ns)
+        progressBar.update()
+      } catch (e) {
+        console.log('\nError:', e)
+      }
       done()
     })
 
@@ -91,11 +95,12 @@ export default (() => {
       if (addresses) {
         let isValid = isValidRecord(addresses)
         updateRedisEntry(nameserver, addresses, isValid)
-        if (!isValid)
+        if (!isValid) {
           emitter.emit('invalid', {
-            nameserver: nameserver[0],
-            addresses: addresses
+            nameserver: nameserver,
+            addresses: addresses,
           })
+        }
       }
     } catch (e) {
       console.log(e)
@@ -117,7 +122,7 @@ export default (() => {
       await process.nextTick
       return addresses
     } catch (e) {
-      return
+      return false
     }
   }
 
@@ -130,11 +135,15 @@ export default (() => {
    */
   const isValidRecord = addresses => {
     let isValid = false
-    addresses.forEach(address => {
-      allowedResolutions.forEach(cidr => {
-        if (ip.cidrSubnet(cidr).contains(address)) return (isValid = true)
+    try {
+      addresses.forEach(address => {
+        allowedResolutions.forEach(cidr => {
+          if (ip.cidrSubnet(cidr).contains(address)) return (isValid = true)
+        })
       })
-    })
+    } catch (e) {
+      console.log('ERROR:', e)
+    }
     return isValid
   }
 
@@ -146,15 +155,19 @@ export default (() => {
    * @param  {Boolean} isValid - Whether or not nameserver is confirmed to resolve correctly
    */
   const updateRedisEntry = async (nameserver, addresses, isValid) => {
-    await redisStore.setNameServerStatus(nameserver[0], {
-      ns: nameserver[0],
-      name: nameserver[2],
-      timestamp: new Date().toUTCString(),
-      status: isValid,
-      country: countries.getName(nameserver[1], 'en'),
-      countryShort: nameserver[1],
-      resolved: addresses
-    })
+    try {
+      await redisStore.setNameServerStatus(nameserver[0], {
+        ns: nameserver[0],
+        name: nameserver[2],
+        timestamp: new Date().toUTCString(),
+        status: isValid,
+        country: countries.getName(nameserver[1], 'en'),
+        countryShort: nameserver[1],
+        resolved: addresses
+      })
+    } catch (e) {
+      console.log('ERROR:', e)
+    }
   }
 
   return {
