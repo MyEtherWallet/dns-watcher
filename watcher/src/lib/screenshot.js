@@ -1,10 +1,10 @@
 'use strict'
 
 // Imports //
-import pageres from 'pageres'
+import urlToImage from 'url-to-image'
 
 // Constants //
-const SCREENSHOT_PATH = 'frontend/public/screenshots'
+const SCREENSHOT_PATH = 'frontend/dist/screenshots'
 const DOMAIN = process.env.DOMAIN
 
 // Export //
@@ -39,28 +39,27 @@ export default (() => {
       // Screenshot "first" item in the queue //
       let ip = queue.pop()
 
-      // Take screenshot using pageres //
-      new pageres({
-        delay: 15,
-        timeout: 15,
-        filename: '<%= url %>-<%= size %>',
-        headers: { origin: DOMAIN }
+      // Take screenshot using url-to-image //
+      console.log('Taking screenshot...', ip)
+      urlToImage(`${ip}`, `${SCREENSHOT_PATH}/${ip}.png`, {
+        requestTimeout: 1000 * 10,
+        maxTimeout: 1000 * 15,
+        killTimeout: 1000 * 20,  
+        phantomArguments: '--ignore-ssl-errors=true'
       })
-        .src(`${ip}`, ['480x320'])
-        .dest(SCREENSHOT_PATH)
-        .run()
-        .then(() => {
+        .then(function() {
+          console.log('Screenshot Taken!', `${SCREENSHOT_PATH}/${ip}.png`)
+          inProgress = false
+          if (queue.length > 0) snap()
+        }).catch(function(err) {
+          console.log('Screenshot Failed...', e)
           inProgress = false
           if (queue.length > 0) snap()
         })
-        .catch(e => {
-          // SET DEFAULT PIC //
-          inProgress = false
-          if (queue.length > 0) snap()
-        })
-      } catch (e) {
-        console.log('\nError taking snapshot:', e)
-      }
+    } catch (e) {
+      console.log('\nError taking snapshot:', e)
+      if (queue.length > 0) snap()
+    }
   }
 
   return {
