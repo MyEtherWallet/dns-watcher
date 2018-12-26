@@ -1,7 +1,7 @@
 'use strict'
 
 // Imports //
-import urlToImage from 'url-to-image'
+import webshot from 'webshot'
 
 // Constants //
 const SCREENSHOT_PATH = 'frontend/dist/screenshots'
@@ -39,23 +39,22 @@ export default (() => {
       // Screenshot "first" item in the queue //
       let ip = queue.pop()
 
-      // Take screenshot using url-to-image //
+      // Take screenshot using webshot //
       console.log('Taking screenshot...', ip)
-      urlToImage(`${ip}`, `${SCREENSHOT_PATH}/${ip}.png`, {
-        requestTimeout: 1000 * 10,
-        maxTimeout: 1000 * 15,
-        killTimeout: 1000 * 20,  
-        phantomArguments: '--ignore-ssl-errors=true'
+      webshot(`${ip}`, `${SCREENSHOT_PATH}/${ip}.png`, {
+        renderDelay: 1000 * 10,
+        timeout: 1000 * 15, 
+        customHeaders: {
+          'ORIGIN': process.env.DOMAIN
+        }
+      }, (err) => {
+        if(err) {
+           console.log('Screenshot Failed...', err)
+        }
+        console.log('Screenshot Taken!', `${SCREENSHOT_PATH}/${ip}.png`)
+        inProgress = false
+        if (queue.length > 0) snap()
       })
-        .then(function() {
-          console.log('Screenshot Taken!', `${SCREENSHOT_PATH}/${ip}.png`)
-          inProgress = false
-          if (queue.length > 0) snap()
-        }).catch(function(err) {
-          console.log('Screenshot Failed...', e)
-          inProgress = false
-          if (queue.length > 0) snap()
-        })
     } catch (e) {
       console.log('\nError taking snapshot:', e)
       if (queue.length > 0) snap()

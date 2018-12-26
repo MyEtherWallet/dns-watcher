@@ -33,8 +33,8 @@
     "redis-await": "^1.0.6",
     "request": "^2.88.0",
     "request-promise-native": "^1.0.5",
-    "url-to-image": "^1.0.0",
-    "vue-multiselect": "^2.1.3"
+    "vue-multiselect": "^2.1.3",
+    "webshot": "^0.18.0"
   },
   "_moduleAliases": {
     "@": "watcher/dist",
