@@ -59,7 +59,7 @@ export default (() => {
     let currentQueue = nameservers.splice(0, BATCH_SIZE)
 
     // Function that will be rate-limited //
-    let fn = rateLimit(REQUESTS_PER_SECOND, 1000, async (ns, done) => {
+    let fn = rateLimit(REQUESTS_PER_SECOND, 10000, async (ns, done) => {
       try {
         await checkNameServer(ns)
         progressBar.update()

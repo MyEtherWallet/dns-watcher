@@ -68,7 +68,7 @@
     },
     created() {
       this.addresses.forEach(address => {
-        this.images[address] = this.hostName + '/screenshots/' + address + '-480x320.png'
+        this.images[address] = this.hostName + '/screenshots/' + address + '.png'
       })
     }
   }
