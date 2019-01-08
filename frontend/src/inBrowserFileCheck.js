@@ -1,36 +1,87 @@
 const request = require('request-promise-native')
 
-export default function fileCheck(files) {
-  let count = 1
-  return new Promise((resolve, reject) => {
+/**
+ * Check the integrity of a project to ensure that the files on an official Github repo match those of a production website.
+ * This function first recursively gets all of the files within the project via Github, and then checks each file against what should
+ * be the production website.
+ * 
+ * @return {Promise} - Resolves to true if all files match, false otherwise
+ */
+export default async function fileCheck() {
+  const github = process.env.GITHUB_SITE || 'https://api.github.com/repos/kvhnuke/etherwallet/contents?ref=gh-pages'
+  const site = process.env.PRODUCTION_SITE || 'https://www.myetherwallet.com'
+
+  return new Promise(async (resolve, reject) => {
     try {
-      for (let i = 0; i < files.length; i++) {
-        getAndCompare(files[i], result => {
-          count++
-          if (!result) {
-            resolve(false)
-          }
-          if (count == files.length) {
-            resolve(true)
-          }
-        })
-      }
+      let githubFiles = await getGithubFiles(github)
+      let isKosher = await compareFiles(githubFiles)
+      resolve(isKosher)
     } catch (e) {
-      reject(e)
+      console.log(e)
+      resolve(false)
     }
   })
+
+  /**
+   * Given the URL of a github-api endpoint listing files of a particular project,
+   * or a directory within that project, recursively retrieve the path and URL or each
+   * file within the parent directory and its children's directories.
+   * 
+   * @param  {Sring} url - URL of github api endpoint, ala https://api.github.com/repos/kvhnuke/etherwallet/contents?ref=gh-pages
+   * @return {Array} - Array of files in the following format: File{ path: '...', url: '...' }
+   */
+  async function getGithubFiles(url, files = []) {
+    let tree = await request({ uri: url, json: true })
+    await asyncForEach(tree, async obj => {
+      if(obj.type === 'file') {
+        files.push({
+          path: obj.path,
+          url: obj.download_url
+        })
+      }
+      if(obj.type === 'dir') {
+        await getGithubFiles(obj._links.self, files)
+      }
+    })
+    return files
+  }
+
+  /**
+   * Compare each of the files found in getGithubFiles to production site resolutions.
+   * If any of the files do not match, return false, otherwise return true.
+   *
+   * @param {Array} files - Array of files (compiled with getGithubFiles())
+   * @return {Boolean} - True if all files match, false if not
+   */
+  async function compareFiles(files) {
+    await asyncForEach(files, async file => {
+      let githubResult = await request(file.url)
+      try {
+        // Strip site of trailing slash (/) just in case, and compare results //
+        let siteResult = await request(`${site.replace(/\/$/, '')}/${file.path}`)
+        if (githubResult !== siteResult) return false
+      } catch (e) {
+        return false
+      }
+    })
+    return true
+  }
 }
 
-async function getAndCompare(file, callback) {
-  let github = process.env.GITHUB_SITE
-  let site = process.env.PRODUCTION_SITE
-  let time_stamp = Date.now()
-  let githubResult = await request(github + file + '?' + time_stamp)
-  try {
-    let siteResult = await request(site + file + '?' + time_stamp)
-    if (githubResult === siteResult) return callback(true)
-    return callback(false)
-  } catch (e) {
-    return callback(false)
+/**
+ * Polyfill for async-style forEach loop.
+ * 
+ * Example: 
+ *
+ * await asyncForEach(foo, async bar => {
+ *   await baz(bar)
+ * })
+ * 
+ * @param  {Array} array - Array to iterate through
+ * @param  {Function} callback - Asynchronous function to perform
+ */
+const asyncForEach = async (array, callback) => {
+  for (let index = 0; index < array.length; index++) {
+    await callback(array[index], index, array)
   }
 }

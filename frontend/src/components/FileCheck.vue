@@ -42,17 +42,17 @@
 
 import fileCheck from '../inBrowserFileCheck';
 
-let files = [
-  '/index.html',
-  '/embedded.html',
-  '/helpers.html',
-  '/signmsg.html',
-  '/bin/startMEW.js',
-  '/css/etherwallet-master.min.css',
-  '/js/etherwallet-master.js',
-  '/js/etherwallet-static.min.js',
-  '/js/jquery-1.12.3.min.js'
-];
+// let files = [
+//   '/index.html',
+//   '/embedded.html',
+//   '/helpers.html',
+//   '/signmsg.html',
+//   '/bin/startMEW.js',
+//   '/css/etherwallet-master.min.css',
+//   '/js/etherwallet-master.js',
+//   '/js/etherwallet-static.min.js',
+//   '/js/jquery-1.12.3.min.js'
+// ];
 
 export default {
   name: 'file-check',
@@ -68,7 +68,7 @@ export default {
     startPolling() {
       this.poolingFileCheck = setInterval(() => {
         this.checkComplete = false;
-        fileCheck(files)
+        fileCheck()
           .then(result => {
             this.fileCheckResult = result;
             this.checkComplete = true;
@@ -82,7 +82,7 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      fileCheck(files)
+      fileCheck()
         .then(result => {
           this.fileCheckResult = result;
           this.checkComplete = true;
