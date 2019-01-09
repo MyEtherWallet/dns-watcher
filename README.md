@@ -24,7 +24,7 @@ PRODUCTION_SITE=https://www.myetherwallet.com
 STATUS_SITE=status.myetherwallet.com
 
 # URL of github source for file validation
-GITHUB_SITE=https://raw.githubusercontent.com/kvhnuke/etherwallet/gh-pages
+GITHUB_SITE=https://api.github.com/repos/kvhnuke/etherwallet/contents?ref=gh-pages
 
 # Telegram Info
 TELEGRAM_KEY=key_here
