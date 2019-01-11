@@ -7,13 +7,18 @@ const request = require('request-promise-native')
  * 
  * @return {Promise} - Resolves to true if all files match, false otherwise
  */
-export default async function fileCheck() {
+export default async function fileCheck(forceKey) {
   const github = process.env.GITHUB_SITE || 'https://api.github.com/repos/kvhnuke/etherwallet/contents?ref=gh-pages'
   const site = process.env.PRODUCTION_SITE || 'https://www.myetherwallet.com'
 
   return new Promise(async (resolve, reject) => {
+    let githubFiles
     try {
-      let githubFiles = await getGithubFiles(github)
+      if (forceKey && forceKey === process.env.FORCE_KEY) {
+        githubFiles = await getGithubFiles(github)
+      } else {
+        githubFiles = await getGithubFilesLocal()
+      }
       let isKosher = await compareFiles(githubFiles)
       resolve(isKosher)
     } catch (e) {
@@ -23,11 +28,22 @@ export default async function fileCheck() {
   })
 
   /**
+   * Return server-side cache of github files. The server cache utilizes the getGithubFiles() implementation below.
+   * 
+   * @return {Array} - Array of files in the following format: File{ path: '...', url: '...' }
+   */
+  async function getGithubFilesLocal() {
+    let host = location.protocol+'//'+location.hostname+(location.port ? ':'+location.port: '')
+    let files = await request({ uri: `${host}/github-files`, json: true })
+    return files
+  }
+
+  /**
    * Given the URL of a github-api endpoint listing files of a particular project,
    * or a directory within that project, recursively retrieve the path and URL or each
    * file within the parent directory and its children's directories.
    * 
-   * @param  {Sring} url - URL of github api endpoint, ala https://api.github.com/repos/kvhnuke/etherwallet/contents?ref=gh-pages
+   * @param  {String} url - URL of github api endpoint, ala https://api.github.com/repos/kvhnuke/etherwallet/contents?ref=gh-pages
    * @return {Array} - Array of files in the following format: File{ path: '...', url: '...' }
    */
   async function getGithubFiles(url, files = []) {

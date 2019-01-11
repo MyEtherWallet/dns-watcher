@@ -8,6 +8,7 @@ const path = require("path");
 const superstatic = require("superstatic");
 const connect = require("connect");
 const _ = require("underscore");
+const queryString = require('query-string')
 const ENV_PATH = path.join(__dirname, "../.env");
 require("dotenv").config({ path: ENV_PATH });
 
@@ -54,6 +55,12 @@ app.use('/dns-report', async (req, res, next) => {
   let json_string = JSON.stringify(sorted_by_status);
   return res.end(json_string);
 });
+
+app.use('/github-files', async (req, res, next) => {
+  let githubFiles = await redisStore.default.getGithubFiles()
+  let json_string = JSON.stringify(githubFiles)
+  return res.end(json_string)
+})
 
 // Use superstatic to handle other routes //
 app.use(superstatic(spec));
