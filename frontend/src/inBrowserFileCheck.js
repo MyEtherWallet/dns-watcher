@@ -13,6 +13,7 @@ export default async function fileCheck(forceKey) {
 
   return new Promise(async (resolve, reject) => {
     let githubFiles
+    console.log(process.env.FORCE_KEY, forceKey)
     try {
       if (forceKey && forceKey === process.env.FORCE_KEY) {
         githubFiles = await getGithubFiles(github)
