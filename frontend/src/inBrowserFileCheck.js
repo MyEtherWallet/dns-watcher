@@ -19,6 +19,7 @@ export default async function fileCheck(forceKey) {
         githubFiles = await getGithubFiles(github)
       } else {
         githubFiles = await getGithubFilesLocal()
+        if (githubFiles === null) githubFiles = await getGithubFiles(github) 
       }
       let isKosher = await compareFiles(githubFiles)
       resolve(isKosher)
