@@ -76,7 +76,7 @@ export default async function fileCheck(forceKey) {
       let githubResult = await request(file.url)
       try {
         // Strip site of trailing slash (/) just in case, and compare results //
-        let siteResult = await request(`${site.replace(/\/$/, '')}/${file.path}`)
+        let siteResult = await request(`${site.replace(/\/$/, '')}/${file.path}?q=${Date.now()}`)
         if (githubResult !== siteResult) return false
       } catch (e) {
         return false
