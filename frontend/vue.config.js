@@ -31,6 +31,10 @@ module.exports = {
         let sorted_by_status = sorted_by_date.sort((a, b) => a.status - b.status)
         return res.json(sorted_by_status)
       })
+      app.use('/github-files', async (req, res, next) => {
+        let githubFiles = await redisStore.default.getGithubFiles()
+        return res.json(githubFiles)
+      })
     }
   }
 };

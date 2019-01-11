@@ -59,9 +59,41 @@ export default (() => {
     }
   }
 
+  /**
+   * Store given array of github files in Redis
+   * 
+   * @param  {Array} arr - Array of github file objects
+   */
+  const setGithubFiles = async (arr) => {
+    const key = 'github-files'
+    try {
+      await client.set(key, JSON.stringify(arr))
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
+  /**
+   * Retrieve array of github files from Redis
+   * 
+   * @return {Array} - Array of github file objects
+   */
+  const getGithubFiles = async () => {
+    const key = 'github-files'
+    try {
+      let data = await client.get(key)
+      return JSON.parse(data)
+    } catch (e) {
+      console.log(e)
+      return null
+    }
+  }
+
   return {
     setNameServerStatus,
     getNameServerStatus,
-    getAllNameServerStatus
+    getAllNameServerStatus,
+    setGithubFiles,
+    getGithubFiles
   }
 })()

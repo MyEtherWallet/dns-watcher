@@ -42,18 +42,6 @@
 
 import fileCheck from '../inBrowserFileCheck';
 
-// let files = [
-//   '/index.html',
-//   '/embedded.html',
-//   '/helpers.html',
-//   '/signmsg.html',
-//   '/bin/startMEW.js',
-//   '/css/etherwallet-master.min.css',
-//   '/js/etherwallet-master.js',
-//   '/js/etherwallet-static.min.js',
-//   '/js/jquery-1.12.3.min.js'
-// ];
-
 export default {
   name: 'file-check',
   data: function() {
@@ -66,9 +54,11 @@ export default {
   },
   methods: {
     startPolling() {
+      let query = this.$route.query
+      let forceKey = query.force || null
       this.poolingFileCheck = setInterval(() => {
         this.checkComplete = false;
-        fileCheck()
+        fileCheck(forceKey)
           .then(result => {
             this.fileCheckResult = result;
             this.checkComplete = true;
@@ -81,8 +71,10 @@ export default {
     }
   },
   mounted() {
+    let query = this.$route.query
+    let forceKey = query.force || null
     this.$nextTick(() => {
-      fileCheck()
+      fileCheck(forceKey)
         .then(result => {
           this.fileCheckResult = result;
           this.checkComplete = true;

@@ -32,6 +32,9 @@ TELEGRAM_CHAT_ID=chat_id_here
 
 # Allowed IPs JSON
 ALLOWED_IPS=allowed-mew-ips.json
+
+# Force override of local github file check
+FORCE_KEY=keyexample
 ```
 
 ## Port
