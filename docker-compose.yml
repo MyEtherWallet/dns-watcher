@@ -14,12 +14,10 @@ services:
       context: .
       dockerfile: Dockerfile
       args: 
-        - DOMAIN=${DOMAIN:-myetherwallet.com}
         - PRODUCTION_SITE=${PRODUCTION_SITE:-https://www.myetherwallet.com}
         - GITHUB_SITE=${GITHUB_SITE:-https://api.github.com/repos/kvhnuke/etherwallet/contents?ref=gh-pages}
         - STATUS_SITE=${STATUS_SITE:-status.myetherwallet.com}
         - ALLOWED_IPS=${ALLOWED_IPS:-allowed-mew-ips.json}
-        - FORCE_KEY=${FORCE_KEY:-defaultkey}
     env_file: .env
     links:
       - redis

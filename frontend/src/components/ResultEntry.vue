@@ -1,5 +1,5 @@
 <template>
-    <tr>
+    <tr v-if="ns">
         <td class="status">
             <div class="">
                 <i v-bind:class="['fa', status ? goodIcon : badIcon, status ? 'good' : 'bad']" aria-hidden="true"></i>
