@@ -10,12 +10,12 @@ const request = require('request-promise-native')
 export default async function fileCheck(forceKey) {
   const github = process.env.GITHUB_SITE || 'https://api.github.com/repos/kvhnuke/etherwallet/contents?ref=gh-pages'
   const site = process.env.PRODUCTION_SITE || 'https://www.myetherwallet.com'
+  const key = process.env.FORCE_KEY
 
   return new Promise(async (resolve, reject) => {
     let githubFiles
-    console.log(process.env.FORCE_KEY, forceKey)
     try {
-      if (forceKey && forceKey === process.env.FORCE_KEY) {
+      if (forceKey && forceKey === key) {
         githubFiles = await getGithubFiles(github)
       } else {
         githubFiles = await getGithubFilesLocal()
