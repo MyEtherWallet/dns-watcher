@@ -72,17 +72,18 @@ export default async function fileCheck(forceKey) {
    * @return {Boolean} - True if all files match, false if not
    */
   async function compareFiles(files) {
+    let result = true
     await asyncForEach(files, async file => {
       let githubResult = await request(file.url)
       try {
         // Strip site of trailing slash (/) just in case, and compare results //
         let siteResult = await request(`${site.replace(/\/$/, '')}/${file.path}?q=${Date.now()}`)
-        if (githubResult !== siteResult) return false
+        if (githubResult !== siteResult) result = false
       } catch (e) {
-        return false
+        result = false
       }
     })
-    return true
+    return result
   }
 }
 
