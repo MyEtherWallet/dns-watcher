@@ -3,9 +3,12 @@
 // Imports //
 import request from 'request-promise-native'
 import schedule from 'node-schedule'
+import fileExtension from 'file-extension'
 
 // Libs //
 import redisStore from '@lib/redis-store'
+
+const ALLOWED_EXTENSIONS = ['js', 'html']
 
 // Export //
 export default (() => {
@@ -28,8 +31,10 @@ export default (() => {
    * Given the URL of a github-api endpoint listing files of a particular project,
    * or a directory within that project, recursively retrieve the path and URL or each
    * file within the parent directory and its children's directories.
+   *
+   * Only store/cache files of ALLOWED_EXTENSIONS defined above.
    * 
-   * @param  {Sring} url - URL of github api endpoint, ala https://api.github.com/repos/kvhnuke/etherwallet/contents?ref=gh-pages
+   * @param  {String} url - URL of github api endpoint, ala https://api.github.com/repos/kvhnuke/etherwallet/contents?ref=gh-pages
    * @return {Array} - Array of files in the following format: File{ path: '...', url: '...' }
    */
   const getGithubFiles = async (url, files = []) => {
@@ -42,10 +47,13 @@ export default (() => {
     })
     await asyncForEach(tree, async obj => {
       if(obj.type === 'file') {
-        files.push({
-          path: obj.path,
-          url: obj.download_url
-        })
+        const file_extension = fileExtension(obj.path)
+        if (ALLOWED_EXTENSIONS.indexOf(file_extension) > -1) {
+          files.push({
+            path: obj.path,
+            url: obj.download_url
+          })
+        }
       }
       if(obj.type === 'dir') {
         await getGithubFiles(obj._links.self, files)
