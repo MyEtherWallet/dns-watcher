@@ -74,6 +74,8 @@ app.use('/update-github-files', async (req, res, next) => {
   const query = queryString.parse(parsedUrl.search)
   const forceKey = query.forceKey
 
+  console.log('query', query, 'forceKey', forceKey, 'process Key', process.env.FORCE_KEY)
+
   if (forceKey === process.env.FORCE_KEY) {
     githubFiles.default.force()
     return res.end('OK')
