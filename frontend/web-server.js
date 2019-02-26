@@ -52,7 +52,7 @@ app.use(bodyParser.urlencoded({extended: false}))
 app.use('/dns-report', async (req, res, next) => {
   let entries = await redisStore.default.getAllNameServerStatus();
   let sorted_by_date = _.sortBy(entries, function(o) {
-    return -new Date(o.timestamp);
+    return new Date(o.timestamp);
   });
   let sorted_by_status = sorted_by_date.sort((a, b) => a.status - b.status);
   let json_string = JSON.stringify(sorted_by_status);

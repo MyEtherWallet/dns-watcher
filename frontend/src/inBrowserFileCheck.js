@@ -22,6 +22,7 @@ export default async function fileCheck(forceKey) {
         if (githubFiles === null) githubFiles = await getGithubFiles(github) 
       }
       let isKosher = await compareFiles(githubFiles)
+      console.log('Koshe?', isKosher)
       resolve(isKosher)
     } catch (e) {
       console.log(e)
@@ -78,7 +79,10 @@ export default async function fileCheck(forceKey) {
       try {
         // Strip site of trailing slash (/) just in case, and compare results //
         let siteResult = await request(`${site.replace(/\/$/, '')}/${file.path}?q=${Date.now()}`)
-        if (githubResult !== siteResult) console.log(githubResult, site); result = false
+        if (githubResult !== siteResult) {
+          console.log('nope', file.path)
+          result = false
+        }
       } catch (e) {
         console.log('e', e)
         result = false
