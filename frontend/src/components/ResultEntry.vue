@@ -67,6 +67,7 @@
       }
     },
     created() {
+      if (!this.addresses) return
       this.addresses.forEach(address => {
         this.images[address] = this.hostName + '/screenshots/' + address + '.png'
       })
