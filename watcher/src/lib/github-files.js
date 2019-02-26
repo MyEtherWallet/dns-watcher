@@ -3,10 +3,12 @@
 // Imports //
 import request from 'request-promise-native'
 import schedule from 'node-schedule'
+import { EventEmitter } from 'events'
 import fileExtension from 'file-extension'
 
 // Libs //
 import redisStore from '@lib/redis-store'
+import telegramBot from '@lib/telegram-bot'
 
 const ALLOWED_EXTENSIONS = ['js', 'html']
 
@@ -16,15 +18,25 @@ export default (() => {
 
   const init = () => {
     getAndSaveFiles()
-    scheduledTask = schedule.scheduleJob('0 * * * *', () => {
+    scheduledTask = schedule.scheduleJob('0,15,30,45 * * * *', () => {
       getAndSaveFiles()  
     })
+  }
+
+  const force = () => {
+    getAndSaveFiles()
   }
 
   const getAndSaveFiles = async () => {
     console.log('Updating Github Files List... ')
     let githubFiles = await getGithubFiles(process.env.GITHUB_SITE)
+    if (githubFiles === null) {
+      return setTimeout(() => {
+        init()
+      }, 60 * 1000)
+    }
     await redisStore.setGithubFiles(githubFiles)
+    await compareFiles(githubFiles)
   }
 
   /**
@@ -63,6 +75,40 @@ export default (() => {
   }
 
   /**
+   * Compare each of the files found in getGithubFiles to production site resolutions.
+   * If any of the files do not match, send telegram message with list of files.
+   *
+   * @param {Array} files - Array of files (compiled with getGithubFiles())
+   */
+  const compareFiles = async (files) => {
+    let result = true
+    let mismatchedFiles = []
+    await asyncForEach(files, async file => {
+      let githubResult = await request(file.url)
+      try {
+        // Strip site of trailing slash (/) just in case, and compare results //
+        let siteResult = await request(`${process.env.PRODUCTION_SITE.replace(/\/$/, '')}/${file.path}?q=${Date.now()}`)
+        if (githubResult !== siteResult) {
+          result = false
+          mismatchedFiles.push(file.path)
+        }
+      } catch (e) {
+        console.log('e', e)
+        result = false
+      }
+    })
+
+    // Send message if mismatched files //
+    if (result === false) {
+      let message = 'MEW File Mismatch:\n\n'
+      mismatchedFiles.forEach(file => {
+        message += `${file}\n`
+      })
+      await telegramBot.send(message)
+    }
+  }
+
+  /**
    * Polyfill for async-style forEach loop.
    * 
    * Example: 
@@ -81,6 +127,7 @@ export default (() => {
   }
 
   return {
-    init
+    init,
+    force
   }
 })()

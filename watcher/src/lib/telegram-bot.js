@@ -29,7 +29,8 @@ export default (() => {
       },
       form: {
         chat_id: process.env.TELEGRAM_CHAT_ID,
-        text: msg
+        text: msg,
+        parse_mode: 'html'
       }
     }
 
