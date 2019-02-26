@@ -69,19 +69,17 @@ app.use('/github-files', async (req, res, next) => {
  * Force update github files-cache
  * Requires query param @forceKey to equal FORCE_KEY set in .env
  */
-app.use('/update-github-files', async (req, res, next) => {
-  const parsedUrl = req._parsedUrl
-  const query = queryString.parse(parsedUrl.search)
-  const forceKey = query.forceKey
+app.use(`/update-github-files-${process.env.FORCE_KEY}`, async (req, res, next) => {
+  // const parsedUrl = req._parsedUrl
+  // const query = queryString.parse(parsedUrl.search)
+  // const forceKey = query.forceKey
+  githubFiles.default.force()
+  return res.end('OK')
 
-  console.log('query', query, 'forceKey', forceKey, 'process Key', process.env.FORCE_KEY)
-
-  if (forceKey === process.env.FORCE_KEY) {
-    githubFiles.default.force()
-    return res.end('OK')
-  } else {
-    return res.end('ERROR')
-  }
+  // if (forceKey === process.env.FORCE_KEY) {
+  // } else {
+  //   return res.end('ERROR')
+  // }
 })
 
 // Use superstatic to handle other routes //
