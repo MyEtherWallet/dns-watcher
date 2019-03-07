@@ -50,7 +50,12 @@ app.use(bodyParser.urlencoded({extended: false}))
 
 // Override /dns-report route //
 app.use('/dns-report', async (req, res, next) => {
-  let entries = await redisStore.default.getAllNameServerStatus();
+  let entries = []
+  try {
+    entries = await redisStore.default.getAllNameServerStatus();
+  } catch (e) {
+    console.log('error', e)
+  }
   let sorted_by_date = _.sortBy(entries, function(o) {
     return new Date(o.timestamp);
   });
@@ -60,7 +65,12 @@ app.use('/dns-report', async (req, res, next) => {
 });
 
 app.use('/github-files', async (req, res, next) => {
-  let githubFiles = await redisStore.default.getGithubFiles()
+  let githubFiles = []
+  try {
+    githubFiles = await redisStore.default.getGithubFiles()
+  } catch (e) {
+    console.log('e', e)
+  }
   let json_string = JSON.stringify(githubFiles)
   return res.end(json_string)
 })
@@ -73,8 +83,13 @@ app.use(`/update-github-files-${process.env.FORCE_KEY}`, async (req, res, next) 
   // const parsedUrl = req._parsedUrl
   // const query = queryString.parse(parsedUrl.search)
   // const forceKey = query.forceKey
-  githubFiles.default.force()
-  return res.end('OK')
+  try {
+    githubFiles.default.force()
+    return res.end('OK')
+  } catch (e) {
+    console.log('err', e)
+    return res.send(e)
+  }
 
   // if (forceKey === process.env.FORCE_KEY) {
   // } else {
