@@ -57,10 +57,10 @@ app.use('/dns-report', async (req, res, next) => {
     console.log('error', e)
   }
   let sorted_by_date = _.sortBy(entries, function(o) {
-    return new Date(o.timestamp);
+    return - (new Date(o.timestamp).getTime())
   });
-  let sorted_by_status = sorted_by_date.sort((a, b) => a.status - b.status);
-  let json_string = JSON.stringify(sorted_by_status);
+  // let sorted_by_status = sorted_by_date.sort((a, b) => a.status - b.status);
+  let json_string = JSON.stringify(sorted_by_date);
   return res.end(json_string);
 });
 

@@ -104,7 +104,13 @@ export default {
                     let json = JSON.parse(result)
                     let sorted = _.groupBy(json, 'status')
                     this.good = sorted.true || []
+                    this.good = _.sortBy(this.good, function(o) {
+                        return - (new Date(o.timestamp).getTime())
+                    })
                     this.bad = sorted.false || []
+                    this.bad = _.sortBy(this.bad, function(o) {
+                        return - (new Date(o.timestamp).getTime())
+                    })
                     this.all = [...this.bad, ...this.good]
                     this.entries = this.all
                 } catch (e) {
