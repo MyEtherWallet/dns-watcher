@@ -82,9 +82,7 @@ export default (() => {
    */
   const compareFiles = async (files) => {
     let result = true
-    let _522Error = false
     let mismatchedFiles = []
-    let unreachableFiles = []
     await asyncForEach(files, async file => {
       let githubResult = await request(file.url)
       try {
@@ -97,8 +95,11 @@ export default (() => {
       } catch (e) {
         console.log('e', e)
         console.log('statusCode:', e.statusCode)
-        _522Error = true
-        unreachableFiles.push(file.path)
+        // statusCodeError = true
+        // unreachableFiles.push(file.path)
+        let message = `MEW ${e.statusCode} Error:\n\n`
+        message += `${file.path}\n`
+        await telegramBot.send(message)      
       }
     })
 
@@ -112,13 +113,13 @@ export default (() => {
     }
 
     // Send message if any files are unreachable //
-    if (_522Error === true) {
-      let message = 'MEW 522 Error:\n\n'
-      unreachableFiles.forEach(file => {
-        message += `${file}\n`
-      })
-      await telegramBot.send(message)
-    }
+    // if (statusCodeError === true) {
+    //   let message = 'MEW 522 Error:\n\n'
+    //   unreachableFiles.forEach(file => {
+    //     message += `${file}\n`
+    //   })
+    //   await telegramBot.send(message)
+    // }
   }
 
   /**
