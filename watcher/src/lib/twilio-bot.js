@@ -22,7 +22,8 @@ export default (() => {
         .create({
           url: `https://status.myetherwallet.com/voice-alert`,
           to: process.env.TWILIO_TO_NUMBER,
-          from: process.env.TWILIO_FROM_NUMBER
+          from: process.env.TWILIO_FROM_NUMBER,
+          method: 'GET'
         })
         .then(call => {
           console.log('Call Alert', call)

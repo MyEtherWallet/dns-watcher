@@ -105,7 +105,7 @@ app.use(connectRoute(router => {
     // }
   })
 
-  router.post('/voice-alert', async (req, res, next) => {
+  router.get('/voice-alert', async (req, res, next) => {
     const twiml = new VoiceResponse();
 
     twiml.say('Alert! File mismatch on My Ether Wallet. Please check telegram for more information.');
@@ -113,16 +113,6 @@ app.use(connectRoute(router => {
     res.writeHead(200, { 'Content-Type': 'text/xml' });
     return res.end('<?xml version="1.0" encoding="UTF-8"?>' + twiml.toString())
   })
-
-  // router.get('/voice-alert', async (req, res, next) => {
-  //   const twiml = new VoiceResponse();
-
-  //   twiml.say('Alert! File mismatch on My Ether Wallet. Please check telegram for more information.');
-
-  //   res.writeHead(200, { 'Content-Type': 'text/xml' });
-  //   return res.end('<?xml version="1.0" encoding="UTF-8"?>' + twiml.toString())
-  // })   
-
 
 }))
 
