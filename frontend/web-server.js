@@ -8,7 +8,6 @@ const path = require("path");
 const superstatic = require("superstatic");
 const connect = require("connect");
 const connectHeader = require('connect-header');
-const connectRoute = require('connect-route')
 const _ = require("underscore");
 const queryString = require('query-string')
 const bodyParser = require('body-parser')
@@ -54,68 +53,63 @@ app.use(connectHeader({
   'Access-Control-Allow-Origin': '*'
 }))
 
-app.use(connectRoute(router => {
-
-  // Override /dns-report route //
-  router.get('/dns-report', async (req, res, next) => {
-    let entries = []
-    try {
-      entries = await redisStore.default.getAllNameServerStatus();
-    } catch (e) {
-      console.log('error', e)
-    }
-    let sorted_by_date = _.sortBy(entries, function(o) {
-      return - (new Date(o.timestamp).getTime())
-    });
-    // let sorted_by_status = sorted_by_date.sort((a, b) => a.status - b.status);
-    let json_string = JSON.stringify(sorted_by_date);
-    return res.end(json_string);
+// Override /dns-report route //
+app.use('/dns-report', async (req, res, next) => {
+  let entries = []
+  try {
+    entries = await redisStore.default.getAllNameServerStatus();
+  } catch (e) {
+    console.log('error', e)
+  }
+  let sorted_by_date = _.sortBy(entries, function(o) {
+    return - (new Date(o.timestamp).getTime())
   });
+  // let sorted_by_status = sorted_by_date.sort((a, b) => a.status - b.status);
+  let json_string = JSON.stringify(sorted_by_date);
+  return res.end(json_string);
+});
 
-  router.get('/github-files', async (req, res, next) => {
-    let githubFiles = []
-    try {
-      githubFiles = await redisStore.default.getGithubFiles()
-    } catch (e) {
-      console.log('e', e)
-    }
-    let json_string = JSON.stringify(githubFiles)
-    return res.end(json_string)
-  })
+app.use('/github-files', async (req, res, next) => {
+  let githubFiles = []
+  try {
+    githubFiles = await redisStore.default.getGithubFiles()
+  } catch (e) {
+    console.log('e', e)
+  }
+  let json_string = JSON.stringify(githubFiles)
+  return res.end(json_string)
+})
 
-  /**
-   * Force update github files-cache
-   * Requires query param @forceKey to equal FORCE_KEY set in .env
-   */
-  router.get(`/update-github-files-${process.env.FORCE_KEY}`, async (req, res, next) => {
-    // const parsedUrl = req._parsedUrl
-    // const query = queryString.parse(parsedUrl.search)
-    // const forceKey = query.forceKey
-    try {
-      githubFiles.default.force()
-      return res.end('OK')
-    } catch (e) {
-      console.log('err', e)
-      return res.send(e)
-    }
+/**
+ * Force update github files-cache
+ * Requires query param @forceKey to equal FORCE_KEY set in .env
+ */
+app.use(`/update-github-files-${process.env.FORCE_KEY}`, async (req, res, next) => {
+  // const parsedUrl = req._parsedUrl
+  // const query = queryString.parse(parsedUrl.search)
+  // const forceKey = query.forceKey
+  try {
+    githubFiles.default.force()
+    return res.end('OK')
+  } catch (e) {
+    console.log('err', e)
+    return res.send(e)
+  }
 
-    // if (forceKey === process.env.FORCE_KEY) {
-    // } else {
-    //   return res.end('ERROR')
-    // }
-  })
+  // if (forceKey === process.env.FORCE_KEY) {
+  // } else {
+  //   return res.end('ERROR')
+  // }
+})
 
-  router.get('/voice-alert', async (req, res, next) => {
-    const twiml = new VoiceResponse();
+app.use('/voice-alert', async (req, res, next) => {
+  const twiml = new VoiceResponse();
 
-    twiml.say('Alert! File mismatch on My Ether Wallet. Please check telegram for more information.');
+  twiml.say('Alert! File mismatch on My Ether Wallet. Please check telegram for more information.');
 
-    res.writeHead(200, { 'Content-Type': 'text/xml' });
-    return res.end('<?xml version="1.0" encoding="UTF-8"?>' + twiml.toString())
-  })
-
-}))
-
+  res.writeHead(200, { 'Content-Type': 'text/xml' });
+  return res.end('<?xml version="1.0" encoding="UTF-8"?>' + twiml.toString())
+})
 
 // Use superstatic to handle other routes //
 app.use(superstatic(spec));
