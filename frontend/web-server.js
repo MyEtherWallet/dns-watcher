@@ -16,6 +16,7 @@ require("dotenv").config({ path: ENV_PATH });
 // Lib //
 const redisStore = require("@lib/redis-store");
 const githubFiles = require("@lib/github-files");
+const VoiceResponse = require('twilio').twiml.VoiceResponse
 
 // Superstatic Options //
 var spec = {
@@ -95,6 +96,15 @@ app.use(`/update-github-files-${process.env.FORCE_KEY}`, async (req, res, next) 
   // } else {
   //   return res.end('ERROR')
   // }
+})
+
+app.use('/voice-alert', async (req, res, next) => {
+  const twiml = new VoiceResponse();
+
+  twiml.say('Alert! File mismatch on My Ether Wallet. Please check telegram for more information.');
+
+  res.writeHead(200, { 'Content-Type': 'text/xml' });
+  return res.end(twiml.toString())
 })
 
 // Use superstatic to handle other routes //

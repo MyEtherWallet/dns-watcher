@@ -25,6 +25,7 @@
     "request-promise-native": "^1.0.5",
     "sass-loader": "^6.0.6",
     "superstatic": "^5.0.1",
+    "twilio": "^3.33.0",
     "underscore": "^1.9.1",
     "vue": "^2.5.16",
     "vue-paginate": "^3.6.0",

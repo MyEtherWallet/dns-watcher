@@ -26,6 +26,7 @@ module.exports = {
     before: app => {
       const redisStore = require('@lib/redis-store')
       const githubFiles = require('@lib/github-files')
+      const VoiceResponse = require('twilio').twiml.VoiceResponse
 
       app.use('/dns-report', async (req, res, next) => {
         let entries = await redisStore.default.getAllNameServerStatus()
@@ -41,6 +42,14 @@ module.exports = {
 
       app.use('/update-github-files', async (req, res, next) => {
          return res.json({})
+      })
+      app.use('/voice-alert', async (req, res, next) => {
+        const twiml = new VoiceResponse();
+
+        twiml.say('Alert! File mismatch on My Ether Wallet. Please check telegram for more information.');
+
+        res.writeHead(200, { 'Content-Type': 'text/xml' });
+        return res.end(twiml.toString())
       })
     }
   }
