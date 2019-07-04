@@ -25,7 +25,7 @@ export default (() => {
           from: process.env.TWILIO_FROM_NUMBER
         })
         .then(call => {
-          console.log('Call Alert', call.sid)
+          console.log('Call Alert', call)
           return resolve()
         })
         .done()
