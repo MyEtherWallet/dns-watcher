@@ -104,6 +104,7 @@ app.use(`/update-github-files-${process.env.FORCE_KEY}`, async (req, res, next) 
 
 app.use('/voice-alert', async (req, res, next) => {
   const twiml = new VoiceResponse();
+  console.log('twiml', twiml)
 
   twiml.say('Alert! File mismatch on My Ether Wallet. Please check telegram for more information.');
 
