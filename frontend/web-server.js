@@ -106,7 +106,7 @@ app.use('/voice-alert', async (req, res, next) => {
   const twiml = new VoiceResponse();
   console.log('twiml', twiml)
 
-  twiml.say('Alert! File mismatch on My Ether Wallet. Please check telegram for more information.');
+  twiml.say('My Ether Wallet Alert. File mismatch on My Ether Wallet. Please check telegram for more information.');
 
   res.writeHead(200, { 'Content-Type': 'text/xml' });
   return res.end(twiml.toString())
