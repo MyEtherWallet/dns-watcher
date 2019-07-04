@@ -30,6 +30,12 @@ GITHUB_SITE=https://api.github.com/repos/kvhnuke/etherwallet/contents?ref=gh-pag
 TELEGRAM_KEY=key_here
 TELEGRAM_CHAT_ID=chat_id_here
 
+# Twilio Info
+TWILIO_ID=twilio_id_here
+TWILIO_TOKEN=twilio_token_here
+TWILIO_TO_NUMBER=+18001112222
+TWILIO_FROM_NUMBER=+18003334444
+
 # Allowed IPs JSON
 ALLOWED_IPS=allowed-mew-ips.json
 

@@ -16,10 +16,11 @@ export default (() => {
    * @param  {String} key - The "key" (usually the nameserver) for the Redis entry
    * @param  {Object} obj - The object payload containing the status of a given key/nameserver
    */
-  const setNameServerStatus = async (key, obj) => {
+  const setNameServerStatus = async (key, obj, ttl) => {
     try {
+      let expiry = ttl || 86400
       await client.set(key, JSON.stringify(obj))
-      client.expire(key, 86400)
+      client.expire(key, expiry)
     } catch (e) {
       console.log(e)
     }

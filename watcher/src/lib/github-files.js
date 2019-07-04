@@ -9,6 +9,7 @@ import fileExtension from 'file-extension'
 // Libs //
 import redisStore from '@lib/redis-store'
 import telegramBot from '@lib/telegram-bot'
+import twilioBot from '@lib/twilio-bot'
 
 const ALLOWED_EXTENSIONS = ['js', 'html']
 
@@ -99,7 +100,8 @@ export default (() => {
         // unreachableFiles.push(file.path)
         let message = `MEW ${e.statusCode} Error:\n\n`
         message += `${file.path}\n`
-        await telegramBot.send(message)      
+        await telegramBot.send(message)
+        await twilioBot.phoneAlert()   
       }
     })
 
@@ -110,6 +112,7 @@ export default (() => {
         message += `${file}\n`
       })
       await telegramBot.send(message)
+      await twilioBot.phoneAlert() 
     }
 
     // Send message if any files are unreachable //

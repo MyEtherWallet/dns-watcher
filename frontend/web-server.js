@@ -7,6 +7,7 @@ require("module-alias/register");
 const path = require("path");
 const superstatic = require("superstatic");
 const connect = require("connect");
+const connectHeader = require('connect-header');
 const _ = require("underscore");
 const queryString = require('query-string')
 const bodyParser = require('body-parser')
@@ -48,6 +49,9 @@ var spec = {
 // Create Connect App //
 var app = connect();
 app.use(bodyParser.urlencoded({extended: false}))
+app.use(connectHeader({
+  'Access-Control-Allow-Origin': '*'
+}))
 
 // Override /dns-report route //
 app.use('/dns-report', async (req, res, next) => {
