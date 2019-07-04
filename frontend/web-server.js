@@ -108,7 +108,7 @@ app.use('/voice-alert', async (req, res, next) => {
   twiml.say('Alert! File mismatch on My Ether Wallet. Please check telegram for more information.');
 
   res.writeHead(200, { 'Content-Type': 'text/xml' });
-  return res.end('<?xml version="1.0" encoding="UTF-8"?>' + twiml.toString())
+  return res.end(twiml.toString())
 })
 
 // Use superstatic to handle other routes //
