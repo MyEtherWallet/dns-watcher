@@ -9,7 +9,7 @@ import healthCheck from '@lib/health-check'
 import jsonGenerator from '@lib/json-generator'
 import screenshot from '@lib/screenshot'
 import telegramBot from '@lib/telegram-bot'
-import twilioBot from '@lib/twilio-bot'
+// import twilioBot from '@lib/twilio-bot'
 
 /**
  * DNS Watcher Loop
@@ -35,9 +35,8 @@ import twilioBot from '@lib/twilio-bot'
   })
 
   // Initialize Health Check //
-  // healthCheck.init()
+  healthCheck.init()
   
   // Start Github File cache //
-  // githubFiles.init()
-  twilioBot.phoneAlert()
+  githubFiles.init()
 })()
