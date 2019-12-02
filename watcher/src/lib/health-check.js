@@ -40,7 +40,45 @@ export default (() => {
     )
 
     // Populate nameserver list array //
-    nameservers = await nameserverList.init()
+    // nameservers = await nameserverList.init()
+    nameservers = [
+      ['8.8.8.8', 'Google DNS'],
+      ['8.8.4.4', 'Google DNS 2'],
+      ['208.67.222.222', 'OpenDNS'],
+      ['208.67.220.220', 'OpenDNS 2'],
+      ['1.1.1.1', 'CloudFlare'],
+      ['1.0.0.1', 'CloudFlare 2'],
+      ['9.9.9.9', 'Quad9'],
+      ['149.112.112.112', 'Quad9 2'],
+      ['209.244.0.3', 'Level3'],
+      ['209.244.0.4', 'Level3 2'],
+      ['64.6.64.6', 'Verisign'],
+      ['64.6.65.6', 'Verisign 2'],
+      ['84.200.69.80', 'DNS.WATCH'],
+      ['84.200.70.40', 'DNS.WATCH 2'],
+      ['8.26.56.26', 'Comodo Secure DNS'],
+      ['8.20.247.20', 'Comodo Secure DNS 2'],
+      ['81.218.119.11', 'GreenTeamDNS'],
+      ['209.88.198.133', 'GreenTeamDNS 2'],
+      ['195.46.39.39', 'SafeDNS'],
+      ['195.46.39.40', 'SafeDNS 2'],
+      ['23.94.60.240', 'OpenNIC'],
+      ['128.52.130.209', 'OpenNIC 2'],
+      ['208.76.50.50', 'SmartViper'],
+      ['208.76.51.51', 'SmartViper 2'],
+      ['216.146.35.35', 'Dyn'],
+      ['216.146.36.36', 'Dyn 2'],
+      ['37.235.1.174', 'FreeDNS'],
+      ['37.235.1.177', 'FreeDNS 2'],
+      ['198.101.242.72', 'AlternateDNS'],
+      ['23.253.163.53', 'AlternateDNS 2'],
+      ['77.88.8.8', 'Yandex DNS'],
+      ['77.88.8.1', 'Yandex DNS 2'],
+      ['91.239.100.100', 'UncensoredDNS'],
+      ['89.233.43.71', 'UncensoredDNS 2'],
+      ['74.82.42.42', 'Hurricane Electric'],
+      ['109.69.8.51', 'puntCat']
+    ]
 
     // Create Progress Bar //
     progressBar.init(nameservers.length)
@@ -158,11 +196,11 @@ export default (() => {
     try {
       await redisStore.setNameServerStatus(nameserver[0], {
         ns: nameserver[0],
-        name: nameserver[2],
+        name: nameserver[1],
         timestamp: new Date().toUTCString(),
         status: isValid,
-        country: countries.getName(nameserver[1], 'en'),
-        countryShort: nameserver[1],
+        // country: countries.getName(nameserver[1], 'en'),
+        // countryShort: nameserver[1],
         resolved: addresses
       })
     } catch (e) {
