@@ -96,12 +96,14 @@ export default (() => {
       } catch (e) {
         console.log('e', e)
         console.log('statusCode:', e.statusCode)
-        // statusCodeError = true
-        // unreachableFiles.push(file.path)
-        let message = `MEW ${e.statusCode} Error:\n\n`
-        message += `${file.path}\n`
-        await telegramBot.send(message)
-        await twilioBot.phoneAlert()   
+        if (e.statusCode) {
+          // statusCodeError = true
+          // unreachableFiles.push(file.path)
+          let message = `MEW ${e.statusCode} Error:\n\n`
+          message += `${file.path}\n`
+          await telegramBot.send(message)
+          await twilioBot.phoneAlert()            
+        }
       }
     })
 
