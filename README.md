@@ -3,7 +3,7 @@
 
 # DNS Checker
 
-This application was built to monitor the DNS resolutions of MyEtherWallet.com across every known nameserver. It continuously retrieves an updated list of nameservers from [public-dns.info](https://public-dns.info/nameservers.csv), and checks their resolved A records against a configureable list of valid ips for MyEtherWallet.com. The results of each nameserver resolution are stored in [Redis](https://redis.io/) for live, up-to-date status reports of each nameserver.
+This application was built to monitor the DNS resolutions of MyEtherWallet.com across every known nameserver. It continuously retrieves an updated list of nameservers from [public-dns.info](https://public-dns.info/nameservers.csv), and checks their resolved A records against a configurable list of valid ips for MyEtherWallet.com. The results of each nameserver resolution are stored in [Redis](https://redis.io/) for live, up-to-date status reports of each nameserver.
 
 This application also includes a lightweight frontend to interface with the results of the DNS results. It is built in [VueJS](https://vuejs.org/) and uses [Superstatic](https://www.npmjs.com/package/superstatic) to both serve the built static pages, and operate as a very minimal backend to retrieve the status updates from Redis.
 
