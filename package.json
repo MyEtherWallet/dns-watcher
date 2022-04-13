@@ -16,7 +16,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "async": "^2.6.1",
+    "async": "^3.2.2",
     "async-redis": "^1.1.4",
     "cli-progress": "^2.1.0",
     "dns-watcher-frontend": "file:frontend",
