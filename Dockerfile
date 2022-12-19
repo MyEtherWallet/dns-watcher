@@ -1,5 +1,5 @@
 #Get base image
-FROM node:latest
+FROM node:8.14.0
 
 # Set environment variables.
 ENV HOME /root
@@ -14,7 +14,7 @@ WORKDIR /root
 COPY . .
 
 # Install
-RUN npm install npm@latest -g
+RUN npm install npm@6.4.1 -g
 RUN cd /root/ && \
     npm install
 
