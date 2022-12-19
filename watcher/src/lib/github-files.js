@@ -96,7 +96,15 @@ export default (() => {
       } catch (e) {
         console.log('e', e)
         console.log('statusCode:', e.statusCode)
+
+        // Ignore //
         if (e.statusCode) {
+          if (
+            parseInt(e.statusCode) === 524 ||
+            parseInt(e.statusCode === 520)
+          ) {
+            return
+          }
           // statusCodeError = true
           // unreachableFiles.push(file.path)
           let message = `MEW ${e.statusCode} Error:\n\n`
