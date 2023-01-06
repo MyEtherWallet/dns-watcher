@@ -101,6 +101,7 @@ export default (() => {
         if (e.statusCode) {
           if (
             parseInt(e.statusCode) === 524 ||
+            parseInt(e.statusCode) === 522 ||
             parseInt(e.statusCode === 520)
           ) {
             return
